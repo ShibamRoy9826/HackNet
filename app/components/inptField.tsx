@@ -1,5 +1,5 @@
 import {View,TextInput,StyleSheet} from "react-native";
-import MaterialDesignIcons, { MaterialDesignIconsIconName } from "@react-native-vector-icons/material-design-icons";
+import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { Dispatch,SetStateAction} from "react";
 
 
@@ -7,8 +7,8 @@ interface Props{
     value:string,
     valueFn:Dispatch<SetStateAction<string>>,
     placeholder:string,
-    type:"password"|"emailAddress",
-    icon:"email"|"key",
+    type:"password"|"emailAddress"|"none",
+    icon:"email"|"key"|"account-circle"|"comment",
     color:string,
     secure:boolean
 }
@@ -24,7 +24,7 @@ export default function InputBox({secure,value,valueFn,color,icon,type,placehold
 
 const styles=StyleSheet.create({
    fieldContainer:{
-       backgroundColor:"#233345ff",
+       backgroundColor:"#292932ff",
        borderRadius:12,
        margin:10,
        width:"80%",
@@ -33,7 +33,9 @@ const styles=StyleSheet.create({
        display:"flex",
        flexDirection:"row",
        alignItems:"center",
-       justifyContent:"flex-start"
+       justifyContent:"flex-start",
+       borderColor:"#444456ff",
+       borderWidth:StyleSheet.hairlineWidth
    },
    text:{
     color:"white",

@@ -4,29 +4,31 @@ import InputBox from "../components/inptField";
 import {useState} from "react";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 
-export default function LoginScreen({navigation}){
+export default function SignUpScreen({navigation}){
+    const [username,setUserName]=useState("");
     const [email,setEmail]=useState("");
     const [password,setPassword]=useState("");
+    const [confirmpassword,setCpassword]=useState("");
     return (
         <View style={styles.container}>
             <Text style={styles.heading}>
-                Hack Net 
+                Sign Up
             </Text>
             <Text style={styles.subHeading}>
-                Social media for teen hackers.
-                Made By a hackclubber, for hackclubbers!
+                Get ready to be one of hackers!
             </Text>
 
             <View style={styles.fieldContainer}>
+                <InputBox secure={false} value={username} valueFn={setUserName} color="#8492a6" icon="account-circle" placeholder="Your Name" type="emailAddress"/>
                 <InputBox secure={false} value={email} valueFn={setEmail} color="#8492a6" icon="email" placeholder="Your Email" type="emailAddress"/>
                 <InputBox secure={true} value={password} valueFn={setPassword} color="#8492a6" icon="key" placeholder="Your Password" type="password"/>
-                
+                <InputBox secure={true} value={confirmpassword} valueFn={setCpassword} color="#8492a6" icon="key" placeholder="Confirm Password" type="password"/>
             </View>
             <Button color="white" style={styles.button} onPressIn={()=>{navigation.navigate("Home")}}>
-               Login
+                Create Account
             </Button>
 
-            <Text style={styles.smallTxt}>Don't have an account? <Text style={styles.signupBtn} onPress={()=>{Linking.openURL("https://google.com")}}>Sign up here</Text></Text>
+            <Text style={styles.smallTxt}>Already have an account? <Text style={styles.signupBtn} onPress={()=>{navigation.navigate("Login")}}>Login here</Text></Text>
 
             <View
             style={{
@@ -43,9 +45,9 @@ export default function LoginScreen({navigation}){
             </Text> 
 
 
-            <Pressable style={styles.button} onPress={()=>{navigation.navigate("Home")}}>
+            <Pressable style={styles.button} onPress={()=>{navigation.navigate("Tabs")}}>
                 <Text style={{color:"white", fontSize:15,marginRight:6}}>
-               Login With Slack 
+               Sign Up With Slack 
                 </Text>
                 <MaterialDesignIcons name="slack" size={20} color="white" />
             </Pressable>
@@ -55,7 +57,7 @@ export default function LoginScreen({navigation}){
 
 const styles=StyleSheet.create({
     container:{
-        backgroundColor:"#1e2c3c",
+        backgroundColor:"#17171d",
         flex:1 ,
         display:"flex",
         alignItems:"center",

@@ -1,17 +1,22 @@
-import { View ,Text} from "react-native";
-import { Button } from "@react-navigation/elements";
+import { ScrollView} from "react-native";
+import Post from "../components/post";
 
 export default function HomeScreen({navigation}){
     return (
-        <View>
-            <Text>
-                Welcome back to home:)
-            </Text> 
-
-            <Button onPressIn={()=>{navigation.navigate("Login")}}>
-                Wanna login again?
-            </Button>
+        <ScrollView style={{backgroundColor:"#17171d",flex:1,paddingTop:20,paddingBottom:100}}>
+            <Post username="Shibam Roy" timestamp="Today at 12:00PM"/>
+            <Post username="Shibam Roy" timestamp="Today at 12:00PM"/>
+            <Post username="Shibam Roy" timestamp="Today at 12:00PM"/>
+            <Post username="Shibam Roy" timestamp="Today at 12:00PM"/>
+            <Post username="Shibam Roy" timestamp="Today at 12:00PM"/>
+            <Post username="Shibam Roy" timestamp="Today at 12:00PM"/>
+            <Post username="Shibam Roy" timestamp="Today at 12:00PM"/>
            
-        </View>
+        </ScrollView>
     );
+}
+
+
+const styles={
+
 }
