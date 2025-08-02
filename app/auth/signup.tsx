@@ -4,6 +4,29 @@ import InputBox from "../components/inptField";
 import {useState} from "react";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 
+
+// // Import the functions you need from the SDKs you need
+// import { initializeApp } from "firebase/app";
+// import { getAnalytics } from "firebase/analytics";
+// // TODO: Add SDKs for Firebase products that you want to use
+// // https://firebase.google.com/docs/web/setup#available-libraries
+
+// // Your web app's Firebase configuration
+// // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// const firebaseConfig = {
+//   apiKey: "AIzaSyCt8TVtsi-evqpVuET6MSwol1MLemhljaQ",
+//   authDomain: "hacknet-4103f.firebaseapp.com",
+//   projectId: "hacknet-4103f",
+//   storageBucket: "hacknet-4103f.firebasestorage.app",
+//   messagingSenderId: "417874103501",
+//   appId: "1:417874103501:web:ea0b51820e3c38c452ad84",
+//   measurementId: "G-W9VBFVMR2N"
+// };
+// // Initialize Firebase
+// const app = initializeApp(firebaseConfig);
+// const analytics = getAnalytics(app);
+
+
 export default function SignUpScreen({navigation}){
     const [username,setUserName]=useState("");
     const [email,setEmail]=useState("");

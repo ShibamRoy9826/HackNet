@@ -8,7 +8,7 @@ interface Props{
     valueFn:Dispatch<SetStateAction<string>>,
     placeholder:string,
     type:"password"|"emailAddress"|"none",
-    icon:"email"|"key"|"account-circle"|"comment",
+    icon:"email"|"key"|"account-circle"|"comment"|"magnify"|"format-title",
     color:string,
     secure:boolean
 }
