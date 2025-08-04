@@ -3,7 +3,7 @@ import MaterialDesignIcons from "@react-native-vector-icons/material-design-icon
 
 interface Props{
     options:string[],
-    iconList:("earth"|"account-group")[],
+    iconList:("earth"|"account-group"|"account"|"post"|"message")[],
     selected:string,
     setSelected:(a:string)=>void,
     vertical?:boolean,
@@ -14,7 +14,7 @@ export default function RadioBtn({iconList,style,vertical,setSelected,selected,o
         <View style={[style,styles.container,{flexDirection:vertical?"column":"row"}]}>
             {
                 options.map((e:string,i:number)=>(
-                    <Pressable key={i} style={[styles.btn,{backgroundColor:(selected==e)?"#338eda":"#8492a6"}]} onPress={()=>{setSelected(e)} }>
+                    <Pressable key={i} style={[styles.btn,{backgroundColor:(selected==e)?"#338eda":"#1f2226ff"}]} onPress={()=>{setSelected(e)} }>
                         <MaterialDesignIcons name={iconList[i]} size={15} color={"white"} style={{width:"auto"}}/>
                         <Text style={styles.btnTxt}>
                             {e}
@@ -38,7 +38,10 @@ const styles=StyleSheet.create({
         paddingVertical:8,
         paddingHorizontal:10,
         transitionDuration:"0.5s",
-        flexDirection:"row"
+        flexDirection:"row",
+
+       borderColor:"#444456ff",
+       borderWidth:StyleSheet.hairlineWidth
     },
     btnTxt:{
         color:"white",

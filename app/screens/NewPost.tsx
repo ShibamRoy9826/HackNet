@@ -46,7 +46,6 @@ export default function FriendsScreen({navigation}){
                 <Switch
                 trackColor={{false: '#8492a6', true: '#338eda'}}
                 thumbColor={'#f4f3f4'}
-                ios_backgroundColor="#3e3e3e"
                 onValueChange={()=>{setComments(!comments)}}
                 value={comments}
                 />
@@ -95,7 +94,8 @@ const styles=StyleSheet.create({
    },
     btnTxt:{
         color:"white",
-        fontSize:18,
+        fontSize:15,
+        fontWeight:"bold",
         width:"auto",
         textAlign:"center",
         marginHorizontal:5
@@ -105,7 +105,7 @@ const styles=StyleSheet.create({
         width:"auto",
         marginVertical:10,
         marginHorizontal:7,
-        borderRadius:8,
+        borderRadius:15,
         paddingVertical:8,
         paddingHorizontal:10,
         flexDirection:"row",
