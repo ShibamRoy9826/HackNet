@@ -55,11 +55,11 @@ export default function TabsContainer() {
           }
           }/>
       <Tab.Screen
-       name="Post"
+       name="Log"
        component={NewPostScreen}
        options={
         {
-          title:"Post",
+          title:"Log",
           headerShown:false,
           tabBarIcon:(tabInfo)=>{
             return(

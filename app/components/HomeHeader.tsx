@@ -3,12 +3,13 @@ import MaterialDesignIcons from "@react-native-vector-icons/material-design-icon
 
 interface Props{
     tY:any,
-    h:number
+    h:number,
+    pT:number
 }
 
-export default function HomeHeader({tY,h}:Props){
+export default function HomeHeader({tY,h,pT}:Props){
     return(
-            <Animated.View style={[styles.header,{height:h,transform:[{translateY:tY}]}]}>
+            <Animated.View style={[styles.header,{height:h,paddingTop:pT,transform:[{translateY:tY}]}]}>
                 <Image source={require("../../assets/images/pfp.jpg")} style={{borderRadius:50, width:30,height:30,marginHorizontal:10}}/>
                 <Text style={{fontSize:18,color:"white",marginRight:"auto"}}> Ahoy, Hacker!</Text>
                 <Pressable style={styles.button}>
@@ -40,6 +41,6 @@ const styles=StyleSheet.create({
         alignItems:"center",
         justifyContent:"flex-end",
         elevation:4,
-        zIndex:1
+        zIndex:1,
     }
 });

@@ -3,6 +3,7 @@ import LoginScreen from "./auth/login";
 import SignUpScreen from "./auth/signup";
 import TabsContainer from "./screens/TabContainer";
 
+
 const AppStack=createNativeStackNavigator();
 
 export default function RootLayout() {

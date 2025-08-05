@@ -16,7 +16,8 @@ export default function FollowBox({username,bio}:Props){
                 </View>
                 <View>
                     <Pressable style={styles.followBtn}>
-                        <Text style={{color:"white",fontWeight:"bold"}}>Follow</Text>
+                        <Text style={{color:"white",fontWeight:"bold"}}>Track</Text>
+                        <MaterialDesignIcons name="plus-box" color="white" size={18} style={{marginLeft:10}}/>
                     </Pressable>
                 </View>
             </View>

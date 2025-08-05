@@ -1,14 +1,59 @@
 import {Button} from "@react-navigation/elements";
-import {Text,View,StyleSheet,Pressable, Linking} from "react-native";
+import {Text,View,StyleSheet,Pressable, Linking,Alert} from "react-native";
 import InputBox from "../components/inptField";
 import {useState} from "react";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import {auth} from './firebase';
+import ModalBox from "../components/modal";
 
 export default function LoginScreen({navigation}){
+
     const [email,setEmail]=useState("");
     const [password,setPassword]=useState("");
+
+    const [modalText,setModalText]=useState("");
+    const [modalSubText,setModalSubText]=useState("");
+    const [modalVisible,setModalVisible]=useState(false);
+    const [modalFn,setModalFn]=useState<()=>void>(()=>{console.log("")});
+    
+    function alert(text:string,subtext:string,onClose?:()=>void){
+        setModalVisible(true);
+        setModalText(text);
+        setModalSubText(subtext);
+
+        if(onClose){
+            setModalFn(onClose);
+        }
+
+    }
+
+
+
+function handleLogin(){
+    signInWithEmailAndPassword(auth,email,password)
+    const user=auth.currentUser;
+    if(user){
+        if(!user.emailVerified){
+            alert("Login Failed","Please check your email, a verification link has been sent. If you can't find it, check your spam folder");
+        }else{
+            navigation.navigate("Tabs");
+        }
+    }else{
+        alert("Login Failed","Something is wrong please try again!");
+    }
+}
     return (
         <View style={styles.container}>
+
+        <ModalBox
+        onClose={modalFn}
+        animation="slide"
+        isVisible={modalVisible}
+        setIsVisible={setModalVisible}
+        text={modalText}
+        subtext={modalSubText}
+        />
             <Text style={styles.heading}>
                 Hack Net 
             </Text>
@@ -23,7 +68,7 @@ export default function LoginScreen({navigation}){
                 
             </View>
             <Text style={styles.forgotPass} onPress={()=>{Linking.openURL("https://google.com")}}>Forgot Password?</Text>
-            <Button color="white" style={styles.button} onPressIn={()=>{navigation.navigate("Tabs")}}>
+            <Button color="white" style={styles.button} onPressIn={handleLogin}>
                Login
             </Button>
 

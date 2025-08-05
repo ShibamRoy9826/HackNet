@@ -3,7 +3,7 @@ import MaterialDesignIcons from "@react-native-vector-icons/material-design-icon
 
 interface Props{
     options:string[],
-    iconList:("earth"|"account-group"|"account"|"post"|"message")[],
+    iconList:("earth"|"account-group"|"account"|"post"|"message"|"heart")[],
     selected:string,
     setSelected:(a:string)=>void,
     vertical?:boolean,

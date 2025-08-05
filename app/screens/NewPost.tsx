@@ -14,7 +14,7 @@ export default function FriendsScreen({navigation}){
         <View style={{backgroundColor:"#17171d",flex:1,paddingTop:50,paddingBottom:100,alignItems:"center"}}>
             <View style={{flexDirection:"row",alignItems:"center",justifyContent:"flex-start",width:"100%"}}>
                 <Image source={require("../../assets/images/pfp.jpg")} style={{marginHorizontal:10,borderRadius:50, width:30,height:30}}/>
-                <Text style={{color:"white",fontSize:20,textAlign:"center",fontWeight:"bold",marginLeft:10,marginVertical:10}}>Create New Post</Text>
+                <Text style={{color:"white",fontSize:20,textAlign:"center",fontWeight:"bold",marginLeft:10,marginVertical:10}}>Create New Log</Text>
                 <MaterialDesignIcons name={"plus-box"} size={20} color={"white"} style={{marginLeft:10}}/>
             </View>
             <TextInput value={title} onChangeText={setTitle} textAlignVertical="top" multiline={true} style={styles.fieldContainer} placeholder="Have something to share?" placeholderTextColor={"#8492a6"}/>
@@ -54,8 +54,8 @@ export default function FriendsScreen({navigation}){
 
             <View style={{width:"100%",alignItems:"center",justifyContent:"center"}}>
                 <Pressable style={styles.button} onPressIn={()=>{console.log("tried to post")}}>
-                    <Text style={styles.btnTxt}>Post</Text> 
-                    <MaterialDesignIcons name="send" color="white" size={20}/>
+                    <Text style={styles.btnTxt}>Log</Text> 
+                    <MaterialDesignIcons name="note-text" color="white" size={20}/>
                 </Pressable> 
             </View>
         </View>

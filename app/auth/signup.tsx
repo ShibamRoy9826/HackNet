@@ -1,39 +1,113 @@
 import {Button} from "@react-navigation/elements";
-import {Text,View,StyleSheet,Pressable, Linking} from "react-native";
+import {Text,View,StyleSheet,Pressable} from "react-native";
 import InputBox from "../components/inptField";
-import {useState} from "react";
+import {useState,useRef} from "react";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
+import {createUserWithEmailAndPassword, sendEmailVerification, updateProfile} from "firebase/auth";
+import {auth} from './firebase';
+import ModalBox from "../components/modal";
 
-
-// // Import the functions you need from the SDKs you need
-// import { initializeApp } from "firebase/app";
-// import { getAnalytics } from "firebase/analytics";
-// // TODO: Add SDKs for Firebase products that you want to use
-// // https://firebase.google.com/docs/web/setup#available-libraries
-
-// // Your web app's Firebase configuration
-// // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-// const firebaseConfig = {
-//   apiKey: "AIzaSyCt8TVtsi-evqpVuET6MSwol1MLemhljaQ",
-//   authDomain: "hacknet-4103f.firebaseapp.com",
-//   projectId: "hacknet-4103f",
-//   storageBucket: "hacknet-4103f.firebasestorage.app",
-//   messagingSenderId: "417874103501",
-//   appId: "1:417874103501:web:ea0b51820e3c38c452ad84",
-//   measurementId: "G-W9VBFVMR2N"
-// };
-// // Initialize Firebase
-// const app = initializeApp(firebaseConfig);
-// const analytics = getAnalytics(app);
-
+function isValidEmail(email:string){
+    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return pattern.test(email);
+}
 
 export default function SignUpScreen({navigation}){
+
     const [username,setUserName]=useState("");
     const [email,setEmail]=useState("");
     const [password,setPassword]=useState("");
     const [confirmpassword,setCpassword]=useState("");
+
+    const [modalText,setModalText]=useState("");
+    const [modalSubText,setModalSubText]=useState("");
+    const [modalVisible,setModalVisible]=useState(false);
+
+    const modalFnRef=useRef<()=>void>(()=>{});
+
+
+    function alert(text:string,subtext:string,onClose?:()=>void){
+        setModalVisible(true);
+        setModalText(text);
+        setModalSubText(subtext);
+
+        modalFnRef.current=onClose||(()=>{});
+    }
+
+    const registerUser = async (email:string, password:string, name:string) => {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        await updateProfile(user, {
+            displayName: name,
+            photoURL: 'https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg' 
+        });
+
+        await sendEmailVerification(user).then(()=>console.log("SENT EMAIL ADDRESS!")).catch((e)=>console.log("BIIIIIGGG  PROBLEMMM HERE!!!!",e));
+
+    };
+
+
+    function createUser(){
+        if(password!=confirmpassword){
+            alert("Failed","Passwords don't match! Please re-enter")
+        }else if(username==""){
+            alert("Failed","Username Can't be empty! You can't be that much anonymous")
+        }else if(password==""){
+            alert("Failed","Password can't be empty! You don't want other hackers to hack into it!")
+        }else if(email==""){
+            alert("Failed","Email can't be empty! You will be in problem if you forget the password")
+        }
+        else if(!isValidEmail(email)){
+            alert("Failed","Please enter a valid email! I swear I won't sell it...")
+        }
+
+        // Password checks
+        else if(!(password.length>=8)){
+            alert("Failed","Password must have 8 characters! Including symbols, numbers and alphabets")
+        }
+        else if(!(/[^a-zA-Z0-9]/.test(password))){
+            alert("Failed","Password doesn't have symbols, make it secure bruh...")
+        }
+        else if(!(/\d/.test(password))){
+            alert("Failed","Password doesn't have numbers, make it secure bruh...")
+        }
+        
+        else{
+            registerUser(email,password,username).then(
+                ()=>{
+                    alert("Success!","Further instructions for verification have been sent to your mail",()=>{navigation.navigate("Login")});
+
+                }
+            ).catch(
+                (error)=>{
+                    if (error.code === 'auth/email-already-in-use') {
+                        alert("Failed","Email already in use, please use some other email! If you recently tried to sign up, check your email for verification")
+                    }
+
+                    if (error.code === 'auth/invalid-email') {
+                        alert("Failed",'Hey, That email address is invalid!');
+                    }
+                }
+            )
+        }
+    }
+
+
+
+
     return (
+
         <View style={styles.container}>
+
+        <ModalBox
+        onClose={() => modalFnRef.current()}
+        animation="slide"
+        isVisible={modalVisible}
+        setIsVisible={setModalVisible}
+        text={modalText}
+        subtext={modalSubText}
+        />
             <Text style={styles.heading}>
                 Sign Up
             </Text>
@@ -47,7 +121,7 @@ export default function SignUpScreen({navigation}){
                 <InputBox secure={true} value={password} valueFn={setPassword} color="#8492a6" icon="key" placeholder="Your Password" type="password"/>
                 <InputBox secure={true} value={confirmpassword} valueFn={setCpassword} color="#8492a6" icon="key" placeholder="Confirm Password" type="password"/>
             </View>
-            <Button color="white" style={styles.button} onPressIn={()=>{navigation.navigate("Home")}}>
+            <Button color="white" style={styles.button} onPressIn={createUser}>
                 Create Account
             </Button>
 
@@ -78,7 +152,8 @@ export default function SignUpScreen({navigation}){
     );
 };
 
-const styles=StyleSheet.create({
+const styles=StyleSheet.create(
+    {
     container:{
         backgroundColor:"#17171d",
         flex:1 ,
@@ -134,4 +209,5 @@ const styles=StyleSheet.create({
         textDecorationLine:"underline",
         fontSize:15
     }
-})
+}
+);

@@ -17,7 +17,7 @@ export default function HomeScreen({navigation}){
     return (
         <View style={{backgroundColor:"#17171d",paddingTop:insets.top,flex:1,overflow:"hidden"}}>
 
-        <HomeHeader tY={translateY} h={50+insets.top}/>
+        <HomeHeader tY={translateY} h={50+insets.top} pT={insets.top}/>
 
         <Animated.ScrollView
             style={{backgroundColor:"#17171d",flex:1,height:"80%",paddingBottom:100,}}
