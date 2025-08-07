@@ -1,5 +1,6 @@
-import {StyleSheet,Text,Animated,Pressable,Image} from "react-native";
+import {StyleSheet,Text,Animated,Pressable,Image,Linking} from "react-native";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
+import { useNavigation } from '@react-navigation/native';
 
 interface Props{
     tY:any,
@@ -8,11 +9,12 @@ interface Props{
 }
 
 export default function HomeHeader({tY,h,pT}:Props){
+    const nav=useNavigation();
     return(
             <Animated.View style={[styles.header,{height:h,paddingTop:pT,transform:[{translateY:tY}]}]}>
                 <Image source={require("../../assets/images/pfp.jpg")} style={{borderRadius:50, width:30,height:30,marginHorizontal:10}}/>
                 <Text style={{fontSize:18,color:"white",marginRight:"auto"}}> Ahoy, Hacker!</Text>
-                <Pressable style={styles.button}>
+                <Pressable style={styles.button} onPress={()=>{nav.navigate('Notifications')}}>
                     <MaterialDesignIcons name="bell" color="white" size={25}/>
                 </Pressable>
                 <Pressable style={styles.button}>

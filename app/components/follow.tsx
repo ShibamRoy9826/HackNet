@@ -37,7 +37,8 @@ const styles=StyleSheet.create({
         width:"100%",
         height:80,
         borderWidth:StyleSheet.hairlineWidth,
-        borderColor:"#444456ff"
+        borderColor:"#444456ff",
+        borderRadius:12
     },
     username:{
         fontSize:15,

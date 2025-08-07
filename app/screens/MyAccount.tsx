@@ -75,7 +75,8 @@ const styles=StyleSheet.create({
         color:"#8492a6",
         fontSize:15,
         width:"100%",
-        marginLeft:20
+        marginLeft:20,
+        fontWeight:"normal"
     },
     button:{
         width:"auto",

@@ -1,14 +1,16 @@
-import { View,ScrollView,Text,StyleSheet} from "react-native";
-import InputBox from "../components/inptField";
+import { View,ScrollView,Text,StyleSheet, Pressable} from "react-native";
 import FriendElement from "../components/friendElement";
-import {useState} from "react";
+import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 
-export default function FriendsScreen({navigation}){
-    const [search,setSearch]=useState("");
+export default function NotificationScreen({navigation}){
     return (
         <View style={{backgroundColor:"#17171d",flex:1,paddingTop:50,paddingBottom:100,alignItems:"center"}}>
-            <Text style={{color:"white",fontSize:20,textAlign:"center",fontWeight:"bold",marginVertical:10}}>Your Friends</Text>
-            <InputBox secure={false} value={search} valueFn={setSearch} color="white" icon="magnify" type="none" placeholder="Search your friends here"/>
+            <View style={{flexDirection:"row",alignItems:"center",width:"100%"}}>
+                <Pressable onPress={()=>{navigation.goBack()}} style={{marginRight:"auto"}}>
+                    <MaterialDesignIcons name="arrow-left-bold" color="white" size={30}/>
+                </Pressable>
+                <Text style={{color:"white",fontSize:20,textAlign:"center",fontWeight:"bold",marginVertical:8}}>Your Notifications</Text>
+            </View>
 
             <ScrollView style={styles.listContainer}>
                 <FriendElement username="Random Guy" lastMessage="Hey there! nice to meet you"/>

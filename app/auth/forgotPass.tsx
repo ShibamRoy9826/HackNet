@@ -3,14 +3,13 @@ import {Text,View,StyleSheet,Pressable, Linking,Alert} from "react-native";
 import InputBox from "../components/inptField";
 import {useState,useRef} from "react";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
 import {auth} from './firebase';
 import ModalBox from "../components/modal";
 
-export default function LoginScreen({navigation}){
+export default function ForgotPassScreen({navigation}){
 
     const [email,setEmail]=useState("");
-    const [password,setPassword]=useState("");
 
     const [modalText,setModalText]=useState("");
     const [modalSubText,setModalSubText]=useState("");
@@ -26,18 +25,14 @@ export default function LoginScreen({navigation}){
     }
 
 
-function handleLogin(){
-    signInWithEmailAndPassword(auth,email,password)
-    const user=auth.currentUser;
-    if(user){
-        if(!user.emailVerified){
-            alert("Login Failed","Please check your email, a verification link has been sent. If you can't find it, check your spam folder");
-        }else{
-            navigation.navigate("Tabs");
+function handleForgotPass(){
+    sendPasswordResetEmail(auth,email).then(
+        ()=>{
+            alert("Check your email","A password reset link has been sent to your email, make sure to check your spam folder if you can't find it");
         }
-    }else{
-        alert("Login Failed","Something is wrong please try again!");
-    }
+    ).catch((e)=>{
+            alert(`(${e.code}) An error occured:(`,e.message);
+    })
 }
     return (
         <View style={styles.container}>
@@ -51,46 +46,30 @@ function handleLogin(){
         subtext={modalSubText}
         />
             <Text style={styles.heading}>
-                Hack Net 
+                Forgot password?
             </Text>
             <Text style={styles.subHeading}>
-                Social media for teen hackers.
-                Made By a hackclubber, for hackclubbers!
+                No worries, enter your registered email ID for a password reset email
             </Text>
 
             <View style={styles.fieldContainer}>
                 <InputBox secure={false} value={email} valueFn={setEmail} color="#8492a6" icon="email" placeholder="Your Email" type="emailAddress"/>
-                <InputBox secure={true} value={password} valueFn={setPassword} color="#8492a6" icon="key" placeholder="Your Password" type="password"/>
-                
             </View>
-            <Text style={styles.forgotPass} onPress={()=>{navigation.navigate("ForgotPass")}}>Forgot Password?</Text>
-            <Button color="white" style={styles.button} onPressIn={handleLogin}>
-               Login
+            <Text style={styles.forgotPass} onPress={()=>{Linking.openURL("https://google.com")}}>Forgot Password?</Text>
+            <Button color="white" style={styles.button} onPressIn={handleForgotPass}>
+                Send Email
             </Button>
 
             <Text style={styles.smallTxt}>Don't have an account? <Text style={styles.signupBtn} onPress={()=>{navigation.navigate("SignUp")}}>Sign up here</Text></Text>
 
             <View
             style={{
-                borderBottomColor: 'white',
                 width:"80%",
-                borderBottomWidth: 1,
                 marginVertical:3
             }}
             >
             </View>
 
-           <Text style={styles.subHeading}>
-            or
-            </Text> 
-
-
-            <Pressable style={styles.button} onPress={()=>{navigation.navigate("Tabs")}}>
-                <Text style={{color:"white", fontSize:15,marginRight:6}}>
-               Login With Slack 
-                </Text>
-                <MaterialDesignIcons name="slack" size={20} color="white" />
-            </Pressable>
         </View>
     );
 };
