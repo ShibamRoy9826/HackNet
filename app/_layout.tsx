@@ -9,6 +9,7 @@ import {useEffect,useState} from 'react';
 import { onAuthStateChanged, User } from "firebase/auth";
 import LoadingScreen from "./screens/Loading";
 import EditProfileScreen from "./screens/EditProfile";
+import SettingsScreen from "./screens/Settings";
 
 
 const AppStack=createNativeStackNavigator();
@@ -35,6 +36,7 @@ export default function RootLayout() {
   return (
       <AppStack.Navigator initialRouteName={user?"Tabs":"Login"}>
         <AppStack.Screen name="EditProfile" component={EditProfileScreen} options={{headerShown:true,animation:"none",headerStyle:{backgroundColor:"#17171d"},headerTintColor:"white"}}/>
+        <AppStack.Screen name="Settings" component={SettingsScreen} options={{headerShown:true,animation:"none",headerStyle:{backgroundColor:"#17171d"},headerTintColor:"white"}}/>
         <AppStack.Screen name="Notifications" component={NotificationScreen} options={{headerShown:true,animation:"none",headerStyle:{backgroundColor:"#17171d"},headerTintColor:"white"}}/>
         <AppStack.Screen name="Tabs" component={TabsContainer} options={{headerShown:false,animation:"slide_from_bottom"}}/>
         <AppStack.Screen name="ForgotPass" component={ForgotPassScreen} options={{headerShown:false,animation:"fade"}}/>

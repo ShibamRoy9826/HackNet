@@ -29,17 +29,18 @@ function handleSlackLogin(){
     console.log("Tried slack login");
 }
 function handleLogin(){
-    signInWithEmailAndPassword(auth,email,password)
-    const user=auth.currentUser;
-    if(user){
-        if(!user.emailVerified){
-            alert("Login Failed","Please check your email, a verification link has been sent. If you can't find it, check your spam folder");
+    signInWithEmailAndPassword(auth,email,password).then(()=>{
+        const user=auth.currentUser;
+        if(user){
+            if(!user.emailVerified){
+                alert("Login Failed","Please check your email, a verification link has been sent. If you can't find it, check your spam folder");
+            }else{
+                navigation.replace("Tabs");
+            }
         }else{
-            navigation.replace("Tabs");
+            alert("Login Failed","Something is wrong please try again!");
         }
-    }else{
-        alert("Login Failed","Something is wrong please try again!");
-    }
+    })
 }
     return (
         <View style={styles.container}>

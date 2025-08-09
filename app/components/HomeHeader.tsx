@@ -30,7 +30,7 @@ export default function HomeHeader({tY,h,pT}:Props){
                 <Pressable style={styles.button} onPress={()=>{nav.navigate('Notifications')}}>
                     <MaterialDesignIcons name="bell" color="white" size={25}/>
                 </Pressable>
-                <Pressable style={styles.button}>
+                <Pressable style={styles.button} onPress={()=>{nav.navigate('Settings')}}>
                     <MaterialDesignIcons name="cog-outline" color="white" size={25}/>
                 </Pressable>
             </Animated.View>

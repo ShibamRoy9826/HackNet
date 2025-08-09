@@ -1,6 +1,5 @@
 import { View,ScrollView,Text,StyleSheet, Pressable} from "react-native";
 import FriendElement from "../components/friendElement";
-import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 
 export default function NotificationScreen({navigation}){
     return (
