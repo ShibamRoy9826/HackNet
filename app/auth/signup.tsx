@@ -4,12 +4,17 @@ import InputBox from "../components/inptField";
 import {useState,useRef} from "react";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import {createUserWithEmailAndPassword, sendEmailVerification, updateProfile} from "firebase/auth";
-import {auth} from './firebase';
+import {auth,db} from './firebase';
 import ModalBox from "../components/modal";
+import { doc, setDoc } from "firebase/firestore";
 
 function isValidEmail(email:string){
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return pattern.test(email);
+}
+
+function handleSlackLogin(){
+    console.log("Tried slack login");
 }
 
 export default function SignUpScreen({navigation}){
@@ -41,7 +46,24 @@ export default function SignUpScreen({navigation}){
         await updateProfile(user, {
             displayName: name,
             photoURL: 'https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg' 
-        });
+        }).then(()=>{console.log("Profile updated successfully")});
+
+        await setDoc(doc(db, "users", user.uid), {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            createdAt: new Date(),
+            avatar: user.photoURL || null,
+            num_trackers:0,
+            num_tracking:0,
+            num_logs:0,
+            posts:[],
+            liked_posts:[],
+            friends:[],
+            notifications:[],
+            bio:"This Hacker hasn't set up their bio yet :("
+
+        }).then(()=>{console.log("Successfully created the users object")}).catch((e)=>{console.log("Error occured while making db changes.",e.code,e.message)});
 
         await sendEmailVerification(user).then(()=>console.log("SENT EMAIL ADDRESS!")).catch((e)=>console.log("BIIIIIGGG  PROBLEMMM HERE!!!!",e));
 
@@ -142,12 +164,14 @@ export default function SignUpScreen({navigation}){
             </Text> 
 
 
-            <Pressable style={styles.button} onPress={()=>{navigation.navigate("Tabs")}}>
+            <Pressable style={[styles.button,{backgroundColor:"#8492a6"}]} onPress={handleSlackLogin}>
                 <Text style={{color:"white", fontSize:15,marginRight:6}}>
-               Sign Up With Slack 
+               Login With Slack 
                 </Text>
                 <MaterialDesignIcons name="slack" size={20} color="white" />
             </Pressable>
+            
+            <Text style={{color:"#8492a6"}}>(Coming soon)</Text>
         </View>
     );
 };

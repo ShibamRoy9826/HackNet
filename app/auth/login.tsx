@@ -3,12 +3,12 @@ import {Text,View,StyleSheet,Pressable, Linking,Alert} from "react-native";
 import InputBox from "../components/inptField";
 import {useState,useRef} from "react";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword} from "firebase/auth";
 import {auth} from './firebase';
 import ModalBox from "../components/modal";
 
-export default function LoginScreen({navigation}){
 
+export default function LoginScreen({navigation}){
     const [email,setEmail]=useState("");
     const [password,setPassword]=useState("");
 
@@ -25,7 +25,9 @@ export default function LoginScreen({navigation}){
         modalFnRef.current=onClose||(()=>{});
     }
 
-
+function handleSlackLogin(){
+    console.log("Tried slack login");
+}
 function handleLogin(){
     signInWithEmailAndPassword(auth,email,password)
     const user=auth.currentUser;
@@ -33,7 +35,7 @@ function handleLogin(){
         if(!user.emailVerified){
             alert("Login Failed","Please check your email, a verification link has been sent. If you can't find it, check your spam folder");
         }else{
-            navigation.navigate("Tabs");
+            navigation.replace("Tabs");
         }
     }else{
         alert("Login Failed","Something is wrong please try again!");
@@ -64,7 +66,7 @@ function handleLogin(){
                 
             </View>
             <Text style={styles.forgotPass} onPress={()=>{navigation.navigate("ForgotPass")}}>Forgot Password?</Text>
-            <Button color="white" style={styles.button} onPressIn={handleLogin}>
+            <Button color="white" style={[styles.button,{backgroundColor:"#ec3750"}]} onPressIn={handleLogin}>
                Login
             </Button>
 
@@ -85,12 +87,14 @@ function handleLogin(){
             </Text> 
 
 
-            <Pressable style={styles.button} onPress={()=>{navigation.navigate("Tabs")}}>
+            <Pressable style={[styles.button,{backgroundColor:"#8492a6"}]} onPress={handleSlackLogin}>
                 <Text style={{color:"white", fontSize:15,marginRight:6}}>
                Login With Slack 
                 </Text>
                 <MaterialDesignIcons name="slack" size={20} color="white" />
             </Pressable>
+
+            <Text style={{color:"#8492a6"}}>(Coming soon)</Text>
         </View>
     );
 };
@@ -129,7 +133,6 @@ const styles=StyleSheet.create({
         color:"#8492a6"
     },
     button:{
-        backgroundColor:"#ec3750",
         elevation:10,
         marginVertical:5,
         display:"flex",

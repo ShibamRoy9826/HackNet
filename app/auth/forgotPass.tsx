@@ -1,9 +1,8 @@
 import {Button} from "@react-navigation/elements";
-import {Text,View,StyleSheet,Pressable, Linking,Alert} from "react-native";
+import {Text,View,StyleSheet,Linking} from "react-native";
 import InputBox from "../components/inptField";
 import {useState,useRef} from "react";
-import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/auth";
+import { sendPasswordResetEmail,} from "firebase/auth";
 import {auth} from './firebase';
 import ModalBox from "../components/modal";
 
@@ -55,12 +54,12 @@ function handleForgotPass(){
             <View style={styles.fieldContainer}>
                 <InputBox secure={false} value={email} valueFn={setEmail} color="#8492a6" icon="email" placeholder="Your Email" type="emailAddress"/>
             </View>
-            <Text style={styles.forgotPass} onPress={()=>{Linking.openURL("https://google.com")}}>Forgot Password?</Text>
+
             <Button color="white" style={styles.button} onPressIn={handleForgotPass}>
                 Send Email
             </Button>
 
-            <Text style={styles.smallTxt}>Don't have an account? <Text style={styles.signupBtn} onPress={()=>{navigation.navigate("SignUp")}}>Sign up here</Text></Text>
+            <Text style={styles.smallTxt}>Recalled it? <Text style={styles.signupBtn} onPress={()=>{navigation.navigate("Login")}}>Login back in here</Text></Text>
 
             <View
             style={{

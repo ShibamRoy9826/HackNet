@@ -2,57 +2,72 @@ import MaterialDesignIcons from "@react-native-vector-icons/material-design-icon
 import {StyleSheet,ScrollView,Image,View,Text, Pressable} from "react-native";
 import { useSafeAreaInsets} from 'react-native-safe-area-context';
 import RadioBtn from "../components/radioBtn";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {auth,getUserData} from "../auth/firebase";
+import { DocumentData} from "firebase/firestore";
 
-export default function HomeScreen({navigation}){
+
+export default function MyAccount({navigation}){
     const insets=useSafeAreaInsets();
-    const [currTab,setCurrTab]=useState("Posts");
+    const user=auth.currentUser;
+    const [userData,setUserData]=useState<DocumentData|null|undefined>(null);
+
+    useEffect(()=>{
+        getUserData("users").then((docData)=>{
+            setUserData(docData);
+        });
+    },[])
+
+    const [currTab,setCurrTab]=useState("Logs");
+
     return (
         <ScrollView style={{backgroundColor:"#17171d",flex:1,paddingTop:insets.top}}>
             <View style={{position:"relative",height:100}}>
                 <Image source={require("../../assets/images/banner.jpeg")} style={{width:'100%',position:"absolute",height:"100%",borderBottomWidth:1,borderColor:"#338eda"}}/>
-                <Image source={require("../../assets/images/pfp.jpg")} style={{position:"absolute",bottom:-30,left:20,width:70,height:70,borderRadius:50,borderWidth:2,borderColor:"#338eda"}}/>
+                <Image source={userData?.avatar?{uri:userData.avatar}:require("../../assets/images/pfp.jpg")} style={{position:"absolute",bottom:-30,left:20,width:70,height:70,borderRadius:50,borderWidth:2,borderColor:"#338eda"}}/>
             </View>
             <View style={{position:"relative",width:"100%"}}>
                 <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between"
                 }}>
 
                     <View>
-                        <Text style={{fontSize:25,color:"white",fontWeight:"bold",width:"100%",textAlign:"left",marginTop:40,marginLeft:20}}>Shibam Roy</Text>
-                        <Text style={styles.subtxt}>@ShibamRoy9826</Text>
+                        <Text style={{fontSize:25,color:"white",fontWeight:"bold",width:"100%",textAlign:"left",marginTop:40,marginLeft:20}}>{user?.displayName}</Text>
+                        <Text style={styles.subtxt}>@{userData?.email}</Text>
                     </View>
                     
-                        <Pressable style={[styles.button,{flexDirection:"row",marginRight:40,marginTop:20}]}>
+                        <Pressable style={[styles.button,{flexDirection:"row",marginRight:40,marginTop:20}]} onPress={()=>{navigation.navigate("EditProfile")}}>
                             <Text style={{color:"white",fontWeight:"bold",marginRight:10}}>Edit Profile</Text>
                             <MaterialDesignIcons name="pencil-box-multiple" size={20} color={"white"}/>
                         </Pressable>
                 </View>
-                <Text style={[styles.subtxt,{color:"white",marginTop:20,paddingLeft:5,paddingRight:30}]}>Hello yall! I am the dev of this platform, a fellow hackclubber! I love programming and making useful tools</Text>
+                <Text style={[styles.subtxt,{color:"white",marginTop:20,paddingLeft:5,paddingRight:30}]}>
+                    {userData?.bio}
+                </Text>
                 <View style={{flexDirection:"row", width:"100%",alignItems:"center",justifyContent:"center",marginVertical:10}}>
                     <Text style={{fontSize:15,color:"white",fontWeight:"bold"}}>
-                        50 <Text style={[styles.subtxt,{color:"#8492a6"}]}>Logs</Text>
+                        {userData?.num_logs} <Text style={[styles.subtxt,{color:"#8492a6"}]}>Logs</Text>
                     </Text>
 
                     <Text style={{marginLeft:20,fontSize:15,color:"white",fontWeight:"bold"}}>
-                        37 <Text style={[styles.subtxt,{color:"#8492a6"}]}>Trackers</Text>
+                        {userData?.num_trackers} <Text style={[styles.subtxt,{color:"#8492a6"}]}>Trackers</Text>
                     </Text>
 
                     <Text style={{marginLeft:20,fontSize:15,color:"white",fontWeight:"bold"}}>
-                        42 <Text style={[styles.subtxt,{color:"#8492a6"}]}>Tracking</Text>
+                        {userData?.num_tracking} <Text style={[styles.subtxt,{color:"#8492a6"}]}>Tracking</Text>
                     </Text>
                 </View>
             </View>
         
 
             <RadioBtn
-            options={["Posts","Liked Posts"]}
+            options={["Logs","Liked Posts"]}
             iconList={["post","heart"]}
             selected={currTab}
             setSelected={setCurrTab}
             style={{marginHorizontal:10}}
             />
 
-            {currTab=="Posts" && (
+            {currTab=="Logs" && (
             <ScrollView style={{width:'100%',marginTop:20,paddingHorizontal:10}}>
             </ScrollView>
             )}

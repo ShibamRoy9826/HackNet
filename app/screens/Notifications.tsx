@@ -4,25 +4,9 @@ import MaterialDesignIcons from "@react-native-vector-icons/material-design-icon
 
 export default function NotificationScreen({navigation}){
     return (
-        <View style={{backgroundColor:"#17171d",flex:1,paddingTop:50,paddingBottom:100,alignItems:"center"}}>
-            <View style={{flexDirection:"row",alignItems:"center",width:"100%"}}>
-                <Pressable onPress={()=>{navigation.goBack()}} style={{marginRight:"auto"}}>
-                    <MaterialDesignIcons name="arrow-left-bold" color="white" size={30}/>
-                </Pressable>
-                <Text style={{color:"white",fontSize:20,textAlign:"center",fontWeight:"bold",marginVertical:8}}>Your Notifications</Text>
-            </View>
+        <View style={{backgroundColor:"#17171d",flex:1,paddingTop:10,paddingBottom:30,alignItems:"center"}}>
 
             <ScrollView style={styles.listContainer}>
-                <FriendElement username="Random Guy" lastMessage="Hey there! nice to meet you"/>
-                <FriendElement username="Cool person" lastMessage="Hey there! nice to meet you"/>
-                <FriendElement username="Hacker 3" lastMessage="Hey there! nice to meet you"/>
-                <FriendElement username="Random Guy" lastMessage="Hey there! nice to meet you"/>
-                <FriendElement username="Cool person" lastMessage="Hey there! nice to meet you"/>
-                <FriendElement username="Hacker 3" lastMessage="Hey there! nice to meet you"/>
-                <FriendElement username="Random Guy" lastMessage="Hey there! nice to meet you"/>
-                <FriendElement username="Cool person" lastMessage="Hey there! nice to meet you"/>
-                <FriendElement username="Hacker 3" lastMessage="Hey there! nice to meet you"/>
-                <FriendElement username="Random Guy" lastMessage="Hey there! nice to meet you"/>
                 <FriendElement username="Cool person" lastMessage="Hey there! nice to meet you"/>
                 <FriendElement username="Hacker 3" lastMessage="Hey there! nice to meet you"/>
                 <FriendElement username="Random Guy" lastMessage="Hey there! nice to meet you"/>
@@ -36,7 +20,7 @@ export default function NotificationScreen({navigation}){
 const styles=StyleSheet.create({
     listContainer:{
         width:'95%',
-        marginVertical:25,
+        marginVertical:5,
         borderRadius:12,
         borderWidth:StyleSheet.hairlineWidth,
         borderColor:"#444456ff",

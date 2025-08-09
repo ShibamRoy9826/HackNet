@@ -1,11 +1,10 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAuth} from "firebase/auth";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import {getFirestore} from "firebase/firestore";
+import {getAuth,initializeAuth,getReactNativePersistence} from 'firebase/auth';
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
+
 const firebaseConfig = {
   apiKey: "AIzaSyB69-jENuosOyjW9lCwj6EH7Ss3li17Kh0",
   authDomain: "hacknet-e893b.firebaseapp.com",
@@ -18,5 +17,31 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const auth= getAuth(app);
-export {auth};
+
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+});
+
+const db=getFirestore(app);
+
+async function getUserData(collection:string) {
+  // temporary
+  return {"avatar": "https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg", "bio": "This Hacker didn't set up their bio yet :(", "createdAt": {"nanoseconds": 889000000, "seconds": 1754556026, "type": "firestore/timestamp/1.0"}, "displayName": "Shibam Roy", "email": "royshibam9826@gmail.com", "friends": [], "liked_posts": [], "num_logs": 0, "num_trackers": 0, "num_tracking": 0, "posts": [], "uid": "BJ1R4y5EHIb9zV4XAet61K2UI5s1"};
+  // const user=auth.currentUser;
+  // if(!user){
+  //   return;
+  // }
+  // const docRef=doc(db,collection,user.uid);
+  // const docSnap = await getDoc(docRef);
+
+  // if (docSnap.exists()) {
+  //   console.log("Got data",docSnap.data());
+  //   return docSnap.data();
+  // } else {
+  //   console.log("got nothing:(")
+  //   return null;
+  // }
+}
+
+
+export {auth,db,getUserData};
