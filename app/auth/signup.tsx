@@ -1,5 +1,5 @@
 import {Button} from "@react-navigation/elements";
-import {Text,View,StyleSheet,Pressable} from "react-native";
+import {Text,ScrollView,View,StyleSheet,Pressable,RefreshControl} from "react-native";
 import InputBox from "../components/inptField";
 import {useState,useRef} from "react";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
@@ -7,6 +7,7 @@ import {createUserWithEmailAndPassword, sendEmailVerification, updateProfile} fr
 import {auth,db} from './firebase';
 import ModalBox from "../components/modal";
 import { doc, setDoc } from "firebase/firestore";
+import React from "react";
 
 function isValidEmail(email:string){
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -115,12 +116,18 @@ export default function SignUpScreen({navigation}){
         }
     }
 
+    const [refreshing, setRefreshing] = React.useState(false);
 
-
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        setTimeout(() => {
+        setRefreshing(false);
+        }, 2000);
+    }, []);
 
     return (
 
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
 
         <ModalBox
         onClose={() => modalFnRef.current()}
@@ -172,7 +179,7 @@ export default function SignUpScreen({navigation}){
             </Pressable>
             
             <Text style={{color:"#8492a6"}}>(Coming soon)</Text>
-        </View>
+        </ScrollView>
     );
 };
 

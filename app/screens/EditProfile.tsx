@@ -1,23 +1,66 @@
 import {Pressable,Image,View,Text,TextInput,StyleSheet,ScrollView} from "react-native";
 import {Button} from "@react-navigation/elements";
 import { useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useState,useEffect} from "react";
+import {useState,useEffect,useRef} from "react";
 import {getUserData} from "../auth/firebase";
-import { DocumentData} from "firebase/firestore";
+import { doc,DocumentData, updateDoc} from "firebase/firestore";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import * as ImagePicker from 'expo-image-picker';
+import {auth,db} from '../auth/firebase';
+import ModalBox from "../components/modal";
+import { useUserData } from "../contexts/userContext";
 
-export default function EditProfileScreen(){
+export default function EditProfileScreen({navigation}){
+
+    const currUser=auth.currentUser;
+    const {userData}=useUserData();
+
     const [image, setImage] = useState<string | null>(null);
+
+    const [modalText,setModalText]=useState("");
+    const [modalSubText,setModalSubText]=useState("");
+    const [modalVisible,setModalVisible]=useState(false);
+    const modalFnRef=useRef<()=>void>(()=>{});
+
 
     const insets=useSafeAreaInsets();
 
-    const [userData,setUserData]=useState<DocumentData|null|undefined>(null);
 
     const [username,setUserName]=useState("");
     const [avatar,setAvatar]=useState("");
     const [email,setEmail]=useState("");
     const [bio,setBio]=useState("");
+
+
+    function alert(text:string,subtext:string,onClose?:()=>void){
+        setModalVisible(true);
+        setModalText(text);
+        setModalSubText(subtext);
+
+        modalFnRef.current=onClose||(()=>{});
+    }
+    const updateProfile=async ()=>{
+        if(currUser){
+            const userRef = doc(db, "users", currUser.uid);
+
+            await updateDoc(userRef, {
+                uid: currUser.uid,
+                email: currUser.email,
+                displayName: username,
+                createdAt: new Date(),
+                avatar: currUser.photoURL || null,
+                num_trackers:0,
+                num_tracking:0,
+                num_logs:0,
+                posts:[],
+                liked_posts:[],
+                friends:[],
+                notifications:[],
+                bio:bio
+
+        }).then(()=>{alert('Updated Successfully',"Your details were updated, if you don't see them, try reopening the app",()=>{navigation.goBack()})}).catch((e)=>{alert("An error occured",e.message)})
+        }
+    }
 
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
@@ -36,17 +79,25 @@ export default function EditProfileScreen(){
     };
 
     useEffect(()=>{
-        getUserData("users").then((docData)=>{
-            setUserData(docData);
-            setUserName(docData.displayName);
-            setEmail(docData.email);
-            setBio(docData.bio);
-            setAvatar(docData.avatar);
-        });
-    },[])
+        if(userData){
+            setUserName(userData.displayName ?? '');
+            setEmail(userData.email??'');
+            setBio(userData.bio??'');
+            setAvatar(userData.avatar??'');
+        }
+    },[userData])
 
     return(
         <ScrollView style={[styles.container,{paddingTop:insets.top}]}>
+
+        <ModalBox
+        onClose={() => modalFnRef.current()}
+        animation="slide"
+        isVisible={modalVisible}
+        setIsVisible={setModalVisible}
+        text={modalText}
+        subtext={modalSubText}
+        />
 
             <View style={styles.fieldContainer}>
                 <Image source={userData?.avatar?{uri:userData.avatar}:require("../../assets/images/pfp.jpg")} style={{borderRadius:50, width:60,height:60,marginHorizontal:10}}/>
@@ -69,7 +120,7 @@ export default function EditProfileScreen(){
 
             </View>
             <View style={{alignItems:"center",justifyContent:"center",width:"100%",marginTop:"10%"}}>
-                <Button color="white" style={styles.button}>
+                <Button color="white" style={styles.button} onPressIn={updateProfile}>
                     Save
                 </Button>
             </View>

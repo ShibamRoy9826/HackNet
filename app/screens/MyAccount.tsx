@@ -1,27 +1,33 @@
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import {StyleSheet,ScrollView,Image,View,Text, Pressable} from "react-native";
+import {RefreshControl,StyleSheet,ScrollView,Image,View,Text, Pressable} from "react-native";
 import { useSafeAreaInsets} from 'react-native-safe-area-context';
 import RadioBtn from "../components/radioBtn";
-import {useEffect, useState} from "react";
-import {auth,getUserData} from "../auth/firebase";
-import { DocumentData} from "firebase/firestore";
+import {useState} from "react";
+import {auth} from "../auth/firebase";
+// import { DocumentData} from "firebase/firestore";
+import {useUserData} from '../contexts/userContext';
+
+import React from 'react';
 
 
 export default function MyAccount({navigation}){
     const insets=useSafeAreaInsets();
     const user=auth.currentUser;
-    const [userData,setUserData]=useState<DocumentData|null|undefined>(null);
-
-    useEffect(()=>{
-        getUserData("users").then((docData)=>{
-            setUserData(docData);
-        });
-    },[])
+    const {userData}=useUserData()
 
     const [currTab,setCurrTab]=useState("Logs");
 
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        setTimeout(() => {
+        setRefreshing(false);
+        }, 2000);
+    }, []);
+
     return (
-        <ScrollView style={{backgroundColor:"#17171d",flex:1,paddingTop:insets.top}}>
+        <ScrollView style={{backgroundColor:"#17171d",flex:1,paddingTop:insets.top}} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
             <View style={{position:"relative",height:100}}>
                 <Image source={require("../../assets/images/banner.jpeg")} style={{width:'100%',position:"absolute",height:"100%",borderBottomWidth:1,borderColor:"#338eda"}}/>
                 <Image source={userData?.avatar?{uri:userData.avatar}:require("../../assets/images/pfp.jpg")} style={{position:"absolute",bottom:-30,left:20,width:70,height:70,borderRadius:50,borderWidth:2,borderColor:"#338eda"}}/>

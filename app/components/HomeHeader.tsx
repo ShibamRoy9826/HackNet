@@ -1,9 +1,7 @@
 import {StyleSheet,Text,Animated,Pressable,Image,Linking} from "react-native";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { useNavigation } from '@react-navigation/native';
-import {auth,getUserData} from "../auth/firebase";
-import { DocumentData} from "firebase/firestore";
-import {useState,useEffect} from "react";
+import { useUserData } from "../contexts/userContext";
 
 interface Props{
     tY:any,
@@ -13,14 +11,9 @@ interface Props{
 
 export default function HomeHeader({tY,h,pT}:Props){
     const nav=useNavigation();
+    
+    const {userData} =useUserData();
 
-    const [userData,setUserData]=useState<DocumentData|null|undefined>(null);
-
-    useEffect(()=>{
-        getUserData("users").then((docData)=>{
-            setUserData(docData);
-        });
-    },[])
 
 
     return(

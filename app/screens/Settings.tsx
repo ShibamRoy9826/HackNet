@@ -1,5 +1,4 @@
 import { View,ScrollView,Text,StyleSheet, Pressable} from "react-native";
-import FriendElement from "../components/friendElement";
 import { signOut } from "firebase/auth";
 import {auth} from '../auth/firebase'
 
@@ -7,7 +6,6 @@ import {auth} from '../auth/firebase'
 export default function SettingsScreen({navigation}){
     function logout(){
         signOut(auth).then(()=>{
-            console.log("DONE SUCCESSFULLY!!");
             navigation.navigate("Login");
         }).catch((e)=>{
             console.log("ERROR::: ",e.code,e.message)

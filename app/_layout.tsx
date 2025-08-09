@@ -10,6 +10,7 @@ import { onAuthStateChanged, User } from "firebase/auth";
 import LoadingScreen from "./screens/Loading";
 import EditProfileScreen from "./screens/EditProfile";
 import SettingsScreen from "./screens/Settings";
+import { UserDataProvider } from "./contexts/userContext";
 
 
 const AppStack=createNativeStackNavigator();
@@ -34,6 +35,7 @@ export default function RootLayout() {
     )
   }
   return (
+    <UserDataProvider>
       <AppStack.Navigator initialRouteName={user?"Tabs":"Login"}>
         <AppStack.Screen name="EditProfile" component={EditProfileScreen} options={{headerShown:true,animation:"none",headerStyle:{backgroundColor:"#17171d"},headerTintColor:"white"}}/>
         <AppStack.Screen name="Settings" component={SettingsScreen} options={{headerShown:true,animation:"none",headerStyle:{backgroundColor:"#17171d"},headerTintColor:"white"}}/>
@@ -43,5 +45,6 @@ export default function RootLayout() {
         <AppStack.Screen name="Login" component={LoginScreen} options={{headerShown:false,animation:"fade"}}/>
         <AppStack.Screen name="SignUp" component={SignUpScreen} options={{headerShown:false,animation:"fade"}}/>
       </AppStack.Navigator>
+  </UserDataProvider>
     );
 }
