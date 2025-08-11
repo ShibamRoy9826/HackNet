@@ -27,7 +27,7 @@ export default function FollowBox({username,bio}:Props){
 
 const styles=StyleSheet.create({
     followBtn:{
-        backgroundColor:'#338eda',
+        backgroundColor:'#ec3750',
         padding:10,
         borderRadius:12,
         flexDirection:"row"

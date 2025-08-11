@@ -22,9 +22,7 @@ export default function TabsContainer() {
           height: 100,
           elevation: 0,
         },
-        tabBarBackground:()=>(
-           <BlurView tint="dark" experimentalBlurMethod="dimezisBlurView" intensity={10} style={StyleSheet.absoluteFill} />
-        ),
+        tabBarActiveTintColor:"#ec3750",
       }}>
       <Tab.Screen
        name="Home"
@@ -35,7 +33,7 @@ export default function TabsContainer() {
           headerShown:false,
           tabBarIcon:(tabInfo)=>{
             return(
-              <MaterialDesignIcons name='home' color={tabInfo.focused?"#338eda":"#ffffff"} size={20}/>
+              <MaterialDesignIcons name='home' style={tabInfo.focused?styles.focusedIcon:styles.unfocusedIcon} color={tabInfo.focused?"#ec3750":"#ffffff"} size={20}/>
             );
           }
           }
@@ -49,7 +47,7 @@ export default function TabsContainer() {
           headerShown:false,
           tabBarIcon:(tabInfo)=>{
             return(
-              <MaterialDesignIcons name='account-group' color={tabInfo.focused?"#338eda":"#ffffff"} size={20}/>
+              <MaterialDesignIcons name='account-group' color={tabInfo.focused?"#ec3750":"#ffffff"} size={20}/>
             );
           }
           }
@@ -63,7 +61,7 @@ export default function TabsContainer() {
           headerShown:false,
           tabBarIcon:(tabInfo)=>{
             return(
-              <MaterialDesignIcons name='plus-box-multiple' color={tabInfo.focused?"#338eda":"#ffffff"} size={20}/>
+              <MaterialDesignIcons name='plus-box-multiple' color={tabInfo.focused?"#ec3750":"#ffffff"} size={20}/>
             );
           }
           }
@@ -77,7 +75,7 @@ export default function TabsContainer() {
           headerShown:false,
           tabBarIcon:(tabInfo)=>{
             return(
-              <MaterialDesignIcons name='magnify' color={tabInfo.focused?"#338eda":"#ffffff"} size={20}/>
+              <MaterialDesignIcons name='magnify' color={tabInfo.focused?"#ec3750":"#ffffff"} size={20}/>
             );
           }
           }
@@ -91,7 +89,7 @@ export default function TabsContainer() {
             headerShown:false,
             tabBarIcon:(tabInfo)=>{
               return(
-                <MaterialDesignIcons name='account-circle' color={tabInfo.focused?"#338eda":"#ffffff"} size={20}/>
+                <MaterialDesignIcons name='account-circle' color={tabInfo.focused?"#ec3750":"#ffffff"} size={20}/>
               );
             }
           }
@@ -99,3 +97,17 @@ export default function TabsContainer() {
     </Tab.Navigator>
   );
 }
+
+const styles=StyleSheet.create({
+  focusedIcon:{
+    shadowColor:"#ec3750",
+    shadowOpacity:0.8,
+    shadowOffset:{
+      width:0,
+      height:0
+    }
+  },
+  unfocusedIcon:{
+
+  }
+})

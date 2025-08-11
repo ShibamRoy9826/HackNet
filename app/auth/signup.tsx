@@ -236,7 +236,7 @@ const styles=StyleSheet.create(
         borderRadius:15
     },
     signupBtn:{
-        color:"#338eda",
+        color:"#ec3750",
         textDecorationLine:"underline",
         fontSize:15
     }

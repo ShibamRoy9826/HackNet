@@ -101,7 +101,7 @@ export default function NewPostScreen({navigation}){
             <Text style={styles.label}>Comments</Text>
             <View style={{width:"100%",flexDirection:"row",alignItems:"center",justifyContent:"flex-start",paddingLeft:40}}>
                 <Switch
-                trackColor={{false: '#8492a6', true: '#338eda'}}
+                trackColor={{false: '#8492a6', true: '#ec3750'}}
                 thumbColor={'#f4f3f4'}
                 onValueChange={()=>{setComments(!comments_enabled)}}
                 value={comments_enabled}
@@ -168,7 +168,7 @@ const styles=StyleSheet.create({
         flexDirection:"row",
         alignItems:"center",
         justifyContent:"center",
-        backgroundColor:"#338eda"
+        backgroundColor:"#ec3750"
     },
 
 });

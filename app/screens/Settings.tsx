@@ -14,7 +14,7 @@ export default function SettingsScreen({navigation}){
     return (
         <View style={{backgroundColor:"#17171d",flex:1,paddingTop:10,paddingBottom:30,alignItems:"center"}}>
 
-            <ScrollView style={styles.listContainer}>
+            <ScrollView style={styles.listContainer} contentContainerStyle={{alignContent:"center",alignItems:"center"}}>
                 <Pressable onPress={logout} style={styles.button}>
                     <Text>Sign Out</Text>
                 </Pressable>
@@ -34,14 +34,15 @@ const styles=StyleSheet.create({
     button:{
         backgroundColor:"#ec3750",
         elevation:10,
-        marginVertical:5,
+        marginVertical:15,
         display:"flex",
         flexDirection:"row",
         paddingVertical:10,
         paddingHorizontal:18,
         borderRadius:15,
         alignItems:"center",
-        justifyContent:"center"
+        justifyContent:"center",
+        width:"30%",
     },
 
 });

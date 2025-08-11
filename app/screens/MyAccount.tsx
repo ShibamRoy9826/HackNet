@@ -29,8 +29,8 @@ export default function MyAccount({navigation}){
     return (
         <ScrollView style={{backgroundColor:"#17171d",flex:1,paddingTop:insets.top}} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
             <View style={{position:"relative",height:100}}>
-                <Image source={require("../../assets/images/banner.jpeg")} style={{width:'100%',position:"absolute",height:"100%",borderBottomWidth:1,borderColor:"#338eda"}}/>
-                <Image source={userData?.avatar?{uri:userData.avatar}:require("../../assets/images/pfp.jpg")} style={{position:"absolute",bottom:-30,left:20,width:70,height:70,borderRadius:50,borderWidth:2,borderColor:"#338eda"}}/>
+                <Image source={require("../../assets/images/banner.jpeg")} style={{width:'100%',position:"absolute",height:"100%",borderBottomWidth:1,borderColor:"#ec3750"}}/>
+                <Image source={userData?.avatar?{uri:userData.avatar}:require("../../assets/images/pfp.jpg")} style={{position:"absolute",bottom:-30,left:20,width:70,height:70,borderRadius:50,borderWidth:2,borderColor:"#ec3750"}}/>
             </View>
             <View style={{position:"relative",width:"100%"}}>
                 <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between"
@@ -102,7 +102,7 @@ const styles=StyleSheet.create({
     button:{
         width:"auto",
         height:40,
-        backgroundColor:'#338eda',
+        backgroundColor:'#ec3750',
         padding:10,
         borderRadius:12,
         flexDirection:"row"

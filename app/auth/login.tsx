@@ -40,7 +40,7 @@ function handleLogin(){
         }else{
             alert("Login Failed","Something is wrong please try again!");
         }
-    })
+    }).catch((e)=>{alert("Login Failed","Invalid credentials! Please try again")})
 }
     return (
         <View style={styles.container}>
