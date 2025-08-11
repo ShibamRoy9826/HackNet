@@ -1,23 +1,45 @@
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import {StyleSheet, View,Image ,Text, Pressable} from "react-native";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import InputBox from "./inptField";
+import { getUserData } from "../auth/firebase";
 
 interface Prop{
-    username:string,
-    timestamp:string
+    uid:string,
+    timestamp:string,
+    message:string,
+    used_media:boolean
 }
 
-export default function Post({username,timestamp}:Prop){
+export default function Post({used_media,message,uid,timestamp}:Prop){
     const [liked,setLiked]=useState(false);
     const [comment,setComment]=useState("");
+    const [userPfp,setUserPfp]=useState("https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg");
+    const [OPName,setOPName]=useState("Random User");
+
+
+    useEffect(()=>{
+        getOP();
+    },[uid])
+
+    async function getOP(){
+        await getUserData("users",uid).then(
+            (data)=>{
+                if(data){
+                    setUserPfp(data.avatar);
+                    setOPName(data.displayName);
+                }
+            }
+        );
+    }
+
     return(
         <View style={styles.postBox}>
             {/* OP details */}
             <View style={{flexDirection:"row",justifyContent:"center",alignItems:"center",width:"100%",paddingHorizontal:10}}>
-                <Image source={require("../../assets/images/pfp.jpg")} style={{borderRadius:50, width:45,height:45,margin:"auto"}}/>
+                <Image source={{uri:userPfp}} style={{borderRadius:50, width:45,height:45,margin:"auto"}}/>
                 <View style={styles.detailsContainer}>
-                    <Text style={styles.username}>{username}</Text>
+                    <Text style={styles.username}>{OPName}</Text>
                     <Text style={styles.timestamp}>{timestamp}</Text>
                 </View>
                 <View>
@@ -26,8 +48,15 @@ export default function Post({username,timestamp}:Prop){
                     </Pressable>
                 </View>
             </View>
+            <View style={{paddingVertical:20,borderColor:"#25252fff",borderTopWidth:StyleSheet.hairlineWidth,height:"auto"}}>
              {/* Posted content */}
-            <Image source={require("../../assets/images/post.png")} style={{width:"100%",height:250,borderColor:"#25252fff",borderWidth:StyleSheet.hairlineWidth}}/>
+            <Text style={{color:"white",height:"auto",fontSize:16,paddingHorizontal:20,paddingVertical:10}}>{message}</Text>
+            {
+                used_media &&(
+                <Image source={require("../../assets/images/post.png")} style={{width:"100%",height:250}}/>
+                )
+            }
+            </View>
             
             {/* Buttons */}
             <View style={{flexDirection:"row",paddingHorizontal:20,justifyContent:"flex-start",alignItems:"center",width:"auto"}}>
@@ -68,7 +97,7 @@ const styles=StyleSheet.create({
     },
     username:{
         fontSize:15,
-        fontWeight:600,
+        fontWeight:"bold",
         color:"white",
         textAlign:"left",
         width:"100%"

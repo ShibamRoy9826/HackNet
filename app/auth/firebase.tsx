@@ -24,14 +24,13 @@ const auth = initializeAuth(app, {
 
 const db=getFirestore(app);
 
-async function getUserData(collection:string) {
+async function getUserData(collection:string,uid:string) {
   // temporary
   // return {"avatar": "https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg", "bio": "This Hacker didn't set up their bio yet :(", "createdAt": {"nanoseconds": 889000000, "seconds": 1754556026, "type": "firestore/timestamp/1.0"}, "displayName": "Shibam Roy", "email": "royshibam9826@gmail.com", "friends": [], "liked_posts": [], "num_logs": 0, "num_trackers": 0, "num_tracking": 0, "posts": [], "uid": "BJ1R4y5EHIb9zV4XAet61K2UI5s1"};
-  const user=auth.currentUser;
-  if(!user){
+  if(!uid){
     return;
   }
-  const docRef=doc(db,collection,user.uid);
+  const docRef=doc(db,collection,uid);
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
@@ -42,6 +41,5 @@ async function getUserData(collection:string) {
     return null;
   }
 }
-
 
 export {auth,db,getUserData};

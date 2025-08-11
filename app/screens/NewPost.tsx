@@ -1,23 +1,80 @@
 import { Switch,StyleSheet,View, Text, TextInput,Image,Pressable} from "react-native";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import {useState} from "react";
+import {useState,useRef} from "react";
 import RadioBtn from "../components/radioBtn";
-import { Button } from "@react-navigation/elements";
+import {auth,db} from "../auth/firebase";
+import { setDoc,doc} from "firebase/firestore";
+import { useUserData } from "../contexts/userContext";
+import ModalBox from "../components/modal";
 
-
-export default function FriendsScreen({navigation}){
-    const [title,setTitle]=useState("");
+export default function NewPostScreen({navigation}){
+    const [message,setMessage]=useState("");
     const [selectedView,setSelectedView]=useState("Everyone");
-    const [comments,setComments]=useState(true);
+    const [comments_enabled,setComments]=useState(true);
+    const [used_media, setUsedMedia]=useState(false)
+
+    const [modalText, setModalText] = useState("");
+    const [modalSubText, setModalSubText] = useState("");
+    const [modalVisible, setModalVisible] = useState(false);
+    const modalFnRef = useRef<() => void>(() => { });
+
+    const user = auth.currentUser;
+    const { userData } = useUserData();
+
+    function alert(text: string, subtext: string, onClose?: () => void) {
+        setModalVisible(true);
+        setModalText(text);
+        setModalSubText(subtext);
+
+        modalFnRef.current = onClose || (() => { });
+    }
+
+    function gen_post_title(email:string){
+        const userName=email.split("@")[0];
+        const dateTime=new Date();
+        const hr=dateTime.getHours();
+        const mn=dateTime.getMinutes();
+        const sec=dateTime.getSeconds();
+        const day=dateTime.getDate();
+        const month=dateTime.getMonth();
+        const year=dateTime.getFullYear();
+
+        return `${userName}-${day}-${month}-${year}_${hr}_${mn}_${sec}`;
+
+    }
+    async function newLog(){
+        if(user){
+            await setDoc(doc(db, "posts", gen_post_title(user.email)), {
+                uid:user.uid,
+                likes:0,
+                timestamp:new Date(),
+                media:[],
+                post_message:message,
+                public:(selectedView=="Everyone")?true:false,
+                users_liked:[],
+                used_media:used_media,
+                comments_enabled:comments_enabled,
+                comments:[],
+        }).then(()=>{alert("Success","Your log has been posted successfully!")}).catch((e)=>{alert("Error",`${e.code} ${e.message}. An error occured while posting :( `)})
+        }
+    }
 
     return (
         <View style={{backgroundColor:"#17171d",flex:1,paddingTop:50,paddingBottom:100,alignItems:"center"}}>
+            <ModalBox
+                onClose={() => modalFnRef.current()}
+                animation="slide"
+                isVisible={modalVisible}
+                setIsVisible={setModalVisible}
+                text={modalText}
+                subtext={modalSubText}
+            />
             <View style={{flexDirection:"row",alignItems:"center",justifyContent:"flex-start",width:"100%"}}>
-                <Image source={require("../../assets/images/pfp.jpg")} style={{marginHorizontal:10,borderRadius:50, width:30,height:30}}/>
+                <Image source={userData?.avatar?{uri:userData.avatar}:require("../../assets/images/pfp.jpg")} style={{marginHorizontal:10,borderRadius:50, width:30,height:30}}/>
                 <Text style={{color:"white",fontSize:20,textAlign:"center",fontWeight:"bold",marginLeft:10,marginVertical:10}}>Create New Log</Text>
                 <MaterialDesignIcons name={"plus-box"} size={20} color={"white"} style={{marginLeft:10}}/>
             </View>
-            <TextInput value={title} onChangeText={setTitle} textAlignVertical="top" multiline={true} style={styles.fieldContainer} placeholder="Have something to share?" placeholderTextColor={"#8492a6"}/>
+            <TextInput value={message} onChangeText={setMessage} textAlignVertical="top" multiline={true} style={styles.fieldContainer} placeholder="Have something to share?" placeholderTextColor={"#8492a6"}/>
 
             {/* Media */}
 
@@ -46,14 +103,14 @@ export default function FriendsScreen({navigation}){
                 <Switch
                 trackColor={{false: '#8492a6', true: '#338eda'}}
                 thumbColor={'#f4f3f4'}
-                onValueChange={()=>{setComments(!comments)}}
-                value={comments}
+                onValueChange={()=>{setComments(!comments_enabled)}}
+                value={comments_enabled}
                 />
-                <Text style={styles.subtxt}>{(comments?"No one can comment on your post":"Others can comment on your post")}</Text>
+                <Text style={styles.subtxt}>{(comments_enabled?"No one can comment on your post":"Others can comment on your post")}</Text>
             </View>
 
             <View style={{width:"100%",alignItems:"center",justifyContent:"center"}}>
-                <Pressable style={styles.button} onPressIn={()=>{console.log("tried to post")}}>
+                <Pressable style={styles.button} onPressIn={newLog}>
                     <Text style={styles.btnTxt}>Log</Text> 
                     <MaterialDesignIcons name="note-text" color="white" size={20}/>
                 </Pressable> 
