@@ -53,6 +53,7 @@ export default function SignUpScreen({navigation}){
             uid: user.uid,
             email: user.email,
             displayName: user.displayName,
+            displayNameLower: user.displayName?.toLowerCase(),
             createdAt: new Date(),
             avatar: user.photoURL || null,
             num_trackers:0,

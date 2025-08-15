@@ -1,13 +1,115 @@
-import { View,ScrollView,TextInput,StyleSheet, Pressable,Text} from "react-native";
-import {useState} from "react";
+import { RefreshControl,View,TextInput,StyleSheet, Pressable,Text} from "react-native";
+import React,{useState,useEffect} from "react";
 import FollowBox from "../components/follow";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import RadioBtn from "../components/radioBtn";
+import { useUserData } from "../contexts/userContext";
 import Post from "../components/post";
+import {collection,getDocs,where,query, limit} from 'firebase/firestore';
+import { db } from "../auth/firebase";
+import { FlatList } from "react-native";
+
+// import Post from "../components/post";
+
+interface user{
+    uid:string,
+    bio:string,
+    avatar:string,
+    num_trackers:number,
+    num_tracking:number,
+    num_logs:number,
+    displayName:string,
+    displayNameLower:string,
+    email:string,
+}
+interface post{
+    id:string,
+    uid:string,
+    post_message:string,
+    used_media:boolean,
+}
 
 export default function SearchScreen(){
     const [search,setSearch]=useState("");
+    const [userResults,setUserResults]=useState<user[]>([]);
+    const [suggested,setSuggested]=useState<user[]>([]);
+    const [postResults,setPostResults]=useState<post[]>([]);
     const [currTab,setCurrTab]=useState("Suggestions");
+    const {userData} =useUserData();
+
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        setTimeout(() => {
+        setRefreshing(false);
+        }, 1000);
+    }, []);
+
+    async function searchUsers(){
+        const userQuery=search.trim().toLowerCase();
+        const getUsersQuery=query(
+            collection(db,"users"),
+            where("displayNameLower",">=",userQuery),
+            where("displayNameLower","<=",userQuery+"\uf8ff")
+        )
+        // const getPostsQuery=query(
+        //     collection(db,"posts"),
+        //     where("post_message",">=",userQuery),
+        //     where("post_message","<=",userQuery+"\uf8ff")
+        // )
+        const snapshot = await getDocs(getUsersQuery);
+
+        return snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+    }
+
+    async function searchPosts(){
+        const userQuery=search.trim().toLowerCase();
+        const getUsersQuery=query(
+            collection(db,"posts"),
+            where("post_message",">=",userQuery),
+            where("post_message","<=",userQuery+"\uf8ff"),
+            limit(5)
+        )
+        const snapshot = await getDocs(getUsersQuery);
+
+        return snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+    }
+
+    async function suggestUsers(){
+        const getUsersQuery=query(
+            collection(db,"users")
+        )
+        const snapshot = await getDocs(getUsersQuery);
+        return snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+    }
+
+    async function handleSearch(){
+        const userMatches=await searchUsers();
+        const postMatches=await searchPosts();
+
+        console.log(postMatches);
+        setUserResults(userMatches);
+        setPostResults(postMatches);
+    }
+
+    useEffect(()=>{
+        async function sUsers(){
+            const suggestedUsers=await suggestUsers();
+            setSuggested(suggestedUsers);
+        }
+        sUsers();
+    },[])
+
     return (
         <View style={{backgroundColor:"#17171d",flex:1,paddingTop:50,paddingBottom:100,alignItems:"center"}}>
 
@@ -17,7 +119,7 @@ export default function SearchScreen(){
                 <TextInput value={search} onChangeText={setSearch} maxLength={50} autoCapitalize="none" textContentType={"none"} style={styles.text} placeholder={"Search HackNet"} placeholderTextColor={"#8492a6"}/>
             </View> 
 
-            <Pressable style={styles.btn}>
+            <Pressable style={styles.btn} onPress={handleSearch}>
                 <MaterialDesignIcons name={"magnify"} size={20} color={"white"} />
             </Pressable>
 
@@ -31,32 +133,58 @@ export default function SearchScreen(){
             />
 
             {currTab=="Hackers" && (
-            <ScrollView style={{width:'100%',marginVertical:25,paddingHorizontal:10}}>
+            <View style={{width:'100%',marginVertical:25,paddingHorizontal:10,flex:1}}>
                     <Text style={styles.heading}>Hackers you may be looking for</Text>
-                    <FollowBox
-                    username="Shibam"
-                    bio="Hello yall i am the dev "
-                    />
-            </ScrollView>
+                    <FlatList
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                    data={userResults}
+                    keyExtractor={item=>item.uid}
+                    renderItem={({item})=>(
+                        <FollowBox
+                        avatar={item.avatar}
+                        username={item.displayName}
+                        bio={item.bio}
+                        />
+                    )}/>
+            </View>
             )}
 
             {currTab=="Posts" && (
-            <ScrollView style={{width:'100%',marginVertical:25,paddingHorizontal:10}}>
+            <View style={{width:'100%',marginVertical:25,paddingHorizontal:10,flex:1}}>
                     <Text style={styles.heading}>Posts you may be looking for</Text>
-                    <Post username="Shibam Roy" timestamp="Today at 12:00PM"/>
-            </ScrollView>
+                    <FlatList
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                    data={postResults}
+                    keyExtractor={item=>item.id}
+                    renderItem={({item})=>(
+                        <Post uid={item.uid} timestamp="today at 12:00pm" message={item.post_message} used_media={item.used_media}/>
+                    )}
+                    style={{backgroundColor:"#17171d",flex:1,height:"80%",marginBottom:100,}}
+                    removeClippedSubviews={true}
+                    />
+            </View>
             )}
 
             {currTab=="Suggestions" && (
-            <ScrollView style={{width:'100%',marginVertical:25,paddingHorizontal:10}}>
+            <View style={{width:'100%',marginVertical:25,paddingHorizontal:10,flex:1}}>
                     <Text style={styles.heading}>Hackers you can follow</Text>
-                    <FollowBox
-                    username="Shibam"
-                    bio="Hello yall i am the dev "
+                    <FlatList
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                    data={suggested}
+                    keyExtractor={item=>item.id}
+                    renderItem={({item})=>(
+                        <FollowBox
+                        avatar={item.avatar}
+                        username={item.displayName}
+                        bio={item.bio}
+                        />
+                    )}
+                    style={{backgroundColor:"#17171d",flex:1,height:"80%",marginBottom:100,}}
+                    removeClippedSubviews={true}
                     />
-            </ScrollView>
-            )}
-        </View>
+                    </View>
+                    )}
+                    </View>
 
     );
 }

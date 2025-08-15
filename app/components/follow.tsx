@@ -3,16 +3,20 @@ import MaterialDesignIcons from "@react-native-vector-icons/material-design-icon
 
 interface Props{
     username:string,
-    bio:string
+    bio:string,
+    avatar:string
 }
-export default function FollowBox({username,bio}:Props){
+const bio_limit=20;
+export default function FollowBox({avatar,username,bio}:Props){
+
+    let bio_mod=bio.slice(0,bio_limit)+"...";
     return(
         <View style={styles.friendBox}>
             <View style={{flexDirection:"row",justifyContent:"center",alignItems:"center",width:"100%",paddingHorizontal:10}}>
-                <Image source={require("../../assets/images/pfp.jpg")} style={{borderRadius:50, width:45,height:45,margin:"auto"}}/>
+                <Image source={{uri:avatar}} style={{borderRadius:50, width:45,height:45,margin:"auto"}}/>
                 <View style={styles.detailsContainer}>
                     <Text style={styles.username}>{username}</Text>
-                    <Text style={styles.lastMessage}>{bio}</Text>
+                    <Text style={styles.lastMessage}>{bio_mod}</Text>
                 </View>
                 <View>
                     <Pressable style={styles.followBtn}>
