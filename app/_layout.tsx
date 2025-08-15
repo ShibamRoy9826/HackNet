@@ -37,7 +37,7 @@ export default function RootLayout() {
   return (
     <UserDataProvider>
       <AppStack.Navigator initialRouteName={user?"Tabs":"Login"}>
-        <AppStack.Screen name="EditProfile" component={EditProfileScreen} options={{headerShown:true,animation:"none",headerStyle:{backgroundColor:"#17171d"},headerTintColor:"white"}}/>
+        <AppStack.Screen name="EditProfile" component={EditProfileScreen} options={{headerTitle:"Edit Profile",headerShown:true,animation:"none",headerStyle:{backgroundColor:"#17171d"},headerTintColor:"white"}}/>
         <AppStack.Screen name="Settings" component={SettingsScreen} options={{headerShown:true,animation:"none",headerStyle:{backgroundColor:"#17171d"},headerTintColor:"white"}}/>
         <AppStack.Screen name="Notifications" component={NotificationScreen} options={{headerShown:true,animation:"none",headerStyle:{backgroundColor:"#17171d"},headerTintColor:"white"}}/>
         <AppStack.Screen name="Tabs" component={TabsContainer} options={{headerShown:false,animation:"slide_from_bottom"}}/>

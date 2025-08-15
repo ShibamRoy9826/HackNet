@@ -3,7 +3,7 @@ import {Text,View,StyleSheet,Pressable, Linking,Alert} from "react-native";
 import InputBox from "../components/inptField";
 import {useState,useRef} from "react";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { signInWithEmailAndPassword} from "firebase/auth";
+import {signInWithEmailAndPassword} from "firebase/auth";
 import {auth} from './firebase';
 import ModalBox from "../components/modal";
 
@@ -16,12 +16,11 @@ export default function LoginScreen({navigation}){
     const [modalSubText,setModalSubText]=useState("");
     const [modalVisible,setModalVisible]=useState(false);
     const modalFnRef=useRef<()=>void>(()=>{});
-    
+
     function alert(text:string,subtext:string,onClose?:()=>void){
         setModalVisible(true);
         setModalText(text);
         setModalSubText(subtext);
-
         modalFnRef.current=onClose||(()=>{});
     }
 
@@ -40,7 +39,7 @@ function handleLogin(){
         }else{
             alert("Login Failed","Something is wrong please try again!");
         }
-    }).catch((e)=>{alert("Login Failed","Invalid credentials! Please try again")})
+    }).catch((e)=>{alert("Login Failed","Invalid credentials! Please try again, "+e.code+e.message)})
 }
     return (
         <View style={styles.container}>

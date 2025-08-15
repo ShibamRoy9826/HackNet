@@ -37,7 +37,7 @@ export function UserDataProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <UserContext.Provider value={{ userData }}>
+    <UserContext.Provider value={{userData}}>
       {children}
     </UserContext.Provider>
   );

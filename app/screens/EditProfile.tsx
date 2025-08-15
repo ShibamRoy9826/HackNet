@@ -19,7 +19,7 @@ export default function EditProfileScreen({ navigation }) {
     const modalFnRef = useRef<() => void>(() => { });
 
     const insets = useSafeAreaInsets();
-    const [imgData,setImgData]=useState({});
+    const [imgData,setImgData]=useState<ImagePicker.ImagePickerAsset|null>(null);
 
     const [username, setUserName] = useState("");
     const [avatar, setAvatar] = useState(userData?.avatar||"");
@@ -191,7 +191,7 @@ const updateProfileTxt= async(providedAvatar?:string)=>{
             />
 
             <View style={styles.fieldContainer}>
-                <Image source={(imgData)?{uri:imgData.uri}:avatar?{uri:avatar}:require("../../assets/images/pfp.jpg")} style={{ borderRadius: 50, width: 60, height: 60, marginHorizontal: 10 }} />
+                <Image source={(imgData)?{uri:imgData.uri}:{uri:avatar}} style={{ borderRadius: 50, width: 60, height: 60, marginHorizontal: 10 }} />
 
                 <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
                     <Pressable style={[styles.button, { flexDirection: "row", marginRight: 40, marginTop: 20 }]} onPress={pickImage}>
