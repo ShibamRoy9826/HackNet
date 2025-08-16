@@ -3,20 +3,35 @@ import { StyleSheet, View, Image, Text, Pressable } from "react-native";
 import { useEffect, useState } from "react";
 import InputBox from "./inptField";
 import { getUserData } from "../auth/firebase";
+import CarouselComponent from "./carousel";
+import { ImagePickerAsset } from "expo-image-picker";
+import { Timestamp } from "firebase/firestore";
 
 interface Prop {
     uid: string,
-    timestamp: string,
+    timestamp: Timestamp,
     message: string,
-    used_media: boolean
+    used_media: boolean,
+    media: string[],
 }
 
-export default function Post({ used_media, message, uid, timestamp }: Prop) {
+const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+];
+
+export default function Post({ media, used_media, message, uid, timestamp }: Prop) {
     const [liked, setLiked] = useState(false);
     const [comment, setComment] = useState("");
     const [userPfp, setUserPfp] = useState("https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg");
     const [OPName, setOPName] = useState("Random User");
 
+    const mediaMod: ImagePickerAsset[] = media.map(uri => ({
+        uri,
+        width: 0,
+        height: 0,
+        type: 'image',
+    }));
 
     useEffect(() => {
         getOP();
@@ -33,6 +48,45 @@ export default function Post({ used_media, message, uid, timestamp }: Prop) {
         );
     }
 
+    async function extractTime(time: Timestamp) {
+        const datetime = time.toDate();
+        const month = datetime.getMonth();
+        const date = datetime.getDate();
+        const year = datetime.getFullYear();
+        const hr = datetime.getHours();
+        const mins = datetime.getMinutes();
+
+        const hr12 = hr % 12 === 0 ? 12 : hr % 12;
+        const ampm = hr >= 12 ? "pm" : "am";
+        const minuteStr = mins < 10 ? `0${mins}` : mins;
+
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+        const dateOnly = new Date(year, month, date);
+
+        if (dateOnly.getTime() === today.getTime()) {
+            return `Today at ${hr12}:${minuteStr} ${ampm}`;
+        } else if (dateOnly.getTime() === yesterday.getTime()) {
+            return `Yesterday at ${hr12}:${minuteStr}${ampm}`;
+        } else {
+            function ordinal(d: number) {
+                if (d > 3 && d < 21) return 'th';
+                switch (d % 10) {
+                    case 1: return 'st';
+                    case 2: return 'nd';
+                    case 3: return 'rd';
+                    default: return 'th';
+                }
+            };
+            const monthName = monthNames[month];
+            return `${monthName} ${date}${ordinal(date)} ${year}, at ${hr12}:${minuteStr} ${ampm}`
+        }
+
+
+    }
+
     return (
         <View style={styles.postBox}>
             {/* OP details */}
@@ -40,7 +94,7 @@ export default function Post({ used_media, message, uid, timestamp }: Prop) {
                 <Image source={{ uri: userPfp }} style={{ borderRadius: 50, width: 45, height: 45, margin: "auto" }} />
                 <View style={styles.detailsContainer}>
                     <Text style={styles.username}>{OPName}</Text>
-                    <Text style={styles.timestamp}>{timestamp}</Text>
+                    <Text style={styles.timestamp}>{extractTime(timestamp)}</Text>
                 </View>
                 <View>
                     <Pressable style={{ padding: 5, marginLeft: "auto" }}>
@@ -48,12 +102,14 @@ export default function Post({ used_media, message, uid, timestamp }: Prop) {
                     </Pressable>
                 </View>
             </View>
-            <View style={{ paddingVertical: 20, borderColor: "#25252fff", borderTopWidth: StyleSheet.hairlineWidth, height: "auto" }}>
+            <View style={{ paddingVertical: 10, borderColor: "#25252fff", borderTopWidth: StyleSheet.hairlineWidth, height: "auto" }}>
                 {/* Posted content */}
-                <Text style={{ color: "white", height: "auto", fontSize: 16, paddingHorizontal: 20, paddingVertical: 10 }}>{message}</Text>
+                <Text style={{ color: "white", height: "auto", fontSize: 16, paddingHorizontal: 20, paddingVertical: 20 }}>{message}</Text>
                 {
                     used_media && (
-                        <Image source={require("../../assets/images/post.png")} style={{ width: "100%", height: 250 }} />
+                        <CarouselComponent
+                            data={mediaMod}
+                        />
                     )
                 }
             </View>

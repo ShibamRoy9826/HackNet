@@ -46,7 +46,7 @@ export default function LoginScreen({ navigation }) {
 
             <ModalBox
                 onClose={() => modalFnRef.current()}
-                animation="slide"
+                animation="fade"
                 isVisible={modalVisible}
                 setIsVisible={setModalVisible}
                 text={modalText}

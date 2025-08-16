@@ -97,7 +97,7 @@ export default function SearchScreen() {
         const userMatches = await searchUsers();
         const postMatches = await searchPosts();
 
-        console.log(postMatches);
+        // console.log(postMatches);
         setUserResults(userMatches);
         setPostResults(postMatches);
     }

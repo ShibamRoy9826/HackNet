@@ -1,5 +1,7 @@
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { Modal, View, Text, Pressable, StyleSheet } from "react-native";
+import { Dimensions, Modal, View, Text, Pressable, StyleSheet } from "react-native";
+import { BlurView } from 'expo-blur';
+
 
 interface Props {
   animation?: "slide" | "fade" | "none",
@@ -8,8 +10,9 @@ interface Props {
   text: string,
   subtext: string,
   onClose: () => void,
-
 }
+
+const { width, height } = Dimensions.get("window");
 export default function ModalBox({ animation, isVisible, setIsVisible, onClose, text, subtext }: Props) {
 
   return (
@@ -19,8 +22,10 @@ export default function ModalBox({ animation, isVisible, setIsVisible, onClose, 
       visible={isVisible}
       onRequestClose={() => {
         setIsVisible(!isVisible);
-      }}>
-      <View style={styles.centeredView}>
+      }}
+      style={{ backgroundColor: "rgba(0,0,0,0.2)" }}
+    >
+      <BlurView intensity={10} style={styles.centeredView} tint="dark" experimentalBlurMethod="dimezisBlurView">
         <View style={styles.modalView}>
           <Text style={styles.modalText}>{text}</Text>
           <Text style={styles.modalSubtext}>{subtext}</Text>
@@ -30,7 +35,7 @@ export default function ModalBox({ animation, isVisible, setIsVisible, onClose, 
             <MaterialDesignIcons name="close" size={15} color={"white"} />
           </Pressable>
         </View>
-      </View>
+      </BlurView>
     </Modal>
   );
 }
@@ -40,10 +45,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    height: height,
+    width: width,
+    backgroundColor: "rgba(0,0,0,0.3)"
   },
   modalView: {
     margin: 20,
-    backgroundColor: '#3b3b49ff',
+    backgroundColor: '#17171d',
     borderRadius: 20,
     borderWidth: 1,
     borderColor: "#25252fff",

@@ -59,8 +59,8 @@ export default function EditProfileScreen({ navigation }) {
             const userRef = doc(db, "users", currUser.uid);
 
             if (imgData) {
-                console.log("Inside the first conditional,  avatar =", avatar);
-                console.log("Oh and imgData=", imgData);
+                // console.log("Inside the first conditional,  avatar =", avatar);
+                // console.log("imgData=", imgData);
                 await uploadImg(imgData);
             } else {
                 await updateDoc(userRef, {
@@ -153,7 +153,7 @@ export default function EditProfileScreen({ navigation }) {
             quality: 1,
         });
 
-        console.log(result);
+        // console.log(result);
 
         if (!result.canceled) {
             const rs = result.assets[0];
@@ -177,7 +177,7 @@ export default function EditProfileScreen({ navigation }) {
 
             <ModalBox
                 onClose={() => modalFnRef.current()}
-                animation="slide"
+                animation="fade"
                 isVisible={modalVisible}
                 setIsVisible={setModalVisible}
                 text={modalText}

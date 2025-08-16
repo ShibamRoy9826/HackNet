@@ -5,7 +5,7 @@ import { db, auth } from "../auth/firebase";
 import Post from "../components/post";
 import { useUserData } from '../contexts/userContext';
 import React from 'react';
-import { limit, query, collection, where, getDocs } from "firebase/firestore";
+import { limit, query, collection, where, getDocs, Timestamp } from "firebase/firestore";
 import NothingHere from "../components/nothing";
 import ProfileHeader from "../components/ProfileHeader";
 
@@ -14,6 +14,7 @@ interface post {
     uid: string,
     post_message: string,
     used_media: boolean,
+    timestamp: Timestamp
 }
 
 export default function MyAccount({ navigation }) {
@@ -70,7 +71,7 @@ export default function MyAccount({ navigation }) {
             data={(currTab == "Logs") ? userOwnPosts : likedPosts}
             keyExtractor={item => item.id}
             renderItem={({ item }) => (
-                <Post uid={item.uid} timestamp="today at 12:00pm" message={item.post_message} used_media={item.used_media} />
+                <Post uid={item.uid} timestamp={item.timestamp} message={item.post_message} used_media={item.used_media} media={item.media} />
             )}
             removeClippedSubviews={true}
             ListEmptyComponent={

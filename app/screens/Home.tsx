@@ -1,9 +1,9 @@
-import { RefreshControl, View, Animated, ActivityIndicator } from "react-native";
+import { RefreshControl, View, Animated, ActivityIndicator, Text } from "react-native";
 import HomeHeader from "../components/HomeHeader";
 import Post from "../components/post";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useRef, useEffect, useState } from "react";
-import { collection, query, limit, orderBy, getDocs, startAfter, QueryDocumentSnapshot } from 'firebase/firestore';
+import { collection, query, limit, orderBy, getDocs, startAfter, QueryDocumentSnapshot, Timestamp } from 'firebase/firestore';
 import { auth, db } from '../auth/firebase';
 import React from 'react';
 
@@ -13,6 +13,8 @@ interface post {
     uid: string,
     post_message: string,
     used_media: boolean,
+    timestamp: Timestamp,
+    media: string[]
 }
 
 
@@ -110,7 +112,7 @@ export default function HomeScreen({ navigation }) {
                 data={posts}
                 keyExtractor={item => item.id}
                 renderItem={({ item }) => (
-                    <Post uid={item.uid} timestamp="today at 12:00pm" message={item.post_message} used_media={item.used_media} />
+                    <Post uid={item.uid} timestamp={item.timestamp} message={item.post_message} used_media={item.used_media} media={item.media} />
                 )}
                 style={{ backgroundColor: "#17171d", flex: 1, height: "100%", marginBottom: 100, }}
                 onScroll={e => {
