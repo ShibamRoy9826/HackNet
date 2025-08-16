@@ -5,6 +5,7 @@ import RadioBtn from "../components/radioBtn";
 import {auth,db} from "../auth/firebase";
 import { setDoc,doc} from "firebase/firestore";
 import { useUserData } from "../contexts/userContext";
+import * as ImagePicker from 'expo-image-picker';
 import ModalBox from "../components/modal";
 
 export default function NewPostScreen({navigation}){
@@ -42,6 +43,24 @@ export default function NewPostScreen({navigation}){
         return `${userName}-${day}-${month}-${year}_${hr}_${mn}_${sec}`;
 
     }
+    const pickMedia = async () => {
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images'],
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
+        });
+
+        console.log(result);
+
+        if (!result.canceled) {
+            const rs= result.assets[0];
+            setImgData(rs);
+        } else {
+            console.log("It got cancelled....");
+        }
+    };
     async function newLog(){
         if(user){
             await setDoc(doc(db, "posts", gen_post_title(user.email)), {

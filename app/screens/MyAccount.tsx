@@ -67,14 +67,14 @@ export default function MyAccount({ navigation }) {
     return (
         <FlatList
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            data={(currTab=="Logs")?userOwnPosts:likedPosts}
+            data={(currTab == "Logs") ? userOwnPosts : likedPosts}
             keyExtractor={item => item.id}
             renderItem={({ item }) => (
                 <Post uid={item.uid} timestamp="today at 12:00pm" message={item.post_message} used_media={item.used_media} />
             )}
             removeClippedSubviews={true}
             ListEmptyComponent={
-                <NothingHere/>
+                <NothingHere />
             }
             ListHeaderComponent={
                 <View style={{ backgroundColor: "#17171d", flex: 1 }}>
@@ -89,13 +89,14 @@ export default function MyAccount({ navigation }) {
 
                     <View style={{ backgroundColor: "#373d46ff", width: "100%", height: StyleSheet.hairlineWidth }} />
                     <Text
-                    style={{color:"white",textAlign:"left",paddingLeft:10,fontSize:20,fontWeight:"bold",marginVertical:20
-                    }}>
-                        {(currTab=="Logs")?"Your Logs":"Liked Logs"}</Text>
+                        style={{
+                            color: "white", textAlign: "left", paddingLeft: 10, fontSize: 20, fontWeight: "bold", marginVertical: 20
+                        }}>
+                        {(currTab == "Logs") ? "Your Logs" : "Liked Logs"}</Text>
                 </View>
 
             }
-            style={{backgroundColor:"#17171d",marginBottom:100}}
+            style={{ backgroundColor: "#17171d", marginBottom: 100 }}
         />
     );
 }

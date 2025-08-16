@@ -19,10 +19,10 @@ export default function EditProfileScreen({ navigation }) {
     const modalFnRef = useRef<() => void>(() => { });
 
     const insets = useSafeAreaInsets();
-    const [imgData,setImgData]=useState<ImagePicker.ImagePickerAsset|null>(null);
+    const [imgData, setImgData] = useState<ImagePicker.ImagePickerAsset | null>(null);
 
     const [username, setUserName] = useState("");
-    const [avatar, setAvatar] = useState(userData?.avatar||"");
+    const [avatar, setAvatar] = useState(userData?.avatar || "");
     const [email, setEmail] = useState("");
     const [bio, setBio] = useState("");
 
@@ -34,41 +34,41 @@ export default function EditProfileScreen({ navigation }) {
 
         modalFnRef.current = onClose || (() => { });
     }
-const updateProfileTxt= async(providedAvatar?:string)=>{
+    const updateProfileTxt = async (providedAvatar?: string) => {
         if (currUser) {
             const userRef = doc(db, "users", currUser.uid);
-        await updateDoc(userRef, {
-            uid: currUser.uid,
-            email: currUser.email,
-            displayName: username,
-            createdAt: new Date(),
-            avatar: providedAvatar?providedAvatar:avatar,
-            num_trackers: 0,
-            num_tracking: 0,
-            num_logs: 0,
-            posts: [],
-            liked_posts: [],
-            friends: [],
-            notifications: [],
-            bio: bio
-        }).then(() => { alert('Updated Successfully', "Your details were updated, if you don't see them, try reopening the app", () => { navigation.goBack() }) }).catch((e) => { alert("An error occured", e.message) })
+            await updateDoc(userRef, {
+                uid: currUser.uid,
+                email: currUser.email,
+                displayName: username,
+                createdAt: new Date(),
+                avatar: providedAvatar ? providedAvatar : avatar,
+                num_trackers: 0,
+                num_tracking: 0,
+                num_logs: 0,
+                posts: [],
+                liked_posts: [],
+                friends: [],
+                notifications: [],
+                bio: bio
+            }).then(() => { alert('Updated Successfully', "Your details were updated, if you don't see them, try reopening the app", () => { navigation.goBack() }) }).catch((e) => { alert("An error occured", e.message) })
+        }
     }
-}
-    const updateProfile = async (providedAvatar?:string) => {
+    const updateProfile = async (providedAvatar?: string) => {
         if (currUser) {
             const userRef = doc(db, "users", currUser.uid);
 
-            if(imgData){
-                console.log("Inside the first conditional,  avatar =",avatar);
-                console.log("Oh and imgData=",imgData);
+            if (imgData) {
+                console.log("Inside the first conditional,  avatar =", avatar);
+                console.log("Oh and imgData=", imgData);
                 await uploadImg(imgData);
-            }else{
+            } else {
                 await updateDoc(userRef, {
                     uid: currUser.uid,
                     email: currUser.email,
                     displayName: username,
                     createdAt: new Date(),
-                    avatar: providedAvatar?providedAvatar:avatar,
+                    avatar: providedAvatar ? providedAvatar : avatar,
                     num_trackers: 0,
                     num_tracking: 0,
                     num_logs: 0,
@@ -78,48 +78,48 @@ const updateProfileTxt= async(providedAvatar?:string)=>{
                     notifications: [],
                     bio: bio
                 }).then(() => {
-                     alert('Updated Successfully', "Your details were updated, if you don't see them, try reopening the app", () => { navigation.goBack() }) 
-                    }).catch((e) => {
-                         alert("An error occured", e.message) 
-                        })
+                    alert('Updated Successfully', "Your details were updated, if you don't see them, try reopening the app", () => { navigation.goBack() })
+                }).catch((e) => {
+                    alert("An error occured", e.message)
+                })
             }
 
         }
     }
 
-    function extractUrl(res:string){
-        const match=res.match(/https?:\/\/\S+/);
-        if(match){
+    function extractUrl(res: string) {
+        const match = res.match(/https?:\/\/\S+/);
+        if (match) {
             return match[0];
-        }else{
+        } else {
             return "";
         }
     }
     // https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg  <- dummy pfp
-    async function uploadToHc(urls:string[]){
-        const hc="https://cdn.hackclub.com/api/v3/new";
-        console.log("This is the data I got:",urls);
+    async function uploadToHc(urls: string[]) {
+        const hc = "https://cdn.hackclub.com/api/v3/new";
+        console.log("This is the data I got:", urls);
 
-        const hcRes=await fetch(hc,
-        {
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json",
-                "Authorization":`Bearer ${process.env.HACKCLUB_CDN_KEY}`
-            },
-            body:JSON.stringify(urls)
-        });
+        const hcRes = await fetch(hc,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${process.env.EXPO_PUBLIC_HACKCLUB_CDN_KEY}`
+                },
+                body: JSON.stringify(urls)
+            });
 
-        const response=await hcRes.json();
+        const response = await hcRes.json();
 
-        if(response){
+        if (response) {
             setAvatar(response.files[0].deployedUrl);
-            console.log("The current value of avatar is ",avatar);
-            console.log("The current value of deployedUrl is ",response.files[0].deployedUrl);
+            // console.log("The current value of avatar is ", avatar);
+            // console.log("The current value of deployedUrl is ", response.files[0].deployedUrl);
             await updateProfileTxt(response.files[0].deployedUrl);
-            console.log("Updated text stuff too!");
-        }else{
-            alert("Error","Couldn't upload avatar, Please try again...");
+            // console.log("Updated text stuff too!");
+        } else {
+            alert("Error", "Couldn't upload avatar, Please try again...");
         }
     }
 
@@ -129,19 +129,19 @@ const updateProfileTxt= async(providedAvatar?:string)=>{
             xhr.open('PUT', `https://bashupload.com/${rs.fileName}`);
 
             xhr.onload = async () => {
-                console.log(`Upload complete: ${xhr.responseText}`);
+                // console.log(`Upload complete: ${xhr.responseText}`);
                 await uploadToHc([extractUrl(xhr.responseText)]);
             };
 
             xhr.onerror = () => {
-                console.log('Upload failed.');
+                // console.log('Upload failed.');
             };
 
             xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-            xhr.send({ uri: rs.uri, type: 'application/octet-stream', name: rs.fileName});
+            xhr.send({ uri: rs.uri, type: 'application/octet-stream', name: rs.fileName });
 
         } catch (e) {
-            console.log("Failed to upload file", e);
+            // console.log("Failed to upload file", e);
         }
     }
     const pickImage = async () => {
@@ -156,16 +156,10 @@ const updateProfileTxt= async(providedAvatar?:string)=>{
         console.log(result);
 
         if (!result.canceled) {
-            const rs= result.assets[0];
+            const rs = result.assets[0];
             setImgData(rs);
-            // try {
-            //     const deployedUrl = await uploadImg(rs);
-            //     console.log("Uploaded successfully! here's the deployed url: ", deployedUrl);
-            // } catch (e) {
-            //     alert("Failed", `Couldn't upload pfp ${e}`)
-            // }
         } else {
-            console.log("It got cancelled....");
+            // console.log("It got cancelled....");
         }
     };
 
@@ -191,7 +185,7 @@ const updateProfileTxt= async(providedAvatar?:string)=>{
             />
 
             <View style={styles.fieldContainer}>
-                <Image source={(imgData)?{uri:imgData.uri}:{uri:avatar}} style={{ borderRadius: 50, width: 60, height: 60, marginHorizontal: 10 }} />
+                <Image source={(imgData) ? { uri: imgData.uri } : { uri: avatar }} style={{ borderRadius: 50, width: 60, height: 60, marginHorizontal: 10 }} />
 
                 <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
                     <Pressable style={[styles.button, { flexDirection: "row", marginRight: 40, marginTop: 20 }]} onPress={pickImage}>

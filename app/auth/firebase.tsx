@@ -1,12 +1,12 @@
 // Import the functions you need from the SDKs you need
-import {initializeApp } from "firebase/app";
-import {doc,getDoc,getFirestore} from "firebase/firestore";
-import {getAuth,initializeAuth,getReactNativePersistence} from 'firebase/auth';
+import { initializeApp } from "firebase/app";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
+import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
-  apiKey:process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
   projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
   storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
@@ -22,15 +22,17 @@ const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(ReactNativeAsyncStorage)
 });
 
-const db=getFirestore(app);
+const db = getFirestore(app);
 
-async function getUserData(collection:string,uid:string) {
+async function getUserData(collection: string, uid: string) {
+
   // temporary
   // return {"avatar": "https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg", "bio": "This Hacker didn't set up their bio yet :(", "createdAt": {"nanoseconds": 889000000, "seconds": 1754556026, "type": "firestore/timestamp/1.0"}, "displayName": "Shibam Roy", "email": "royshibam9826@gmail.com", "friends": [], "liked_posts": [], "num_logs": 0, "num_trackers": 0, "num_tracking": 0, "posts": [], "uid": "BJ1R4y5EHIb9zV4XAet61K2UI5s1"};
-  if(!uid){
+
+  if (!uid) {
     return;
   }
-  const docRef=doc(db,collection,uid);
+  const docRef = doc(db, collection, uid);
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
@@ -40,4 +42,4 @@ async function getUserData(collection:string,uid:string) {
   }
 }
 
-export {auth,db,getUserData};
+export { auth, db, getUserData };

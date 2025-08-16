@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { onSnapshot, doc } from "firebase/firestore";
-import { auth, db } from "../auth/firebase"; 
+import { auth, db } from "../auth/firebase";
 
 type UserData = {
   bio?: string;
@@ -9,7 +9,7 @@ type UserData = {
   num_logs?: number;
   num_trackers?: number;
   num_tracking?: number;
-  displayName?:string;
+  displayName?: string;
 };
 
 type UserContextType = {
@@ -37,7 +37,7 @@ export function UserDataProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <UserContext.Provider value={{userData}}>
+    <UserContext.Provider value={{ userData }}>
       {children}
     </UserContext.Provider>
   );
