@@ -14,7 +14,7 @@ export default function NewPostScreen({navigation}){
     const [used_media, setUsedMedia]=useState(false)
 
     const [modalText, setModalText] = useState("");
-    const [modalSubText, setModalSubText] = useState("");
+    const [modalSubtext, setmodalSubtext] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
     const modalFnRef = useRef<() => void>(() => { });
 
@@ -24,7 +24,7 @@ export default function NewPostScreen({navigation}){
     function alert(text: string, subtext: string, onClose?: () => void) {
         setModalVisible(true);
         setModalText(text);
-        setModalSubText(subtext);
+        setmodalSubtext(subtext);
 
         modalFnRef.current = onClose || (() => { });
     }
@@ -67,7 +67,7 @@ export default function NewPostScreen({navigation}){
                 isVisible={modalVisible}
                 setIsVisible={setModalVisible}
                 text={modalText}
-                subtext={modalSubText}
+                subtext={modalSubtext}
             />
             <View style={{flexDirection:"row",alignItems:"center",justifyContent:"flex-start",width:"100%"}}>
                 <Image source={userData?.avatar?{uri:userData.avatar}:require("../../assets/images/pfp.jpg")} style={{marginHorizontal:10,borderRadius:50, width:30,height:30}}/>

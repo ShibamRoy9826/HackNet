@@ -18,7 +18,7 @@ export default function TabsContainer() {
           position:"absolute",
           borderColor:"#ffffff22",
           borderTopWidth: StyleSheet.hairlineWidth,
-          backgroundColor: 'transparent',
+          backgroundColor: '#17171d',
           height: 100,
           elevation: 0,
         },

@@ -1,4 +1,4 @@
-import { RefreshControl,View,TextInput,StyleSheet, Pressable,Text} from "react-native";
+import { RefreshControl,View,TextInput,StyleSheet, Pressable,Text,Image} from "react-native";
 import React,{useState,useEffect} from "react";
 import FollowBox from "../components/follow";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
@@ -134,11 +134,25 @@ export default function SearchScreen(){
 
             {currTab=="Hackers" && (
             <View style={{width:'100%',marginVertical:25,paddingHorizontal:10,flex:1}}>
+                    {
+                        (userResults.length==0)?
+                        <View style={{flex:1}}>
+                        <Text style={styles.heading}>Search for other hackers</Text>
+                        <View style={{justifyContent:"center",alignItems:"center",flex:1}}>
+                            <Image
+                                source={require("../../assets/images/empty-box.png")}
+                                style={{ borderRadius: 50, width: 70, height: 70, marginHorizontal: 10 ,marginVertical:40}}
+                            />
+                            <Text style={styles.subtext}>There's nothing here....</Text>
+                        </View>
+                        </View>
+                    :
                     <Text style={styles.heading}>Hackers you may be looking for</Text>
+                    }
                     <FlatList
                     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                     data={userResults}
-                    keyExtractor={item=>item.uid}
+                    keyExtractor={item=>item.id}
                     renderItem={({item})=>(
                         <FollowBox
                         avatar={item.avatar}
@@ -151,7 +165,21 @@ export default function SearchScreen(){
 
             {currTab=="Posts" && (
             <View style={{width:'100%',marginVertical:25,paddingHorizontal:10,flex:1}}>
-                    <Text style={styles.heading}>Posts you may be looking for</Text>
+                    {
+                        (postResults.length==0)?
+                    <View style={{flex:1}}>
+                    <Text style={styles.heading}>Search for some logs</Text>
+                    <View style={{justifyContent:"center",alignItems:"center",flex:1}}>
+                        <Image
+                            source={require("../../assets/images/empty-box.png")}
+                            style={{ borderRadius: 50, width: 70, height: 70, marginHorizontal: 10 ,marginVertical:40}}
+                        />
+                        <Text style={styles.subtext}>There's nothing here....</Text>
+                    </View>
+                    </View>
+                    :
+                    <Text style={styles.heading}>Logs you may be looking for</Text>
+                    }
                     <FlatList
                     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                     data={postResults}
@@ -159,7 +187,6 @@ export default function SearchScreen(){
                     renderItem={({item})=>(
                         <Post uid={item.uid} timestamp="today at 12:00pm" message={item.post_message} used_media={item.used_media}/>
                     )}
-                    style={{backgroundColor:"#17171d",flex:1,height:"80%",marginBottom:100,}}
                     removeClippedSubviews={true}
                     />
             </View>
@@ -214,6 +241,14 @@ const styles=StyleSheet.create({
     textAlign:"left",
     paddingLeft:10,
     fontSize:20,
+    fontWeight:"bold",
+    marginBottom:20
+   },
+   subtext:{
+    color:"#8492a6",
+    textAlign:"center",
+    paddingLeft:10,
+    fontSize:15,
     fontWeight:"bold",
     marginBottom:20
    },

@@ -112,7 +112,7 @@ async function loadPosts(){
             renderItem={({item})=>(
                 <Post uid={item.uid} timestamp="today at 12:00pm" message={item.post_message} used_media={item.used_media}/>
             )}
-            style={{backgroundColor:"#17171d",flex:1,height:"80%",marginBottom:100,}}
+            style={{backgroundColor:"#17171d",flex:1,height:"100%",marginBottom:100,}}
             onScroll={e => {
                 scrollY.setValue(e.nativeEvent.contentOffset.y);
             }}

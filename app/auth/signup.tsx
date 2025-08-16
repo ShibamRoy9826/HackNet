@@ -26,7 +26,7 @@ export default function SignUpScreen({navigation}){
     const [confirmpassword,setCpassword]=useState("");
 
     const [modalText,setModalText]=useState("");
-    const [modalSubText,setModalSubText]=useState("");
+    const [modalSubtext,setmodalSubtext]=useState("");
     const [modalVisible,setModalVisible]=useState(false);
 
     const modalFnRef=useRef<()=>void>(()=>{});
@@ -35,7 +35,7 @@ export default function SignUpScreen({navigation}){
     function alert(text:string,subtext:string,onClose?:()=>void){
         setModalVisible(true);
         setModalText(text);
-        setModalSubText(subtext);
+        setmodalSubtext(subtext);
 
         modalFnRef.current=onClose||(()=>{});
     }
@@ -136,7 +136,7 @@ export default function SignUpScreen({navigation}){
         isVisible={modalVisible}
         setIsVisible={setModalVisible}
         text={modalText}
-        subtext={modalSubText}
+        subtext={modalSubtext}
         />
             <Text style={styles.heading}>
                 Sign Up

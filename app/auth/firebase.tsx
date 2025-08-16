@@ -6,13 +6,13 @@ import {getAuth,initializeAuth,getReactNativePersistence} from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB69-jENuosOyjW9lCwj6EH7Ss3li17Kh0",
-  authDomain: "hacknet-e893b.firebaseapp.com",
-  projectId: "hacknet-e893b",
-  storageBucket: "hacknet-e893b.firebasestorage.app",
-  messagingSenderId: "16905701067",
-  appId: "1:16905701067:web:c9600f177f08568fcbfd4e",
-  measurementId: "G-8NZL4W987Y"
+  apiKey:process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase
@@ -34,10 +34,8 @@ async function getUserData(collection:string,uid:string) {
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
-    console.log("Got data",docSnap.data());
     return docSnap.data();
   } else {
-    console.log("got nothing:(")
     return null;
   }
 }

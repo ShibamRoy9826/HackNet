@@ -23,7 +23,7 @@ export default function ModalBox({animation,isVisible,setIsVisible,onClose,text,
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
               <Text style={styles.modalText}>{text}</Text>
-              <Text style={styles.modalSubText}>{subtext}</Text>
+              <Text style={styles.modalSubtext}>{subtext}</Text>
               <Pressable
                 style={styles.button}
                 onPress={() => {setIsVisible(!isVisible);onClose();}}>
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     fontSize:20,
     fontWeight:"bold"
   },
-  modalSubText: {
+  modalSubtext: {
     marginBottom: 15,
     textAlign: 'center',
     color:"#8492a6",

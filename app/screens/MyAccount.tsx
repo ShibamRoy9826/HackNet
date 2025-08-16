@@ -1,123 +1,102 @@
-import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import {RefreshControl,StyleSheet,ScrollView,Image,View,Text, Pressable} from "react-native";
-import { useSafeAreaInsets} from 'react-native-safe-area-context';
+import { Text, View, FlatList, StyleSheet, RefreshControl } from 'react-native';
 import RadioBtn from "../components/radioBtn";
-import {useState} from "react";
-import {auth} from "../auth/firebase";
-// import { DocumentData} from "firebase/firestore";
-import {useUserData} from '../contexts/userContext';
-
+import { useEffect, useState } from "react";
+import { db, auth } from "../auth/firebase";
+import Post from "../components/post";
+import { useUserData } from '../contexts/userContext';
 import React from 'react';
+import { limit, query, collection, where, getDocs } from "firebase/firestore";
+import NothingHere from "../components/nothing";
+import ProfileHeader from "../components/ProfileHeader";
 
+interface post {
+    id: string,
+    uid: string,
+    post_message: string,
+    used_media: boolean,
+}
 
-export default function MyAccount({navigation}){
-    const insets=useSafeAreaInsets();
-    const user=auth.currentUser;
-    const {userData}=useUserData()
+export default function MyAccount({ navigation }) {
+    const [userOwnPosts, setOwnPosts] = useState<post[]>([]);
+    const [likedPosts, setLikedPosts] = useState<post[]>([]);
 
-    const [currTab,setCurrTab]=useState("Logs");
+    const user = auth.currentUser;
+    const { userData } = useUserData()
+
+    const [currTab, setCurrTab] = useState("Logs");
 
     const [refreshing, setRefreshing] = React.useState(false);
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         setTimeout(() => {
-        setRefreshing(false);
+            setRefreshing(false);
         }, 2000);
     }, []);
 
+    async function showOwnPosts() {
+        if (user) {
+            const getUsersQuery = query(
+                collection(db, "posts"),
+                where('uid', '==', user.uid),
+                limit(5)
+            )
+            const snapshot = await getDocs(getUsersQuery);
+
+            return snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+        } else {
+            return [];
+        }
+    }
+
+    async function showPosts() {
+        const ownPosts = await showOwnPosts();
+        setOwnPosts(ownPosts);
+
+        // const ownPosts = await showLikedPosts();
+        // setOwnPosts(ownPosts);
+    }
+
+    useEffect(() => {
+        showPosts();
+    }, [])
+
     return (
-        <ScrollView style={{backgroundColor:"#17171d",flex:1,paddingTop:insets.top}} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-            <View style={{position:"relative",height:100}}>
-                <Image source={require("../../assets/images/banner.jpeg")} style={{width:'100%',position:"absolute",height:"100%",borderBottomWidth:1,borderColor:"#ec3750"}}/>
-                <Image source={userData?.avatar?{uri:userData.avatar}:require("../../assets/images/pfp.jpg")} style={{position:"absolute",bottom:-30,left:20,width:70,height:70,borderRadius:50,borderWidth:2,borderColor:"#ec3750"}}/>
-            </View>
-            <View style={{position:"relative",width:"100%"}}>
-                <View style={{flexDirection:"row",alignItems:"center",justifyContent:"space-between"
-                }}>
-
-                    <View>
-                        <Text style={{fontSize:25,color:"white",fontWeight:"bold",width:"100%",textAlign:"left",marginTop:40,marginLeft:20}}>{user?.displayName}</Text>
-                        <Text style={styles.subtxt}>@{userData?.email}</Text>
-                    </View>
-                    
-                        <Pressable style={[styles.button,{flexDirection:"row",marginRight:40,marginTop:20}]} onPress={()=>{navigation.navigate("EditProfile")}}>
-                            <Text style={{color:"white",fontWeight:"bold",marginRight:10}}>Edit Profile</Text>
-                            <MaterialDesignIcons name="pencil-box-multiple" size={20} color={"white"}/>
-                        </Pressable>
-                </View>
-                <Text style={[styles.subtxt,{color:"white",marginTop:20,paddingLeft:5,paddingRight:30}]}>
-                    {userData?.bio}
-                </Text>
-                <View style={{flexDirection:"row", width:"100%",alignItems:"center",justifyContent:"center",marginVertical:10}}>
-                    <Text style={{fontSize:15,color:"white",fontWeight:"bold"}}>
-                        {userData?.num_logs} <Text style={[styles.subtxt,{color:"#8492a6"}]}>Logs</Text>
-                    </Text>
-
-                    <Text style={{marginLeft:20,fontSize:15,color:"white",fontWeight:"bold"}}>
-                        {userData?.num_trackers} <Text style={[styles.subtxt,{color:"#8492a6"}]}>Trackers</Text>
-                    </Text>
-
-                    <Text style={{marginLeft:20,fontSize:15,color:"white",fontWeight:"bold"}}>
-                        {userData?.num_tracking} <Text style={[styles.subtxt,{color:"#8492a6"}]}>Tracking</Text>
-                    </Text>
-                </View>
-            </View>
-        
-
-            <RadioBtn
-            options={["Logs","Liked Posts"]}
-            iconList={["post","heart"]}
-            selected={currTab}
-            setSelected={setCurrTab}
-            style={{marginHorizontal:10}}
-            />
-
-            {currTab=="Logs" && (
-            <ScrollView style={{width:'100%',marginTop:20,paddingHorizontal:10}}>
-            </ScrollView>
+        <FlatList
+            refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            data={(currTab=="Logs")?userOwnPosts:likedPosts}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => (
+                <Post uid={item.uid} timestamp="today at 12:00pm" message={item.post_message} used_media={item.used_media} />
             )}
+            removeClippedSubviews={true}
+            ListEmptyComponent={
+                <NothingHere/>
+            }
+            ListHeaderComponent={
+                <View style={{ backgroundColor: "#17171d", flex: 1 }}>
+                    <ProfileHeader userData={userData} navigation={navigation} />
+                    <RadioBtn
+                        options={["Logs", "Liked Logs"]}
+                        iconList={["post", "heart"]}
+                        selected={currTab}
+                        setSelected={setCurrTab}
+                        style={{ marginHorizontal: 10 }}
+                    />
 
-            {currTab=="Liked Posts" && (
-            <ScrollView style={{width:'100%',marginTop:20,paddingHorizontal:10}}>
-            </ScrollView>
-            )}
+                    <View style={{ backgroundColor: "#373d46ff", width: "100%", height: StyleSheet.hairlineWidth }} />
+                    <Text
+                    style={{color:"white",textAlign:"left",paddingLeft:10,fontSize:20,fontWeight:"bold",marginVertical:20
+                    }}>
+                        {(currTab=="Logs")?"Your Logs":"Liked Logs"}</Text>
+                </View>
 
-            <View style={{backgroundColor:"#8492a6",width:"100%",height:StyleSheet.hairlineWidth}}/>
-
-
-        </ScrollView>
+            }
+            style={{backgroundColor:"#17171d",marginBottom:100}}
+        />
     );
 }
 
-
-const styles=StyleSheet.create({
-    subtxt:{
-        color:"#8492a6",
-        fontSize:15,
-        width:"100%",
-        marginLeft:20,
-        fontWeight:"normal"
-    },
-    button:{
-        width:"auto",
-        height:40,
-        backgroundColor:'#ec3750',
-        padding:10,
-        borderRadius:12,
-        flexDirection:"row"
-    },
-   text:{
-    color:"white",
-    textAlign:"left",
-    paddingLeft:10
-   },
-   heading:{
-    color:"white",
-    textAlign:"left",
-    paddingLeft:10,
-    fontSize:20,
-    fontWeight:"bold",
-    marginBottom:20
-   },
-})

@@ -14,7 +14,7 @@ export default function EditProfileScreen({ navigation }) {
     const { userData } = useUserData();
 
     const [modalText, setModalText] = useState("");
-    const [modalSubText, setModalSubText] = useState("");
+    const [modalSubtext, setmodalSubtext] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
     const modalFnRef = useRef<() => void>(() => { });
 
@@ -30,7 +30,7 @@ export default function EditProfileScreen({ navigation }) {
     function alert(text: string, subtext: string, onClose?: () => void) {
         setModalVisible(true);
         setModalText(text);
-        setModalSubText(subtext);
+        setmodalSubtext(subtext);
 
         modalFnRef.current = onClose || (() => { });
     }
@@ -105,7 +105,7 @@ const updateProfileTxt= async(providedAvatar?:string)=>{
             method:"POST",
             headers:{
                 "Content-Type":"application/json",
-                "Authorization":"Bearer beans"
+                "Authorization":`Bearer ${process.env.HACKCLUB_CDN_KEY}`
             },
             body:JSON.stringify(urls)
         });
@@ -187,7 +187,7 @@ const updateProfileTxt= async(providedAvatar?:string)=>{
                 isVisible={modalVisible}
                 setIsVisible={setModalVisible}
                 text={modalText}
-                subtext={modalSubText}
+                subtext={modalSubtext}
             />
 
             <View style={styles.fieldContainer}>

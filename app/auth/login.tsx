@@ -13,14 +13,14 @@ export default function LoginScreen({navigation}){
     const [password,setPassword]=useState("");
 
     const [modalText,setModalText]=useState("");
-    const [modalSubText,setModalSubText]=useState("");
+    const [modalSubtext,setmodalSubtext]=useState("");
     const [modalVisible,setModalVisible]=useState(false);
     const modalFnRef=useRef<()=>void>(()=>{});
 
     function alert(text:string,subtext:string,onClose?:()=>void){
         setModalVisible(true);
         setModalText(text);
-        setModalSubText(subtext);
+        setmodalSubtext(subtext);
         modalFnRef.current=onClose||(()=>{});
     }
 
@@ -50,7 +50,7 @@ function handleLogin(){
         isVisible={modalVisible}
         setIsVisible={setModalVisible}
         text={modalText}
-        subtext={modalSubText}
+        subtext={modalSubtext}
         />
             <Text style={styles.heading}>
                 Hack Net 
