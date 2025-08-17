@@ -59,10 +59,7 @@ export default function SignUpScreen({ navigation }) {
             num_trackers: 0,
             num_tracking: 0,
             num_logs: 0,
-            posts: [],
-            liked_posts: [],
             friends: [],
-            notifications: [],
             bio: "This Hacker hasn't set up their bio yet :("
 
         }).then(() => { console.log("Successfully created the users object") }).catch((e) => { console.log("Error occured while making db changes.", e.code, e.message) });

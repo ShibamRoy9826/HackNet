@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { onSnapshot, doc } from "firebase/firestore";
+import { onSnapshot, doc, Timestamp } from "firebase/firestore";
 import { auth, db } from "../auth/firebase";
 
 type UserData = {
@@ -10,6 +10,8 @@ type UserData = {
   num_trackers?: number;
   num_tracking?: number;
   displayName?: string;
+  createdAt?: Timestamp;
+  friends?: string[];
 };
 
 type UserContextType = {

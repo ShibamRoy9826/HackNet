@@ -8,6 +8,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { auth, db } from '../auth/firebase';
 import ModalBox from "../components/modal";
 import { useUserData } from "../contexts/userContext";
+import ActivityBox from "../components/activity";
 
 export default function EditProfileScreen({ navigation }) {
     const currUser = auth.currentUser;
@@ -17,6 +18,10 @@ export default function EditProfileScreen({ navigation }) {
     const [modalSubtext, setmodalSubtext] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
     const modalFnRef = useRef<() => void>(() => { });
+
+    const activityText = useRef("Updating info");
+    const [activityVisible, setActivityVisible] = useState(false);
+    const activityProgress = useRef(0);
 
     const insets = useSafeAreaInsets();
     const [imgData, setImgData] = useState<ImagePicker.ImagePickerAsset | null>(null);
@@ -34,54 +39,64 @@ export default function EditProfileScreen({ navigation }) {
 
         modalFnRef.current = onClose || (() => { });
     }
-    const updateProfileTxt = async (providedAvatar?: string) => {
-        if (currUser) {
-            const userRef = doc(db, "users", currUser.uid);
-            await updateDoc(userRef, {
-                uid: currUser.uid,
-                email: currUser.email,
-                displayName: username,
-                createdAt: new Date(),
-                avatar: providedAvatar ? providedAvatar : avatar,
-                num_trackers: 0,
-                num_tracking: 0,
-                num_logs: 0,
-                posts: [],
-                liked_posts: [],
-                friends: [],
-                notifications: [],
-                bio: bio
-            }).then(() => { alert('Updated Successfully', "Your details were updated, if you don't see them, try reopening the app", () => { navigation.goBack() }) }).catch((e) => { alert("An error occured", e.message) })
-        }
-    }
-    const updateProfile = async (providedAvatar?: string) => {
-        if (currUser) {
-            const userRef = doc(db, "users", currUser.uid);
 
-            if (imgData) {
-                // console.log("Inside the first conditional,  avatar =", avatar);
-                // console.log("imgData=", imgData);
-                await uploadImg(imgData);
-            } else {
-                await updateDoc(userRef, {
+    function updateActivity(progress: number, activityInfo: string) {
+        activityProgress.current = progress;
+        activityText.current = activityInfo;
+    }
+
+    const updateProfileInfo = async (providedAvatar?: string) => {
+        if (currUser) {
+            console.log("user is logged in");
+            const userRef = doc(db, "users", currUser.uid);
+            updateActivity(0.6, "Processing Data");
+            console.log("processing data");
+            try {
+                let data = {
                     uid: currUser.uid,
                     email: currUser.email,
                     displayName: username,
-                    createdAt: new Date(),
-                    avatar: providedAvatar ? providedAvatar : avatar,
-                    num_trackers: 0,
-                    num_tracking: 0,
-                    num_logs: 0,
-                    posts: [],
-                    liked_posts: [],
-                    friends: [],
-                    notifications: [],
+                    createdAt: userData ? userData.createdAt : new Date(),
+                    num_trackers: userData ? userData.num_trackers : 0,
+                    num_tracking: userData ? userData.num_tracking : 0,
+                    num_logs: userData ? userData.num_logs : 0,
+                    friends: userData ? userData.friends : [],
                     bio: bio
-                }).then(() => {
-                    alert('Updated Successfully', "Your details were updated, if you don't see them, try reopening the app", () => { navigation.goBack() })
-                }).catch((e) => {
-                    alert("An error occured", e.message)
-                })
+                }
+
+                if (providedAvatar) {
+                    data.avatar = providedAvatar;
+                }
+
+                console.log(data);
+                await updateDoc(userRef, data);
+                console.log("done!");
+                updateActivity(0.9, "Updated Successfully!")
+                setActivityVisible(false);
+                alert('Updated Successfully', "Your details were updated, if you don't see them, try reopening the app", () => { navigation.goBack() })
+            } catch (e) {
+                alert("An error occured", `${e}`)
+                updateActivity(0.6, "Something's wrong");
+            }
+        }
+        // updateActivity(0.6, "Something's wrong");
+        // setActivityVisible(false);
+    }
+    const updateProfile = async () => {
+        setActivityVisible(true);
+        updateActivity(0.1, "Processing data");
+
+        if (currUser) {
+
+            if (imgData) {
+                updateActivity(0.3, "Uploading image");
+                // console.log("Inside the first conditional,  avatar =", avatar);
+                // console.log("imgData=", imgData);
+                await uploadImg(imgData);
+                updateActivity(0.5, "Uploaded image");
+            } else {
+                updateActivity(0.3, "Updating info");
+                updateProfileInfo();
             }
 
         }
@@ -116,7 +131,7 @@ export default function EditProfileScreen({ navigation }) {
             setAvatar(response.files[0].deployedUrl);
             // console.log("The current value of avatar is ", avatar);
             // console.log("The current value of deployedUrl is ", response.files[0].deployedUrl);
-            await updateProfileTxt(response.files[0].deployedUrl);
+            await updateProfileInfo(response.files[0].deployedUrl);
             // console.log("Updated text stuff too!");
         } else {
             alert("Error", "Couldn't upload avatar, Please try again...");
@@ -174,6 +189,13 @@ export default function EditProfileScreen({ navigation }) {
 
     return (
         <ScrollView style={[styles.container, { paddingTop: insets.top }]}>
+            <ActivityBox
+                progress={activityProgress.current}
+                animation="fade"
+                isVisible={activityVisible}
+                setIsVisible={setActivityVisible}
+                text={activityText.current}
+            />
 
             <ModalBox
                 onClose={() => modalFnRef.current()}

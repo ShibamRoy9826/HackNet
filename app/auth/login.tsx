@@ -1,5 +1,5 @@
 import { Button } from "@react-navigation/elements";
-import { Text, View, StyleSheet, Pressable, Linking, Alert } from "react-native";
+import { Text, View, StyleSheet, Pressable } from "react-native";
 import InputBox from "../components/inptField";
 import { useState, useRef } from "react";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
