@@ -19,7 +19,7 @@ export default function EditProfileScreen({ navigation }) {
     const [modalVisible, setModalVisible] = useState(false);
     const modalFnRef = useRef<() => void>(() => { });
 
-    const activityText = useRef("Updating info");
+    const activitySubtext = useRef("Updating info");
     const [activityVisible, setActivityVisible] = useState(false);
     const activityProgress = useRef(0);
 
@@ -42,7 +42,7 @@ export default function EditProfileScreen({ navigation }) {
 
     function updateActivity(progress: number, activityInfo: string) {
         activityProgress.current = progress;
-        activityText.current = activityInfo;
+        activitySubtext.current = activityInfo;
     }
 
     const updateProfileInfo = async (providedAvatar?: string) => {
@@ -194,7 +194,7 @@ export default function EditProfileScreen({ navigation }) {
                 animation="fade"
                 isVisible={activityVisible}
                 setIsVisible={setActivityVisible}
-                text={activityText.current}
+                text={activitySubtext.current}
             />
 
             <ModalBox

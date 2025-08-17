@@ -30,6 +30,7 @@ export default function MyAccount({ navigation }) {
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
+        showPosts();
         setTimeout(() => {
             setRefreshing(false);
         }, 2000);

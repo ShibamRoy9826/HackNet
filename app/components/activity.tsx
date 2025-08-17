@@ -1,5 +1,6 @@
-// import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { Dimensions, Modal, View, Text, StyleSheet } from "react-native";
+import { Pressable, Modal, View, Text, StyleSheet, SafeAreaView } from "react-native";
+import { BlurView } from "expo-blur";
+import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import * as Progress from 'react-native-progress';
 
 
@@ -7,29 +8,32 @@ interface Props {
     animation?: "slide" | "fade" | "none",
     isVisible: boolean,
     setIsVisible: (s: boolean) => void,
-    progress: number,
     text: string,
+    subtext: string,
+    progress: number
 }
 
-const { width, height } = Dimensions.get("window");
-export default function ActivityBox({ progress, animation, isVisible, setIsVisible, text }: Props) {
+export default function ActivityBox({ progress, animation, isVisible, setIsVisible, text, subtext }: Props) {
+
     return (
-        <Modal
-            animationType={animation}
-            transparent={true}
-            visible={isVisible}
-            onRequestClose={() => {
-                setIsVisible(!isVisible);
-            }}
-            style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
-        >
-            <View style={styles.centeredView}>
-                <View style={styles.modalView}>
-                    <Text style={styles.modalText}>{text}</Text>
-                    <Progress.Bar progress={progress} width={200} animationType="spring" color="#338eda" unfilledColor="#25252fff" borderWidth={1} borderColor="#25252fff" />
-                </View>
-            </View>
-        </Modal>
+        <SafeAreaView style={styles.centeredView}>
+            <Modal
+                animationType={animation}
+                transparent={true}
+                visible={isVisible}
+                onRequestClose={() => {
+                    setIsVisible(!isVisible);
+                }}
+            >
+                <BlurView intensity={10} style={styles.centeredView} tint="dark" experimentalBlurMethod="dimezisBlurView">
+                    <View style={styles.modalView}>
+                        <Text style={styles.modalText}>{text}</Text>
+                        <Text style={styles.modalSubtext}>{subtext}</Text>
+                        <Progress.Bar progress={progress} width={200} animationType="spring" color="#338eda" unfilledColor="#25252fff" borderWidth={1} borderColor="#25252fff" />
+                    </View>
+                </BlurView>
+            </Modal>
+        </SafeAreaView>
     );
 }
 
@@ -38,8 +42,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        height: height,
-        width: width,
         backgroundColor: "rgba(0,0,0,0.3)"
     },
     modalView: {

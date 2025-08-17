@@ -1,5 +1,5 @@
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { Dimensions, Modal, View, Text, Pressable, StyleSheet } from "react-native";
+import { Modal, View, Text, Pressable, StyleSheet, SafeAreaView } from "react-native";
 import { BlurView } from 'expo-blur';
 
 
@@ -12,31 +12,32 @@ interface Props {
   onClose: () => void,
 }
 
-const { width, height } = Dimensions.get("window");
 export default function ModalBox({ animation, isVisible, setIsVisible, onClose, text, subtext }: Props) {
 
   return (
-    <Modal
-      animationType={animation}
-      transparent={true}
-      visible={isVisible}
-      onRequestClose={() => {
-        setIsVisible(!isVisible);
-      }}
-      style={{ backgroundColor: "rgba(0,0,0,0.2)" }}
-    >
-      <BlurView intensity={10} style={styles.centeredView} tint="dark" experimentalBlurMethod="dimezisBlurView">
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>{text}</Text>
-          <Text style={styles.modalSubtext}>{subtext}</Text>
-          <Pressable
-            style={styles.button}
-            onPress={() => { setIsVisible(!isVisible); onClose(); }}>
-            <MaterialDesignIcons name="close" size={15} color={"white"} />
-          </Pressable>
-        </View>
-      </BlurView>
-    </Modal>
+    <SafeAreaView style={styles.centeredView}>
+
+      <Modal
+        animationType={animation}
+        transparent={true}
+        visible={isVisible}
+        onRequestClose={() => {
+          setIsVisible(!isVisible);
+        }}
+      >
+        <BlurView intensity={10} style={styles.centeredView} tint="dark" experimentalBlurMethod="dimezisBlurView">
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>{text}</Text>
+            <Text style={styles.modalSubtext}>{subtext}</Text>
+            <Pressable
+              style={styles.button}
+              onPress={() => { setIsVisible(!isVisible); onClose(); }}>
+              <MaterialDesignIcons name="close" size={15} color={"white"} />
+            </Pressable>
+          </View>
+        </BlurView>
+      </Modal>
+    </SafeAreaView>
   );
 }
 
@@ -45,8 +46,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    height: height,
-    width: width,
     backgroundColor: "rgba(0,0,0,0.3)"
   },
   modalView: {

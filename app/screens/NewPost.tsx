@@ -9,6 +9,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { ImagePickerAsset } from "expo-image-picker";
 import ModalBox from "../components/modal";
 import CarouselComponent from "../components/carousel";
+import ActivityBox from "../components/activity";
 
 const SELECTION_LIMIT = 5;
 
@@ -22,6 +23,11 @@ export default function NewPostScreen({ navigation }) {
     const [media, setMedia] = useState<string[]>([])
     const [rs, setRs] = useState<ImagePickerAsset[]>([]);
 
+    const activityText = useRef("Posting...");
+    const activitySubtext = useRef("Updating info");
+    const [activityVisible, setActivityVisible] = useState(false);
+    const activityProgress = useRef(0);
+
     const [modalText, setModalText] = useState("");
     const [modalSubtext, setmodalSubtext] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
@@ -30,12 +36,22 @@ export default function NewPostScreen({ navigation }) {
     const user = auth.currentUser;
     const { userData } = useUserData();
 
+    const scrollRef = useRef<ScrollView>(null);
+
+    const scrollToTop = () => {
+        scrollRef.current?.scrollTo({ y: 0, animated: true });
+    };
+
     function alert(text: string, subtext: string, onClose?: () => void) {
         setModalVisible(true);
         setModalText(text);
         setmodalSubtext(subtext);
 
         modalFnRef.current = onClose || (() => { });
+    }
+    function updateActivity(progress: number, activityInfo: string) {
+        activityProgress.current = progress;
+        activitySubtext.current = activityInfo;
     }
 
     function gen_post_title(email: string) {
@@ -117,15 +133,14 @@ export default function NewPostScreen({ navigation }) {
 
     const uploadMedia = async (rs: any[]) => {
         try {
-            console.log("Value of rs : ", rs)
+            // console.log("Value of rs : ", rs)
             let tempUrls: string[] = [];
             for (let i = 0; i < rs.length; ++i) {
                 const url = await uploadFileTemp(rs[i]);
                 tempUrls.push(url);
-                console.log("Pushed : ", url)
+                // console.log("Pushed : ", url)
             }
             const deployedUrls = await uploadToHc(tempUrls);
-            console.log("Completed uploading all of them!");
             return deployedUrls;
 
         } catch (e) {
@@ -142,23 +157,25 @@ export default function NewPostScreen({ navigation }) {
         }
         );
 
-        console.log(result);
 
         if (!result.canceled) {
             setRs(result.assets)
             setUsedMedia(true);
         } else {
             setUsedMedia(false);
-            // console.log("It got cancelled....");
         }
     };
 
     async function newLog() {
+        setActivityVisible(true);
+        updateActivity(0.1, "Processing Data");
         if (user) {
             if (used_media) {
+                updateActivity(0.3, "Uploading Media");
                 uploadMedia(rs).then(
                     async (PassedMedia) => {
-                        await setDoc(doc(db, "posts", gen_post_title(user.email)), {
+                        updateActivity(0.6, "Uploading info");
+                        setDoc(doc(db, "posts", gen_post_title(user.email)), {
                             uid: user.uid,
                             likes: 0,
                             timestamp: new Date(),
@@ -169,11 +186,16 @@ export default function NewPostScreen({ navigation }) {
                             used_media: true,
                             comments_enabled: comments_enabled,
                             comments: [],
-                        }).then(() => { alert("Success", "Your log has been posted successfully!") }).catch((e) => { alert("Error", `${e.code} ${e.message}. An error occured while posting :( `) })
+                        }).then(() => {
+                            updateActivity(1, "Done!");
+                            setActivityVisible(false);
+                            alert("Success", "Your log has been posted successfully!")
+                        }).catch((e) => { alert("Error", `${e.code} ${e.message}. An error occured while posting :( `) })
                     }
                 )
             } else {
-                await setDoc(doc(db, "posts", gen_post_title(user.email)), {
+                updateActivity(0.6, "Uploading info");
+                setDoc(doc(db, "posts", gen_post_title(user.email)), {
                     uid: user.uid,
                     likes: 0,
                     timestamp: new Date(),
@@ -184,85 +206,19 @@ export default function NewPostScreen({ navigation }) {
                     used_media: false,
                     comments_enabled: comments_enabled,
                     comments: [],
-                }).then(() => { alert("Success", "Your log has been posted successfully!") }).catch((e) => { alert("Error", `${e.code} ${e.message}. An error occured while posting :( `) })
+                }).then(() => {
+                    updateActivity(1, "Done!");
+                    setActivityVisible(false);
+                    alert("Success", "Your log has been posted successfully!")
+                }).catch((e) => { alert("Error", `${e.code} ${e.message}. An error occured while posting :( `) })
             }
         }
     }
 
 
     return (
-        <>
-            <ScrollView style={{ backgroundColor: "#17171d", flex: 1, paddingTop: 50, marginBottom: 100 }} contentContainerStyle={{ alignItems: "center" }}>
-                <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-start", width: "100%" }}>
-                    <Image source={userData?.avatar ? { uri: userData.avatar } : require("../../assets/images/pfp.jpg")} style={{ marginHorizontal: 10, borderRadius: 50, width: 30, height: 30 }} />
-                    <Text style={{ color: "white", fontSize: 20, textAlign: "center", fontWeight: "bold", marginLeft: 10, marginVertical: 10 }}>Create New Log</Text>
-                    <MaterialDesignIcons name={"plus-box"} size={20} color={"white"} style={{ marginLeft: 10 }} />
-                </View>
-                <TextInput value={message} onChangeText={setMessage} textAlignVertical="top" multiline={true} style={styles.fieldContainer} placeholder="Have something to share?" placeholderTextColor={"#8492a6"} />
+        <ScrollView style={{ backgroundColor: "#17171d", flex: 1, paddingTop: 50, marginBottom: 100 }} contentContainerStyle={{ alignItems: "center" }} ref={scrollRef}>
 
-                {/* Media */}
-
-                <View style={{ flexDirection: "row", alignItems: "flex-start", width: "100%", paddingLeft: 40, marginBottom: 20 }}>
-                    <Pressable style={{ padding: 8, borderWidth: StyleSheet.hairlineWidth, borderColor: "#25252fff", borderRadius: 3 }} onPress={pickMedia}>
-                        <MaterialDesignIcons name="file-image" color="#5f6878" size={25} />
-                    </Pressable>
-                    <Pressable style={{ padding: 8, borderWidth: StyleSheet.hairlineWidth, borderColor: "#25252fff", borderRadius: 3 }}>
-                        <MaterialDesignIcons name="file-gif-box" color="#5f6878" size={25} />
-                    </Pressable>
-                </View>
-
-                {/* Media Preview */}
-                {
-                    used_media ?
-                        <View style={{ height: "auto", width: width }}>
-                            <Text style={[styles.heading, { marginLeft: 25 }]}>Attachments</Text>
-                            <CarouselComponent
-                                data={rs}
-                            />
-
-                            <View style={{ height: "auto", width: width, alignItems: "center", justifyContent: "center", paddingVertical: 20 }}>
-                                <Pressable style={styles.button} onPressIn={() => { setMedia([]); setUsedMedia(false); }}>
-                                    <Text style={styles.btnTxt}>Remove Attachment</Text>
-                                    <MaterialDesignIcons name="close" color="white" size={20} />
-                                </Pressable>
-                            </View>
-
-                        </View> :
-                        <View>
-
-                        </View>
-                }
-
-                {/* Other Options */}
-                <View style={{ height: 0.3 * height, width: width, paddingTop: 20 }}>
-                    <Text style={styles.label}>Who Can View This?</Text>
-                    <RadioBtn
-                        options={["Everyone", "Friends Only"]}
-                        iconList={["earth", "account-group"]}
-                        selected={selectedView}
-                        setSelected={setSelectedView}
-                        style={{ paddingLeft: 30, marginVertical: 15 }}
-                    />
-
-                    <Text style={styles.label}>Comments</Text>
-                    <View style={{ width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", paddingLeft: 40 }}>
-                        <Switch
-                            trackColor={{ false: '#8492a6', true: '#ec3750' }}
-                            thumbColor={'#f4f3f4'}
-                            onValueChange={() => { setComments(!comments_enabled); }}
-                            value={comments_enabled}
-                        />
-                        <Text style={styles.subtxt}>{(comments_enabled ? "No one can comment on your post" : "Others can comment on your post")}</Text>
-                    </View>
-                </View>
-
-                <View style={{ height: "auto", width: width, alignItems: "center", justifyContent: "center", marginBottom: 100 }}>
-                    <Pressable style={styles.button} onPressIn={newLog}>
-                        <Text style={styles.btnTxt}>Log</Text>
-                        <MaterialDesignIcons name="note-text" color="white" size={20} />
-                    </Pressable>
-                </View>
-            </ScrollView>
             <ModalBox
                 onClose={() => modalFnRef.current()}
                 animation="fade"
@@ -271,7 +227,84 @@ export default function NewPostScreen({ navigation }) {
                 text={modalText}
                 subtext={modalSubtext}
             />
-        </>
+            <ActivityBox
+                progress={activityProgress.current}
+                animation="fade"
+                isVisible={activityVisible}
+                setIsVisible={setActivityVisible}
+                subtext={activitySubtext.current}
+                text={activityText.current}
+            />
+            <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-start", width: "100%" }}>
+                <Image source={userData?.avatar ? { uri: userData.avatar } : require("../../assets/images/pfp.jpg")} style={{ marginHorizontal: 10, borderRadius: 50, width: 30, height: 30 }} />
+                <Text style={{ color: "white", fontSize: 20, textAlign: "center", fontWeight: "bold", marginLeft: 10, marginVertical: 10 }}>Create New Log</Text>
+                <MaterialDesignIcons name={"plus-box"} size={20} color={"white"} style={{ marginLeft: 10 }} />
+            </View>
+            <TextInput value={message} onChangeText={setMessage} textAlignVertical="top" multiline={true} style={styles.fieldContainer} placeholder="Have something to share?" placeholderTextColor={"#8492a6"} />
+
+            {/* Media */}
+
+            <View style={{ flexDirection: "row", alignItems: "flex-start", width: "100%", paddingLeft: 40, marginBottom: 20 }}>
+                <Pressable style={{ padding: 8, borderWidth: StyleSheet.hairlineWidth, borderColor: "#25252fff", borderRadius: 3 }} onPress={pickMedia}>
+                    <MaterialDesignIcons name="file-image" color="#5f6878" size={25} />
+                </Pressable>
+                <Pressable style={{ padding: 8, borderWidth: StyleSheet.hairlineWidth, borderColor: "#25252fff", borderRadius: 3 }}>
+                    <MaterialDesignIcons name="file-gif-box" color="#5f6878" size={25} />
+                </Pressable>
+            </View>
+
+            {/* Media Preview */}
+            {
+                used_media ?
+                    <View style={{ height: "auto", width: width }}>
+                        <Text style={[styles.heading, { marginLeft: 25 }]}>Attachments</Text>
+                        <CarouselComponent
+                            data={rs}
+                        />
+
+                        <View style={{ height: "auto", width: width, alignItems: "center", justifyContent: "center", paddingVertical: 20 }}>
+                            <Pressable style={styles.button} onPressIn={() => { setMedia([]); setUsedMedia(false); }}>
+                                <Text style={styles.btnTxt}>Remove Attachment</Text>
+                                <MaterialDesignIcons name="close" color="white" size={20} />
+                            </Pressable>
+                        </View>
+
+                    </View> :
+                    <View>
+
+                    </View>
+            }
+
+            {/* Other Options */}
+            <View style={{ height: 0.3 * height, width: width, paddingTop: 20 }}>
+                <Text style={styles.label}>Who Can View This?</Text>
+                <RadioBtn
+                    options={["Everyone", "Friends Only"]}
+                    iconList={["earth", "account-group"]}
+                    selected={selectedView}
+                    setSelected={setSelectedView}
+                    style={{ paddingLeft: 30, marginVertical: 15 }}
+                />
+
+                <Text style={styles.label}>Comments</Text>
+                <View style={{ width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", paddingLeft: 40 }}>
+                    <Switch
+                        trackColor={{ false: '#8492a6', true: '#ec3750' }}
+                        thumbColor={'#f4f3f4'}
+                        onValueChange={() => { setComments(!comments_enabled); }}
+                        value={comments_enabled}
+                    />
+                    <Text style={styles.subtxt}>{(comments_enabled ? "No one can comment on your post" : "Others can comment on your post")}</Text>
+                </View>
+            </View>
+
+            <View style={{ height: "auto", width: width, alignItems: "center", justifyContent: "center", marginBottom: 100 }}>
+                <Pressable style={styles.button} onPressIn={newLog}>
+                    <Text style={styles.btnTxt}>Log</Text>
+                    <MaterialDesignIcons name="note-text" color="white" size={20} />
+                </Pressable>
+            </View>
+        </ScrollView>
     );
 }
 
