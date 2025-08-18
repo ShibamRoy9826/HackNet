@@ -16,7 +16,6 @@ export default function ModalBox({ animation, isVisible, setIsVisible, onClose, 
 
   return (
     <SafeAreaView style={styles.centeredView}>
-
       <Modal
         animationType={animation}
         transparent={true}
@@ -25,7 +24,7 @@ export default function ModalBox({ animation, isVisible, setIsVisible, onClose, 
           setIsVisible(!isVisible);
         }}
       >
-        <BlurView intensity={10} style={styles.centeredView} tint="dark" experimentalBlurMethod="dimezisBlurView">
+        <BlurView intensity={10} style={styles.rootView} tint="dark" experimentalBlurMethod="dimezisBlurView">
           <View style={styles.modalView}>
             <Text style={styles.modalText}>{text}</Text>
             <Text style={styles.modalSubtext}>{subtext}</Text>
@@ -42,11 +41,20 @@ export default function ModalBox({ animation, isVisible, setIsVisible, onClose, 
 }
 
 const styles = StyleSheet.create({
+  rootView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: "rgba(0,0,0,0.3)",
+    height: 'auto',
+    elevation: 5
+  },
   centeredView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: "rgba(0,0,0,0.3)"
+    backgroundColor: "rgba(0,0,0,0.3)",
+    position: 'absolute'
   },
   modalView: {
     margin: 20,

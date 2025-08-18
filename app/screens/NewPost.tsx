@@ -205,7 +205,6 @@ export default function NewPostScreen({ navigation }) {
                     users_liked: [],
                     used_media: false,
                     comments_enabled: comments_enabled,
-                    comments: [],
                 }).then(() => {
                     updateActivity(1, "Done!");
                     setActivityVisible(false);

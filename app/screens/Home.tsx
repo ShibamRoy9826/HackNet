@@ -14,12 +14,12 @@ interface post {
     post_message: string,
     used_media: boolean,
     timestamp: Timestamp,
-    media: string[]
+    media: string[],
+    likes: number,
 }
 
 
 export default function HomeScreen({ navigation }) {
-
     const insets = useSafeAreaInsets();
     // const scrollY = new Animated.Value(0);
     const scrollY = useRef(new Animated.Value(0)).current;
@@ -73,7 +73,7 @@ export default function HomeScreen({ navigation }) {
             ...(doc.data() as Omit<post, 'id'>)
         }));
 
-        console.log(fetchedPosts);
+        // console.log(fetchedPosts);
         return { fetchedPosts, lastDoc: snap.docs[snap.docs.length - 1] };
 
     }
@@ -112,7 +112,7 @@ export default function HomeScreen({ navigation }) {
                 data={posts}
                 keyExtractor={item => item.id}
                 renderItem={({ item }) => (
-                    <Post uid={item.uid} timestamp={item.timestamp} message={item.post_message} used_media={item.used_media} media={item.media} />
+                    <Post like_count={item.likes} user_uid={user ? user.uid : ""} id={item.id} uid={item.uid} timestamp={item.timestamp} message={item.post_message} used_media={item.used_media} media={item.media} />
                 )}
                 style={{ backgroundColor: "#17171d", flex: 1, height: "100%", marginBottom: 100, }}
                 onScroll={e => {
@@ -122,7 +122,7 @@ export default function HomeScreen({ navigation }) {
                 onEndReachedThreshold={0.5}
                 ListHeaderComponent={<View style={{ height: 50 + insets.top }}></View>}
                 ListFooterComponent={loading ? <ActivityIndicator size="large" /> : null}
-                removeClippedSubviews={true}
+                removeClippedSubviews={false}
                 initialNumToRender={postLimit}
                 maxToRenderPerBatch={postLimit}
             />

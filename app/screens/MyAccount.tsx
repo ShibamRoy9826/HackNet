@@ -72,7 +72,7 @@ export default function MyAccount({ navigation }) {
             data={(currTab == "Logs") ? userOwnPosts : likedPosts}
             keyExtractor={item => item.id}
             renderItem={({ item }) => (
-                <Post uid={item.uid} timestamp={item.timestamp} message={item.post_message} used_media={item.used_media} media={item.media} />
+                <Post user_uid={userData ? userData.uid : ""} id={item.id} uid={item.uid} timestamp={item.timestamp} message={item.post_message} used_media={item.used_media} media={item.media} />
             )}
             removeClippedSubviews={true}
             ListEmptyComponent={

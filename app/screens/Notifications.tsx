@@ -1,4 +1,4 @@
-import { View, ScrollView, Text, StyleSheet, Pressable } from "react-native";
+import { View, ScrollView, StyleSheet, } from "react-native";
 import FriendElement from "../components/friendElement";
 
 export default function NotificationScreen({ navigation }) {

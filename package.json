@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
+    "@gorhom/bottom-sheet": "^5.1.8",
     "@react-native-async-storage/async-storage": "^2.1.2",
     "@react-native-vector-icons/evil-icons": "^12.2.0",
     "@react-native-vector-icons/material-design-icons": "^12.2.0",
@@ -47,9 +48,9 @@
     "react-native-reanimated-carousel": "^4.0.3",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
+    "react-native-svg": "15.11.2",
     "react-native-web": "~0.20.0",
-    "react-native-webview": "13.13.5",
-    "react-native-svg": "15.11.2"
+    "react-native-webview": "13.13.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

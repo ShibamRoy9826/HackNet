@@ -5,14 +5,19 @@ import InputBox from "./inptField";
 import { getUserData } from "../auth/firebase";
 import CarouselComponent from "./carousel";
 import { ImagePickerAsset } from "expo-image-picker";
-import { Timestamp } from "firebase/firestore";
+import { collection, getDocs, doc, Timestamp, deleteDoc, setDoc, getDoc, addDoc, serverTimestamp } from "firebase/firestore";
+import { useNavigation } from "@react-navigation/native";
+import { db } from "../auth/firebase";
 
 interface Prop {
+    id: string,
     uid: string,
     timestamp: Timestamp,
     message: string,
     used_media: boolean,
     media: string[],
+    user_uid: string,
+    like_count: number
 }
 
 const monthNames = [
@@ -20,8 +25,10 @@ const monthNames = [
     "July", "August", "September", "October", "November", "December"
 ];
 
-export default function Post({ media, used_media, message, uid, timestamp }: Prop) {
+export default function Post({ id, user_uid, media, used_media, message, uid, timestamp, like_count }: Prop) {
+    const navigation = useNavigation();
     const [liked, setLiked] = useState(false);
+
     const [comment, setComment] = useState("");
     const [userPfp, setUserPfp] = useState("https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg");
     const [OPName, setOPName] = useState("Random User");
@@ -36,6 +43,61 @@ export default function Post({ media, used_media, message, uid, timestamp }: Pro
     useEffect(() => {
         getOP();
     }, [uid])
+
+    useEffect(() => {
+        checkIfUserLiked();
+    })
+
+
+    async function checkIfUserLiked() {
+        const likeRef = doc(db, "posts", id, "likes", user_uid);
+        try {
+
+            const likeSnap = await getDoc(likeRef);
+            const liked = likeSnap.exists();
+            setLiked(liked);
+        }
+        catch (e) {
+            console.log(e, " there's an error...");
+        }
+    }
+
+    async function addComment() {
+        try {
+            console.log("trying to comment");
+            await addDoc(collection(db, "posts", id, "comments"), {
+                uid: user_uid,
+                message: comment,
+                timestamp: serverTimestamp(),
+                likes: 0
+            })
+            console.log("done!");
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async function likePost() {
+        try {
+            await setDoc(doc(db, "posts", id, "likes", user_uid),
+                {
+                    createdAt: new Date()
+                }
+            )
+            // console.log("Liked post");
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    async function unlikePost() {
+        try {
+            await deleteDoc(doc(db, "posts", id, "likes", user_uid));
+            // console.log("unliked post");
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
     async function getOP() {
         await getUserData("users", uid).then(
@@ -83,8 +145,6 @@ export default function Post({ media, used_media, message, uid, timestamp }: Pro
             const monthName = monthNames[month];
             return `${monthName} ${date}${ordinal(date)} ${year}, at ${hr12}:${minuteStr} ${ampm}`
         }
-
-
     }
 
     return (
@@ -116,11 +176,12 @@ export default function Post({ media, used_media, message, uid, timestamp }: Pro
 
             {/* Buttons */}
             <View style={{ flexDirection: "row", paddingHorizontal: 20, justifyContent: "flex-start", alignItems: "center", width: "auto" }}>
-                <Pressable style={{ padding: 8 }} onPress={() => { setLiked(!liked) }}>
+                <Pressable style={{ padding: 8, flexDirection: "row" }} onPress={() => { setLiked(!liked); liked ? unlikePost() : likePost() }}>
                     <MaterialDesignIcons name={liked ? "heart" : "heart-outline"} color={liked ? "#ec3750" : "#5f6878"} size={25} />
+                    <Text style={{ color: "#8492a6", marginLeft: 5 }}>{like_count}</Text>
                 </Pressable>
 
-                <Pressable style={{ padding: 8 }}>
+                <Pressable style={{ padding: 8 }} onPress={() => { navigation.navigate("Comments", { post_id: id }) }}>
                     <MaterialDesignIcons name="comment" color="#5f6878" size={25} />
                 </Pressable>
 
@@ -131,9 +192,8 @@ export default function Post({ media, used_media, message, uid, timestamp }: Pro
 
             {/* add a comment*/}
             <View style={{ flexDirection: "row", alignItems: "center", width: "100%" }}>
-
                 <InputBox secure={false} value={comment} valueFn={setComment} color="#8492a6" icon="comment" type="none" placeholder="Comment here" />
-                <Pressable style={{ padding: 8 }}>
+                <Pressable style={{ padding: 8 }} onPress={addComment}>
                     <MaterialDesignIcons name="send" color="#5f6878" size={25} />
                 </Pressable>
             </View>

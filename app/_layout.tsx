@@ -11,6 +11,7 @@ import LoadingScreen from "./screens/Loading";
 import EditProfileScreen from "./screens/EditProfile";
 import SettingsScreen from "./screens/Settings";
 import { UserDataProvider } from "./contexts/userContext";
+import CommentsScreen from "./screens/CommentSection";
 
 
 const AppStack = createNativeStackNavigator();
@@ -40,6 +41,7 @@ export default function RootLayout() {
         <AppStack.Screen name="EditProfile" component={EditProfileScreen} options={{ headerTitle: "Edit Profile", headerShown: true, animation: "none", headerStyle: { backgroundColor: "#17171d" }, headerTintColor: "white" }} />
         <AppStack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: true, animation: "none", headerStyle: { backgroundColor: "#17171d" }, headerTintColor: "white" }} />
         <AppStack.Screen name="Notifications" component={NotificationScreen} options={{ headerShown: true, animation: "none", headerStyle: { backgroundColor: "#17171d" }, headerTintColor: "white" }} />
+        <AppStack.Screen name="Comments" component={CommentsScreen} options={{ headerShown: true, animation: "none", headerStyle: { backgroundColor: "#17171d" }, headerTintColor: "white" }} />
         <AppStack.Screen name="Tabs" component={TabsContainer} options={{ headerShown: false, animation: "slide_from_bottom" }} />
         <AppStack.Screen name="ForgotPass" component={ForgotPassScreen} options={{ headerShown: false, animation: "fade" }} />
         <AppStack.Screen name="Login" component={LoginScreen} options={{ headerShown: false, animation: "fade" }} />

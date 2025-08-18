@@ -1,6 +1,5 @@
-import { Pressable, Modal, View, Text, StyleSheet, SafeAreaView } from "react-native";
+import { Modal, View, Text, StyleSheet, SafeAreaView } from "react-native";
 import { BlurView } from "expo-blur";
-import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import * as Progress from 'react-native-progress';
 
 
