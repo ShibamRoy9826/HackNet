@@ -1,55 +1,43 @@
 import { Button } from "@react-navigation/elements";
 import { ScrollView, View, StyleSheet, Pressable, RefreshControl } from "react-native";
 import InputBox from "../components/inptField";
-import { useState, useRef } from "react";
+import { useState, } from "react";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
 import { auth, db } from './firebase';
-import ModalBox from "../components/modal";
 import { doc, setDoc } from "firebase/firestore";
 import React from "react";
 import CustomText from "../components/customText";
+import { useModalContext } from "../contexts/modalContext";
+import { AppStackParamList } from "../utils/types";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+
+type Props = NativeStackScreenProps<AppStackParamList, 'SignUp'>;
 
 function isValidEmail(email: string) {
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return pattern.test(email);
 }
-
-function handleSlackLogin() {
-    console.log("Tried slack login");
-}
-
-export default function SignUpScreen({ navigation }) {
-
+export default function SignUpScreen({ navigation }: Props) {
+    const { alert, updateActivity, setActivityVisible } = useModalContext();
     const [username, setUserName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmpassword, setCpassword] = useState("");
 
-    const [modalText, setModalText] = useState("");
-    const [modalSubtext, setmodalSubtext] = useState("");
-    const [modalVisible, setModalVisible] = useState(false);
-
-    const modalFnRef = useRef<() => void>(() => { });
-
-
-    function alert(text: string, subtext: string, onClose?: () => void) {
-        setModalVisible(true);
-        setModalText(text);
-        setmodalSubtext(subtext);
-
-        modalFnRef.current = onClose || (() => { });
-    }
-
     const registerUser = async (email: string, password: string, name: string) => {
+        setActivityVisible(true);
+        updateActivity(0.2, "Creating User");
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
+        updateActivity(0.3, "Updating Details");
         await updateProfile(user, {
             displayName: name,
             photoURL: 'https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg'
         }).then(() => { console.log("Profile updated successfully") });
 
+        updateActivity(0.5, "Creating User Profile");
         await setDoc(doc(db, "users", user.uid), {
             uid: user.uid,
             email: user.email,
@@ -63,12 +51,14 @@ export default function SignUpScreen({ navigation }) {
             friends: [],
             bio: "This Hacker hasn't set up their bio yet :("
 
-        }).then(() => { console.log("Successfully created the users object") }).catch((e) => { console.log("Error occured while making db changes.", e.code, e.message) });
+        }).then().catch((e) => { console.log("Error occured while making db changes.", e.code, e.message) });
 
-        await sendEmailVerification(user).then(() => console.log("SENT EMAIL ADDRESS!")).catch((e) => console.log("BIIIIIGGG  PROBLEMMM HERE!!!!", e));
+        updateActivity(0.8, "Sending verification email");
+        await sendEmailVerification(user).then(() => console.log("SENT EMAIL ADDRESS!")).catch((e) => console.log("Couldn't register user :", e));
+        updateActivity(1, "Done!");
+        setActivityVisible(false);
 
     };
-
 
     function createUser() {
         if (password != confirmpassword) {
@@ -99,7 +89,6 @@ export default function SignUpScreen({ navigation }) {
             registerUser(email, password, username).then(
                 () => {
                     alert("Success!", "Further instructions for verification have been sent to your mail", () => { navigation.navigate("Login") });
-
                 }
             ).catch(
                 (error) => {
@@ -128,14 +117,6 @@ export default function SignUpScreen({ navigation }) {
 
         <ScrollView contentContainerStyle={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
 
-            <ModalBox
-                onClose={() => modalFnRef.current()}
-                animation="slide"
-                isVisible={modalVisible}
-                setIsVisible={setModalVisible}
-                text={modalText}
-                subtext={modalSubtext}
-            />
             <CustomText style={styles.heading}>
                 Sign Up
             </CustomText>
@@ -170,7 +151,7 @@ export default function SignUpScreen({ navigation }) {
             </CustomText>
 
 
-            <Pressable style={[styles.button, { backgroundColor: "#8492a6" }]} onPress={handleSlackLogin}>
+            <Pressable style={[styles.button, { backgroundColor: "#8492a6" }]} onPress={() => { console.log("tried slack login"); }}>
                 <CustomText style={{ color: "white", fontSize: 15, marginRight: 6 }}>
                     Login With Slack
                 </CustomText>

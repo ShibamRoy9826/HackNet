@@ -1,28 +1,34 @@
+// components
+import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { Pressable, Image, View, TextInput, StyleSheet, ScrollView } from "react-native";
 import CustomText from "../components/customText";
 import { Button } from "@react-navigation/elements";
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useState, useEffect, useRef } from "react";
-import { doc, updateDoc } from "firebase/firestore";
-import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import * as ImagePicker from 'expo-image-picker';
-import { auth, db } from '../auth/firebase';
-import ModalBox from "../components/modal";
-import { useUserData } from "../contexts/userContext";
-import ActivityBox from "../components/activity";
 
-export default function EditProfileScreen({ navigation }) {
+//contexts
+import { useUserData } from "../contexts/userContext";
+import { useModalContext } from "../contexts/modalContext";
+
+//firebase
+import { auth, db } from '../auth/firebase';
+import { doc, updateDoc } from "firebase/firestore";
+
+//others
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useState, useEffect } from "react";
+import * as ImagePicker from 'expo-image-picker';
+
+//func
+import { uploadFileTemp, uploadToHc } from '../utils/otherUtils';
+
+//types
+import { AppStackParamList } from "../utils/types";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+
+type Props = NativeStackScreenProps<AppStackParamList, 'EditProfile'>;
+
+export default function EditProfileScreen({ navigation }: Props) {
     const currUser = auth.currentUser;
     const { userData } = useUserData();
-
-    const [modalText, setModalText] = useState("");
-    const [modalSubtext, setmodalSubtext] = useState("");
-    const [modalVisible, setModalVisible] = useState(false);
-    const modalFnRef = useRef<() => void>(() => { });
-
-    const activitySubtext = useRef("Updating info");
-    const [activityVisible, setActivityVisible] = useState(false);
-    const activityProgress = useRef(0);
 
     const insets = useSafeAreaInsets();
     const [imgData, setImgData] = useState<ImagePicker.ImagePickerAsset | null>(null);
@@ -32,26 +38,12 @@ export default function EditProfileScreen({ navigation }) {
     const [email, setEmail] = useState("");
     const [bio, setBio] = useState("");
 
-
-    function alert(text: string, subtext: string, onClose?: () => void) {
-        setModalVisible(true);
-        setModalText(text);
-        setmodalSubtext(subtext);
-
-        modalFnRef.current = onClose || (() => { });
-    }
-
-    function updateActivity(progress: number, activityInfo: string) {
-        activityProgress.current = progress;
-        activitySubtext.current = activityInfo;
-    }
+    const { alert, updateActivity, setActivityVisible } = useModalContext();
 
     const updateProfileInfo = async (providedAvatar?: string) => {
         if (currUser) {
-            console.log("user is logged in");
             const userRef = doc(db, "users", currUser.uid);
             updateActivity(0.6, "Processing Data");
-            console.log("processing data");
             try {
                 let data = {
                     uid: currUser.uid,
@@ -69,9 +61,7 @@ export default function EditProfileScreen({ navigation }) {
                     data.avatar = providedAvatar;
                 }
 
-                console.log(data);
                 await updateDoc(userRef, data);
-                console.log("done!");
                 updateActivity(0.9, "Updated Successfully!")
                 setActivityVisible(false);
                 alert('Updated Successfully', "Your details were updated, if you don't see them, try reopening the app", () => { navigation.goBack() })
@@ -83,6 +73,18 @@ export default function EditProfileScreen({ navigation }) {
         // updateActivity(0.6, "Something's wrong");
         // setActivityVisible(false);
     }
+
+    async function uploadImg(file: any) {
+        try {
+            const url = await uploadFileTemp(file);
+            const deployedUrl = await uploadToHc([url]);
+            setAvatar(deployedUrl[0]);
+            await updateProfileInfo(deployedUrl[0]);
+        } catch (e) {
+            console.log('an error occured: ', e);
+        }
+    }
+
     const updateProfile = async () => {
         setActivityVisible(true);
         updateActivity(0.1, "Processing data");
@@ -91,8 +93,6 @@ export default function EditProfileScreen({ navigation }) {
 
             if (imgData) {
                 updateActivity(0.3, "Uploading image");
-                // console.log("Inside the first conditional,  avatar =", avatar);
-                // console.log("imgData=", imgData);
                 await uploadImg(imgData);
                 updateActivity(0.5, "Uploaded image");
             } else {
@@ -103,63 +103,6 @@ export default function EditProfileScreen({ navigation }) {
         }
     }
 
-    function extractUrl(res: string) {
-        const match = res.match(/https?:\/\/\S+/);
-        if (match) {
-            return match[0];
-        } else {
-            return "";
-        }
-    }
-    // https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg  <- dummy pfp
-    async function uploadToHc(urls: string[]) {
-        const hc = "https://cdn.hackclub.com/api/v3/new";
-        console.log("This is the data I got:", urls);
-
-        const hcRes = await fetch(hc,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${process.env.EXPO_PUBLIC_HACKCLUB_CDN_KEY}`
-                },
-                body: JSON.stringify(urls)
-            });
-
-        const response = await hcRes.json();
-
-        if (response) {
-            setAvatar(response.files[0].deployedUrl);
-            // console.log("The current value of avatar is ", avatar);
-            // console.log("The current value of deployedUrl is ", response.files[0].deployedUrl);
-            await updateProfileInfo(response.files[0].deployedUrl);
-            // console.log("Updated text stuff too!");
-        } else {
-            alert("Error", "Couldn't upload avatar, Please try again...");
-        }
-    }
-
-    const uploadImg = async (rs: any) => {
-        try {
-            const xhr = new XMLHttpRequest();
-            xhr.open('PUT', `https://bashupload.com/${rs.fileName}`);
-
-            xhr.onload = async () => {
-                // console.log(`Upload complete: ${xhr.responseText}`);
-                await uploadToHc([extractUrl(xhr.responseText)]);
-            };
-
-            xhr.onerror = () => {
-                // console.log('Upload failed.');
-            };
-
-            xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-            xhr.send({ uri: rs.uri, type: 'application/octet-stream', name: rs.fileName });
-
-        } catch (e) {
-            // console.log("Failed to upload file", e);
-        }
-    }
     const pickImage = async () => {
         // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -190,22 +133,6 @@ export default function EditProfileScreen({ navigation }) {
 
     return (
         <ScrollView style={[styles.container, { paddingTop: insets.top }]}>
-            <ActivityBox
-                progress={activityProgress.current}
-                animation="fade"
-                isVisible={activityVisible}
-                setIsVisible={setActivityVisible}
-                text={activitySubtext.current}
-            />
-
-            <ModalBox
-                onClose={() => modalFnRef.current()}
-                animation="fade"
-                isVisible={modalVisible}
-                setIsVisible={setModalVisible}
-                text={modalText}
-                subtext={modalSubtext}
-            />
 
             <View style={styles.fieldContainer}>
                 <Image source={(imgData) ? { uri: imgData.uri } : { uri: avatar }} style={{ borderRadius: 50, width: 60, height: 60, marginHorizontal: 10 }} />

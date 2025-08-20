@@ -1,57 +1,56 @@
 import { Button } from "@react-navigation/elements";
 import { View, StyleSheet, Pressable } from "react-native";
 import InputBox from "../components/inptField";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from './firebase';
-import ModalBox from "../components/modal";
+import { useModalContext } from "../contexts/modalContext";
 import CustomText from "../components/customText";
+import { AppStackParamList } from "../utils/types";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-export default function LoginScreen({ navigation }) {
+type Props = NativeStackScreenProps<AppStackParamList, 'Login'>;
+
+export default function LoginScreen({ navigation }: Props) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const [modalText, setModalText] = useState("");
-    const [modalSubtext, setmodalSubtext] = useState("");
-    const [modalVisible, setModalVisible] = useState(false);
-    const modalFnRef = useRef<() => void>(() => { });
+    const { alert, updateActivity, setActivityVisible } = useModalContext();
 
-    function alert(text: string, subtext: string, onClose?: () => void) {
-        setModalVisible(true);
-        setModalText(text);
-        setmodalSubtext(subtext);
-        modalFnRef.current = onClose || (() => { });
-    }
 
     function handleSlackLogin() {
         console.log("Tried slack login");
     }
     function handleLogin() {
+        setActivityVisible(true);
+        updateActivity(0.1, "Logging in...");
         signInWithEmailAndPassword(auth, email, password).then(() => {
             const user = auth.currentUser;
+            updateActivity(0.3, "Verifying user");
             if (user) {
                 if (!user.emailVerified) {
+                    setActivityVisible(false);
                     alert("Login Failed", "Please check your email, a verification link has been sent. If you can't find it, check your spam folder");
                 } else {
+                    updateActivity(1, "Done!");
+                    setActivityVisible(false);
                     navigation.replace("Tabs");
                 }
             } else {
+                updateActivity(0.6, "Something wrong happened");
+                setActivityVisible(false);
                 alert("Login Failed", "Something is wrong please try again!");
             }
-        }).catch((e) => { alert("Login Failed", "Invalid credentials! Please try again, " + e.code + e.message) })
+        }).catch((e) => {
+            updateActivity(0.6, "Something wrong happened");
+            setActivityVisible(false);
+            alert("Login Failed", "Invalid credentials! Please try again, " + e.code + e.message)
+        })
     }
     return (
         <View style={styles.container}>
 
-            <ModalBox
-                onClose={() => modalFnRef.current()}
-                animation="fade"
-                isVisible={modalVisible}
-                setIsVisible={setModalVisible}
-                text={modalText}
-                subtext={modalSubtext}
-            />
             <CustomText style={styles.heading}>
                 Hack Net
             </CustomText>

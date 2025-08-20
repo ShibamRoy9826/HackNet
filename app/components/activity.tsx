@@ -24,7 +24,7 @@ export default function ActivityBox({ progress, animation, isVisible, setIsVisib
                     setIsVisible(!isVisible);
                 }}
             >
-                <BlurView intensity={10} style={styles.centeredView} tint="dark" experimentalBlurMethod="dimezisBlurView">
+                <BlurView intensity={10} style={styles.rootView} tint="dark" experimentalBlurMethod="dimezisBlurView">
                     <View style={styles.modalView}>
                         <CustomText style={styles.modalText}>{text}</CustomText>
                         <CustomText style={styles.modalSubtext}>{subtext}</CustomText>
@@ -37,11 +37,20 @@ export default function ActivityBox({ progress, animation, isVisible, setIsVisib
 }
 
 const styles = StyleSheet.create({
+    rootView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: "rgba(0,0,0,0.3)",
+        height: 'auto',
+        elevation: 5
+    },
     centeredView: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: "rgba(0,0,0,0.3)"
+        backgroundColor: "rgba(0,0,0,0.3)",
+        position: 'absolute'
     },
     modalView: {
         margin: 20,

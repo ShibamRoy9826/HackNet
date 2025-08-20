@@ -9,6 +9,7 @@ import { ImagePickerAsset } from "expo-image-picker";
 import { updateDoc, collection, doc, Timestamp, deleteDoc, setDoc, getDoc, addDoc, serverTimestamp, increment } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
 import { db } from "../auth/firebase";
+import { extractTime } from "../utils/stringTimeUtils";
 
 interface Prop {
     id: string,
@@ -22,10 +23,6 @@ interface Prop {
     comment_count: number
 }
 
-const monthNames = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
-];
 
 export default function Post({ id, user_uid, media, used_media, message, uid, timestamp, like_count, comment_count }: Prop) {
     const navigation = useNavigation();
@@ -130,42 +127,6 @@ export default function Post({ id, user_uid, media, used_media, message, uid, ti
         );
     }
 
-    async function extractTime(time: Timestamp) {
-        const datetime = time.toDate();
-        const month = datetime.getMonth();
-        const date = datetime.getDate();
-        const year = datetime.getFullYear();
-        const hr = datetime.getHours();
-        const mins = datetime.getMinutes();
-
-        const hr12 = hr % 12 === 0 ? 12 : hr % 12;
-        const ampm = hr >= 12 ? "pm" : "am";
-        const minuteStr = mins < 10 ? `0${mins}` : mins;
-
-        const now = new Date();
-        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const yesterday = new Date(today);
-        yesterday.setDate(today.getDate() - 1);
-        const dateOnly = new Date(year, month, date);
-
-        if (dateOnly.getTime() === today.getTime()) {
-            return `Today at ${hr12}:${minuteStr} ${ampm}`;
-        } else if (dateOnly.getTime() === yesterday.getTime()) {
-            return `Yesterday at ${hr12}:${minuteStr}${ampm}`;
-        } else {
-            function ordinal(d: number) {
-                if (d > 3 && d < 21) return 'th';
-                switch (d % 10) {
-                    case 1: return 'st';
-                    case 2: return 'nd';
-                    case 3: return 'rd';
-                    default: return 'th';
-                }
-            };
-            const monthName = monthNames[month];
-            return `${monthName} ${date}${ordinal(date)} ${year}, at ${hr12}:${minuteStr} ${ampm}`
-        }
-    }
 
     return (
         <View style={styles.postBox}>

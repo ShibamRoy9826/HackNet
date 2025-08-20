@@ -3,6 +3,9 @@
 # dependencies
 node_modules/
 
+#build
+android/
+
 # Expo
 .expo/
 dist/
@@ -39,5 +42,3 @@ yarn-error.*
 
 app-example
 
-#build
-android/

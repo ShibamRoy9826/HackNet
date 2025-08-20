@@ -6,30 +6,17 @@ import { auth, db } from "../auth/firebase";
 import { updateDoc, doc, increment, serverTimestamp, addDoc, where, collection, getDocs, orderBy, query, Timestamp } from "firebase/firestore";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import InputBox from "../components/inptField";
+import { comment, UserData } from "../utils/types";
 import NothingHere from "../components/nothing";
+import { calcTime } from "../utils/stringTimeUtils";
+import { AppStackParamList } from "../utils/types";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-interface comment {
-    id: string,
-    uid: string,
-    message: string,
-    timestamp: Timestamp,
-    likes: number
-}
-
-type UserData = {
-    bio?: string;
-    avatar?: string;
-    email?: string;
-    num_logs?: number;
-    num_trackers?: number;
-    num_tracking?: number;
-    displayName?: string;
-    createdAt?: Timestamp;
-    friends?: string[];
-};
+type Props = NativeStackScreenProps<AppStackParamList, 'Comments'>;
 
 
-export default function CommentsScreen({ navigation }) {
+
+export default function CommentsScreen({ navigation }: Props) {
     const [refreshing, setRefreshing] = React.useState(false);
     const route = useRoute();
     const { post_id } = route.params;
@@ -99,29 +86,6 @@ export default function CommentsScreen({ navigation }) {
         })
 
     }
-    function extractTime(time: Timestamp) {
-        const dateSeconds = time.toDate().getTime();
-        const now = (new Date()).getTime();
-
-        const seconds = Math.floor((now - dateSeconds) / 1000);
-
-        const intervals = {
-            year: 365 * 24 * 60 * 60,
-            month: 30 * 24 * 60 * 60,
-            day: 86400,
-            hr: 3600,
-            minute: 60,
-            second: 1
-        }
-        for (const [unit, value] of Object.entries(intervals)) {
-            const count = Math.floor(seconds / value);
-            if (count >= 1) {
-                return `${count} ${unit}${count >= 1 ? "s" : ""} ago`
-            }
-        }
-        return "just now";
-
-    }
 
     function chunkArray(arr: string[], chunkSize: number) {
         const newArr = [];
@@ -183,7 +147,7 @@ export default function CommentsScreen({ navigation }) {
                             <View style={styles.detailsContainer}>
                                 <View style={{ flexDirection: "row", alignContent: "center", position: "static" }}>
                                     <CustomText style={styles.username}>{usersData[item.uid]?.displayName ?? "Some User..."}</CustomText>
-                                    <CustomText style={[styles.subtxt, { marginLeft: 20 }]}>{extractTime(item.timestamp)}</CustomText>
+                                    <CustomText style={[styles.subtxt, { marginLeft: 20 }]}>{calcTime(item.timestamp)}</CustomText>
                                     <Pressable style={{ top: 5, right: 0, padding: 5, position: "absolute" }}>
                                         <MaterialDesignIcons name="dots-vertical" color="#5f6878" size={25} />
                                     </Pressable>

@@ -4,8 +4,12 @@ import { signOut } from "firebase/auth";
 import { auth } from '../auth/firebase'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import { AppStackParamList } from "../utils/types";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-export default function SettingsScreen({ navigation }) {
+type Props = NativeStackScreenProps<AppStackParamList, 'Settings'>;
+
+export default function SettingsScreen({ navigation }: Props) {
     function logout() {
         signOut(auth).then(async () => {
             await AsyncStorage.clear();
@@ -19,7 +23,7 @@ export default function SettingsScreen({ navigation }) {
 
             <ScrollView style={styles.listContainer} contentContainerStyle={{ alignContent: "center", alignItems: "center" }}>
                 <Pressable onPress={logout} style={styles.button}>
-                    <CustomText>Sign Out</CustomText>
+                    <CustomText style={{ color: "white" }}>Sign Out</CustomText>
                 </Pressable>
             </ScrollView>
         </View>

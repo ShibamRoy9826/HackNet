@@ -1,7 +1,13 @@
 import { View, ScrollView, StyleSheet, } from "react-native";
 import FriendElement from "../components/friendElement";
 
-export default function NotificationScreen({ navigation }) {
+//types
+import { AppStackParamList } from "../utils/types";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+
+type Props = NativeStackScreenProps<AppStackParamList, 'Notifications'>;
+
+export default function NotificationScreen({ navigation }: Props) {
     return (
         <View style={{ backgroundColor: "#17171d", flex: 1, paddingTop: 10, paddingBottom: 30, alignItems: "center" }}>
 

@@ -6,8 +6,12 @@ import { sendPasswordResetEmail, } from "firebase/auth";
 import { auth } from './firebase';
 import ModalBox from "../components/modal";
 import CustomText from "../components/customText";
+import { AppStackParamList } from "../utils/types";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
-export default function ForgotPassScreen({ navigation }) {
+type Props = NativeStackScreenProps<AppStackParamList, 'ForgotPass'>;
+
+export default function ForgotPassScreen({ navigation }: Props) {
 
     const [email, setEmail] = useState("");
 

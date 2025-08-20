@@ -8,10 +8,9 @@ import { setDoc, doc, updateDoc, increment } from "firebase/firestore";
 import { useUserData } from "../contexts/userContext";
 import * as ImagePicker from 'expo-image-picker';
 import { ImagePickerAsset } from "expo-image-picker";
-import ModalBox from "../components/modal";
 import CarouselComponent from "../components/carousel";
-import ActivityBox from "../components/activity";
-import LoginScreen from "../auth/login";
+import { useModalContext } from "../contexts/modalContext";
+import { uploadToHc, uploadFileTemp } from "../utils/otherUtils";
 
 const SELECTION_LIMIT = 5;
 
@@ -25,36 +24,12 @@ export default function NewPostScreen({ navigation }) {
     const [media, setMedia] = useState<string[]>([])
     const [rs, setRs] = useState<ImagePickerAsset[]>([]);
 
-    const activityText = useRef("Posting...");
-    const activitySubtext = useRef("Updating info");
-    const [activityVisible, setActivityVisible] = useState(false);
-    const activityProgress = useRef(0);
-
-    const [modalText, setModalText] = useState("");
-    const [modalSubtext, setmodalSubtext] = useState("");
-    const [modalVisible, setModalVisible] = useState(false);
-    const modalFnRef = useRef<() => void>(() => { });
-
     const user = auth.currentUser;
     const { userData } = useUserData();
 
     const scrollRef = useRef<ScrollView>(null);
+    const { alert, updateActivity, setActivityVisible } = useModalContext();
 
-    const scrollToTop = () => {
-        scrollRef.current?.scrollTo({ y: 0, animated: true });
-    };
-
-    function alert(text: string, subtext: string, onClose?: () => void) {
-        setModalVisible(true);
-        setModalText(text);
-        setmodalSubtext(subtext);
-
-        modalFnRef.current = onClose || (() => { });
-    }
-    function updateActivity(progress: number, activityInfo: string) {
-        activityProgress.current = progress;
-        activitySubtext.current = activityInfo;
-    }
 
     function gen_post_title(email: string) {
         const userName = email.split("@")[0];
@@ -135,20 +110,27 @@ export default function NewPostScreen({ navigation }) {
 
     const uploadMedia = async (rs: any[]) => {
         try {
-            // console.log("Value of rs : ", rs)
             let tempUrls: string[] = [];
             for (let i = 0; i < rs.length; ++i) {
                 const url = await uploadFileTemp(rs[i]);
                 tempUrls.push(url);
-                // console.log("Pushed : ", url)
             }
             const deployedUrls = await uploadToHc(tempUrls);
+
+            if (deployedUrls.length == 0) {
+                throw new Error("Couldn't deploy to hackclub cdn");
+            }
+
+            setMedia(deployedUrls);
+
             return deployedUrls;
 
         } catch (e) {
+            alert("Error", "Couldn't upload media, Please try again...");
             console.log("Failed to upload file", e);
         }
     }
+
     const pickMedia = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images', 'videos'],
@@ -229,22 +211,6 @@ export default function NewPostScreen({ navigation }) {
     return (
         <ScrollView style={{ backgroundColor: "#17171d", flex: 1, paddingTop: 50, marginBottom: 100 }} contentContainerStyle={{ alignItems: "center" }} ref={scrollRef}>
 
-            <ModalBox
-                onClose={() => modalFnRef.current()}
-                animation="fade"
-                isVisible={modalVisible}
-                setIsVisible={setModalVisible}
-                text={modalText}
-                subtext={modalSubtext}
-            />
-            <ActivityBox
-                progress={activityProgress.current}
-                animation="fade"
-                isVisible={activityVisible}
-                setIsVisible={setActivityVisible}
-                subtext={activitySubtext.current}
-                text={activityText.current}
-            />
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-start", width: "100%" }}>
                 <Image source={userData?.avatar ? { uri: userData.avatar } : require("../../assets/images/pfp.jpg")} style={{ marginHorizontal: 10, borderRadius: 50, width: 30, height: 30 }} />
                 <CustomText style={{ color: "white", fontSize: 20, textAlign: "center", fontWeight: "bold", marginLeft: 10, marginVertical: 10 }}>Create New Log</CustomText>
