@@ -1,4 +1,5 @@
-import { Text, View, FlatList, StyleSheet, RefreshControl } from 'react-native';
+import { View, FlatList, StyleSheet, RefreshControl } from 'react-native';
+import CustomText from '../components/customText';
 import RadioBtn from "../components/radioBtn";
 import { useEffect, useState } from "react";
 import { db, auth } from "../auth/firebase";
@@ -14,7 +15,10 @@ interface post {
     uid: string,
     post_message: string,
     used_media: boolean,
-    timestamp: Timestamp
+    timestamp: Timestamp,
+    likes: number,
+    media: string[],
+    num_comments: number
 }
 
 export default function MyAccount({ navigation }) {
@@ -57,9 +61,6 @@ export default function MyAccount({ navigation }) {
     async function showPosts() {
         const ownPosts = await showOwnPosts();
         setOwnPosts(ownPosts);
-
-        // const ownPosts = await showLikedPosts();
-        // setOwnPosts(ownPosts);
     }
 
     useEffect(() => {
@@ -72,7 +73,7 @@ export default function MyAccount({ navigation }) {
             data={(currTab == "Logs") ? userOwnPosts : likedPosts}
             keyExtractor={item => item.id}
             renderItem={({ item }) => (
-                <Post user_uid={userData ? userData.uid : ""} id={item.id} uid={item.uid} timestamp={item.timestamp} message={item.post_message} used_media={item.used_media} media={item.media} />
+                <Post comment_count={item.num_comments} user_uid={userData ? userData.uid : ""} id={item.id} uid={item.uid} timestamp={item.timestamp} message={item.post_message} used_media={item.used_media} media={item.media} like_count={item.likes} />
             )}
             removeClippedSubviews={true}
             ListEmptyComponent={
@@ -90,11 +91,11 @@ export default function MyAccount({ navigation }) {
                     />
 
                     <View style={{ backgroundColor: "#373d46ff", width: "100%", height: StyleSheet.hairlineWidth }} />
-                    <Text
+                    <CustomText
                         style={{
                             color: "white", textAlign: "left", paddingLeft: 10, fontSize: 20, fontWeight: "bold", marginVertical: 20
                         }}>
-                        {(currTab == "Logs") ? "Your Logs" : "Liked Logs"}</Text>
+                        {(currTab == "Logs") ? "Your Logs" : "Liked Logs"}</CustomText>
                 </View>
 
             }

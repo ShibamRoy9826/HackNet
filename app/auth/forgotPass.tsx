@@ -1,10 +1,11 @@
 import { Button } from "@react-navigation/elements";
-import { Text, View, StyleSheet, Linking } from "react-native";
+import { View, StyleSheet } from "react-native";
 import InputBox from "../components/inptField";
 import { useState, useRef } from "react";
 import { sendPasswordResetEmail, } from "firebase/auth";
 import { auth } from './firebase';
 import ModalBox from "../components/modal";
+import CustomText from "../components/customText";
 
 export default function ForgotPassScreen({ navigation }) {
 
@@ -44,12 +45,12 @@ export default function ForgotPassScreen({ navigation }) {
                 text={modalText}
                 subtext={modalSubtext}
             />
-            <Text style={styles.heading}>
+            <CustomText style={styles.heading}>
                 Forgot password?
-            </Text>
-            <Text style={styles.subHeading}>
+            </CustomText>
+            <CustomText style={styles.subHeading}>
                 No worries, enter your registered email ID for a password reset email
-            </Text>
+            </CustomText>
 
             <View style={styles.fieldContainer}>
                 <InputBox secure={false} value={email} valueFn={setEmail} color="#8492a6" icon="email" placeholder="Your Email" type="emailAddress" />
@@ -59,7 +60,7 @@ export default function ForgotPassScreen({ navigation }) {
                 Send Email
             </Button>
 
-            <Text style={styles.smallTxt}>Recalled it? <Text style={styles.signupBtn} onPress={() => { navigation.navigate("Login") }}>Login back in here</Text></Text>
+            <CustomText style={styles.smallTxt}>Recalled it? <CustomText style={styles.signupBtn} onPress={() => { navigation.navigate("Login") }}>Login back in here</CustomText></CustomText>
 
             <View
                 style={{

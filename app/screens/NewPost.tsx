@@ -1,15 +1,17 @@
-import { Dimensions, Switch, StyleSheet, ScrollView, View, Text, TextInput, Image, Pressable } from "react-native";
+import { Dimensions, Switch, StyleSheet, ScrollView, View, TextInput, Image, Pressable } from "react-native";
+import CustomText from "../components/customText";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { useState, useRef } from "react";
 import RadioBtn from "../components/radioBtn";
 import { auth, db } from "../auth/firebase";
-import { setDoc, doc } from "firebase/firestore";
+import { setDoc, doc, updateDoc, increment } from "firebase/firestore";
 import { useUserData } from "../contexts/userContext";
 import * as ImagePicker from 'expo-image-picker';
 import { ImagePickerAsset } from "expo-image-picker";
 import ModalBox from "../components/modal";
 import CarouselComponent from "../components/carousel";
 import ActivityBox from "../components/activity";
+import LoginScreen from "../auth/login";
 
 const SELECTION_LIMIT = 5;
 
@@ -185,8 +187,12 @@ export default function NewPostScreen({ navigation }) {
                             users_liked: [],
                             used_media: true,
                             comments_enabled: comments_enabled,
-                            comments: [],
-                        }).then(() => {
+                            num_comments: 0
+                        }).then(async () => {
+                            updateDoc(doc(db, "users", user.uid),
+                                {
+                                    num_logs: increment(1)
+                                })
                             updateActivity(1, "Done!");
                             setActivityVisible(false);
                             alert("Success", "Your log has been posted successfully!")
@@ -205,7 +211,12 @@ export default function NewPostScreen({ navigation }) {
                     users_liked: [],
                     used_media: false,
                     comments_enabled: comments_enabled,
+                    num_comments: 0
                 }).then(() => {
+                    updateDoc(doc(db, "users", user.uid),
+                        {
+                            num_logs: increment(1)
+                        })
                     updateActivity(1, "Done!");
                     setActivityVisible(false);
                     alert("Success", "Your log has been posted successfully!")
@@ -236,7 +247,7 @@ export default function NewPostScreen({ navigation }) {
             />
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-start", width: "100%" }}>
                 <Image source={userData?.avatar ? { uri: userData.avatar } : require("../../assets/images/pfp.jpg")} style={{ marginHorizontal: 10, borderRadius: 50, width: 30, height: 30 }} />
-                <Text style={{ color: "white", fontSize: 20, textAlign: "center", fontWeight: "bold", marginLeft: 10, marginVertical: 10 }}>Create New Log</Text>
+                <CustomText style={{ color: "white", fontSize: 20, textAlign: "center", fontWeight: "bold", marginLeft: 10, marginVertical: 10 }}>Create New Log</CustomText>
                 <MaterialDesignIcons name={"plus-box"} size={20} color={"white"} style={{ marginLeft: 10 }} />
             </View>
             <TextInput value={message} onChangeText={setMessage} textAlignVertical="top" multiline={true} style={styles.fieldContainer} placeholder="Have something to share?" placeholderTextColor={"#8492a6"} />
@@ -256,14 +267,14 @@ export default function NewPostScreen({ navigation }) {
             {
                 used_media ?
                     <View style={{ height: "auto", width: width }}>
-                        <Text style={[styles.heading, { marginLeft: 25 }]}>Attachments</Text>
+                        <CustomText style={[styles.heading, { marginLeft: 25 }]}>Attachments</CustomText>
                         <CarouselComponent
                             data={rs}
                         />
 
                         <View style={{ height: "auto", width: width, alignItems: "center", justifyContent: "center", paddingVertical: 20 }}>
                             <Pressable style={styles.button} onPressIn={() => { setMedia([]); setUsedMedia(false); }}>
-                                <Text style={styles.btnTxt}>Remove Attachment</Text>
+                                <CustomText style={styles.btnTxt}>Remove Attachment</CustomText>
                                 <MaterialDesignIcons name="close" color="white" size={20} />
                             </Pressable>
                         </View>
@@ -276,7 +287,7 @@ export default function NewPostScreen({ navigation }) {
 
             {/* Other Options */}
             <View style={{ height: 0.3 * height, width: width, paddingTop: 20 }}>
-                <Text style={styles.label}>Who Can View This?</Text>
+                <CustomText style={styles.label}>Who Can View This?</CustomText>
                 <RadioBtn
                     options={["Everyone", "Friends Only"]}
                     iconList={["earth", "account-group"]}
@@ -285,7 +296,7 @@ export default function NewPostScreen({ navigation }) {
                     style={{ paddingLeft: 30, marginVertical: 15 }}
                 />
 
-                <Text style={styles.label}>Comments</Text>
+                <CustomText style={styles.label}>Comments</CustomText>
                 <View style={{ width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", paddingLeft: 40 }}>
                     <Switch
                         trackColor={{ false: '#8492a6', true: '#ec3750' }}
@@ -293,13 +304,13 @@ export default function NewPostScreen({ navigation }) {
                         onValueChange={() => { setComments(!comments_enabled); }}
                         value={comments_enabled}
                     />
-                    <Text style={styles.subtxt}>{(comments_enabled ? "No one can comment on your post" : "Others can comment on your post")}</Text>
+                    <CustomText style={styles.subtxt}>{(comments_enabled ? "No one can comment on your post" : "Others can comment on your post")}</CustomText>
                 </View>
             </View>
 
             <View style={{ height: "auto", width: width, alignItems: "center", justifyContent: "center", marginBottom: 100 }}>
                 <Pressable style={styles.button} onPressIn={newLog}>
-                    <Text style={styles.btnTxt}>Log</Text>
+                    <CustomText style={styles.btnTxt}>Log</CustomText>
                     <MaterialDesignIcons name="note-text" color="white" size={20} />
                 </Pressable>
             </View>

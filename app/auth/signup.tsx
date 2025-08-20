@@ -1,5 +1,5 @@
 import { Button } from "@react-navigation/elements";
-import { Text, ScrollView, View, StyleSheet, Pressable, RefreshControl } from "react-native";
+import { ScrollView, View, StyleSheet, Pressable, RefreshControl } from "react-native";
 import InputBox from "../components/inptField";
 import { useState, useRef } from "react";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
@@ -8,6 +8,7 @@ import { auth, db } from './firebase';
 import ModalBox from "../components/modal";
 import { doc, setDoc } from "firebase/firestore";
 import React from "react";
+import CustomText from "../components/customText";
 
 function isValidEmail(email: string) {
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -135,12 +136,12 @@ export default function SignUpScreen({ navigation }) {
                 text={modalText}
                 subtext={modalSubtext}
             />
-            <Text style={styles.heading}>
+            <CustomText style={styles.heading}>
                 Sign Up
-            </Text>
-            <Text style={styles.subHeading}>
+            </CustomText>
+            <CustomText style={styles.subHeading}>
                 Get ready to be one of hackers!
-            </Text>
+            </CustomText>
 
             <View style={styles.fieldContainer}>
                 <InputBox secure={false} value={username} valueFn={setUserName} color="#8492a6" icon="account-circle" placeholder="Your Name" type="emailAddress" />
@@ -152,7 +153,7 @@ export default function SignUpScreen({ navigation }) {
                 Create Account
             </Button>
 
-            <Text style={styles.smallTxt}>Already have an account? <Text style={styles.signupBtn} onPress={() => { navigation.navigate("Login") }}>Login here</Text></Text>
+            <CustomText style={styles.smallTxt}>Already have an account? <CustomText style={styles.signupBtn} onPress={() => { navigation.navigate("Login") }}>Login here</CustomText></CustomText>
 
             <View
                 style={{
@@ -164,19 +165,19 @@ export default function SignUpScreen({ navigation }) {
             >
             </View>
 
-            <Text style={styles.subHeading}>
+            <CustomText style={styles.subHeading}>
                 or
-            </Text>
+            </CustomText>
 
 
             <Pressable style={[styles.button, { backgroundColor: "#8492a6" }]} onPress={handleSlackLogin}>
-                <Text style={{ color: "white", fontSize: 15, marginRight: 6 }}>
+                <CustomText style={{ color: "white", fontSize: 15, marginRight: 6 }}>
                     Login With Slack
-                </Text>
+                </CustomText>
                 <MaterialDesignIcons name="slack" size={20} color="white" />
             </Pressable>
 
-            <Text style={{ color: "#8492a6" }}>(Coming soon)</Text>
+            <CustomText style={{ color: "#8492a6" }}>(Coming soon)</CustomText>
         </ScrollView>
     );
 };

@@ -13,6 +13,14 @@ import SettingsScreen from "./screens/Settings";
 import { UserDataProvider } from "./contexts/userContext";
 import CommentsScreen from "./screens/CommentSection";
 
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.setOptions({
+  duration: 2000,
+  fade: true,
+});
+SplashScreen.preventAutoHideAsync();
+
 
 const AppStack = createNativeStackNavigator();
 
@@ -34,6 +42,8 @@ export default function RootLayout() {
     return (
       <LoadingScreen />
     )
+  } else {
+    SplashScreen.hide();
   }
   return (
     <UserDataProvider>

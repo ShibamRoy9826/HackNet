@@ -1,4 +1,5 @@
-import { Pressable, Image, View, Text, TextInput, StyleSheet, ScrollView } from "react-native";
+import { Pressable, Image, View, TextInput, StyleSheet, ScrollView } from "react-native";
+import CustomText from "../components/customText";
 import { Button } from "@react-navigation/elements";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useState, useEffect, useRef } from "react";
@@ -211,18 +212,18 @@ export default function EditProfileScreen({ navigation }) {
 
                 <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
                     <Pressable style={[styles.button, { flexDirection: "row", marginRight: 40, marginTop: 20 }]} onPress={pickImage}>
-                        <Text style={{ color: "white", fontWeight: "bold", marginRight: 10 }}>Edit Avatar</Text>
+                        <CustomText style={{ color: "white", fontWeight: "bold", marginRight: 10 }}>Edit Avatar</CustomText>
                         <MaterialDesignIcons name="pencil-box-multiple" size={20} color={"white"} />
                     </Pressable>
                 </View>
 
-                <Text style={styles.label}>Email:</Text>
+                <CustomText style={styles.label}>Email:</CustomText>
                 <TextInput style={styles.inputBoxDisabled} value={email} onChangeText={setEmail} editable={false}></TextInput>
 
-                <Text style={styles.label}>Display Name:</Text>
+                <CustomText style={styles.label}>Display Name:</CustomText>
                 <TextInput style={styles.inputBox} value={username} onChangeText={setUserName}></TextInput>
 
-                <Text style={styles.label}>Bio:</Text>
+                <CustomText style={styles.label}>Bio:</CustomText>
                 <TextInput style={[styles.inputBox, { height: "40%" }]} value={bio} onChangeText={setBio} textAlignVertical="top" multiline={true}></TextInput>
 
             </View>

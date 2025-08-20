@@ -1,4 +1,5 @@
-import { View, ScrollView, Text, StyleSheet, Pressable } from "react-native";
+import { View, ScrollView, StyleSheet, Pressable } from "react-native";
+import CustomText from "../components/customText";
 import InputBox from "../components/inptField";
 import FriendElement from "../components/friendElement";
 import { useState } from "react";
@@ -9,7 +10,7 @@ export default function FriendsScreen({ navigation }) {
     return (
         <View style={{ backgroundColor: "#17171d", flex: 1, paddingTop: 50, paddingBottom: 100, alignItems: "center" }}>
             <View style={{ flexDirection: "row", alignItems: "center", width: "100%" }}>
-                <Text style={{ color: "white", fontSize: 20, textAlign: "center", fontWeight: "bold", marginVertical: 10, marginLeft: "10%" }}>Your Friends</Text>
+                <CustomText style={{ color: "white", fontSize: 20, textAlign: "center", fontWeight: "bold", marginVertical: 10, marginLeft: "10%" }}>Your Friends</CustomText>
                 <Pressable style={{ marginLeft: "auto", marginRight: 30 }}>
                     <MaterialDesignIcons size={20} color={"white"} name="account-plus-outline" />
                 </Pressable>

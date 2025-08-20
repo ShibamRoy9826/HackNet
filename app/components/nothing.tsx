@@ -1,4 +1,5 @@
-import { View, Image, Text, StyleSheet, } from 'react-native';
+import { View, Image, StyleSheet, } from 'react-native';
+import CustomText from './customText';
 
 interface Props {
     text?: string
@@ -11,7 +12,7 @@ export default function NothingHere({ text }: Props) {
                 source={require("../../assets/images/empty-box.png")}
                 style={{ borderRadius: 50, width: 70, height: 70, marginHorizontal: 10, marginVertical: 40 }}
             />
-            <Text style={styles.subtxt}>{text ? text : "There's nothing here...."}</Text>
+            <CustomText style={styles.subtxt}>{text ? text : "There's nothing here...."}</CustomText>
         </View>
     )
 }

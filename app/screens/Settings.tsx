@@ -1,11 +1,14 @@
-import { View, ScrollView, Text, StyleSheet, Pressable } from "react-native";
+import { View, ScrollView, StyleSheet, Pressable } from "react-native";
+import CustomText from "../components/customText";
 import { signOut } from "firebase/auth";
 import { auth } from '../auth/firebase'
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 export default function SettingsScreen({ navigation }) {
     function logout() {
-        signOut(auth).then(() => {
+        signOut(auth).then(async () => {
+            await AsyncStorage.clear();
             navigation.navigate("Login");
         }).catch((e) => {
             console.log("ERROR::: ", e.code, e.message)
@@ -16,7 +19,7 @@ export default function SettingsScreen({ navigation }) {
 
             <ScrollView style={styles.listContainer} contentContainerStyle={{ alignContent: "center", alignItems: "center" }}>
                 <Pressable onPress={logout} style={styles.button}>
-                    <Text>Sign Out</Text>
+                    <CustomText>Sign Out</CustomText>
                 </Pressable>
             </ScrollView>
         </View>

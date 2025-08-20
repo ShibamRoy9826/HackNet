@@ -1,10 +1,12 @@
-import { Pressable, Image, View, FlatList, StyleSheet, RefreshControl, Text, KeyboardAvoidingView } from "react-native";
+import { Pressable, Image, View, FlatList, StyleSheet, RefreshControl, KeyboardAvoidingView } from "react-native";
+import CustomText from "../components/customText";
 import React, { useEffect, useState } from 'react';
 import { useRoute } from "@react-navigation/native";
 import { auth, db } from "../auth/firebase";
-import { serverTimestamp, addDoc, where, collection, getDocs, orderBy, query, Timestamp } from "firebase/firestore";
+import { updateDoc, doc, increment, serverTimestamp, addDoc, where, collection, getDocs, orderBy, query, Timestamp } from "firebase/firestore";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import InputBox from "../components/inptField";
+import NothingHere from "../components/nothing";
 
 interface comment {
     id: string,
@@ -58,6 +60,10 @@ export default function CommentsScreen({ navigation }) {
                 likes: 0
             })
             console.log("done!");
+            await updateDoc(doc(db, "posts", post_id),
+                {
+                    num_comments: increment(1)
+                })
             loadComments();
             setComment("");
         } catch (e) {
@@ -176,36 +182,39 @@ export default function CommentsScreen({ navigation }) {
                             </View>
                             <View style={styles.detailsContainer}>
                                 <View style={{ flexDirection: "row", alignContent: "center", position: "static" }}>
-                                    <Text style={styles.username}>{usersData[item.uid]?.displayName ?? "Some User..."}</Text>
-                                    <Text style={[styles.subtxt, { marginLeft: 20 }]}>{extractTime(item.timestamp)}</Text>
+                                    <CustomText style={styles.username}>{usersData[item.uid]?.displayName ?? "Some User..."}</CustomText>
+                                    <CustomText style={[styles.subtxt, { marginLeft: 20 }]}>{extractTime(item.timestamp)}</CustomText>
                                     <Pressable style={{ top: 5, right: 0, padding: 5, position: "absolute" }}>
                                         <MaterialDesignIcons name="dots-vertical" color="#5f6878" size={25} />
                                     </Pressable>
                                 </View>
 
-                                <Text style={styles.message}>{item.message}</Text>
+                                <CustomText style={styles.message}>{item.message}</CustomText>
                             </View>
                         </View>
                         <View style={{ flexDirection: "row", gap: 10 }}>
                             <Pressable style={{ padding: 5, flexDirection: "row", alignItems: "center" }}>
                                 <MaterialDesignIcons name="thumb-up-outline" color="#5f6878" size={25} />
-                                <Text style={{ color: "#8492a6", marginLeft: 5 }}>0</Text>
+                                <CustomText style={{ color: "#8492a6", marginLeft: 5 }}>0</CustomText>
                             </Pressable>
                             <Pressable style={{ padding: 5, flexDirection: "row", alignItems: "center" }}>
                                 <MaterialDesignIcons name="thumb-down-outline" color="#5f6878" size={25} />
-                                <Text style={{ color: "#8492a6", marginLeft: 5 }}>0</Text>
+                                <CustomText style={{ color: "#8492a6", marginLeft: 5 }}>0</CustomText>
                             </Pressable>
                             <Pressable style={{ padding: 5, flexDirection: "row", alignItems: "center" }}>
-                                <Text style={{ color: "#8492a6", marginLeft: 5 }}>Reply</Text>
+                                <CustomText style={{ color: "#8492a6", marginLeft: 5 }}>Reply</CustomText>
                             </Pressable>
                         </View>
 
                     </View>
                 )}
+                ListEmptyComponent={
+                    <NothingHere text="No comments yet... " />
+                }
                 style={{ backgroundColor: "#17171d", flex: 1, height: "100%" }}
                 removeClippedSubviews={true}
             />
-            <View style={{ flexDirection: "row", alignItems: "center", width: "100%", paddingBottom: 80, borderColor: "#25252fff", borderTopWidth: StyleSheet.hairlineWidth }}>
+            <View style={{ marginBottom: 70, flexDirection: "row", alignItems: "center", width: "100%", borderColor: "#25252fff", borderTopWidth: StyleSheet.hairlineWidth }}>
                 <InputBox secure={false} value={comment} valueFn={setComment} color="#8492a6" icon="comment" type="none" placeholder="Comment here" />
                 <Pressable style={{ padding: 8 }} onPress={addComment}>
                     <MaterialDesignIcons name="send" color="#5f6878" size={25} />

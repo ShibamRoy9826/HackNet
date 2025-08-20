@@ -1,4 +1,4 @@
-import { Image, StyleProp, ImageStyle, StyleSheet, View, Button } from "react-native";
+import { Image, StyleProp, ImageStyle, StyleSheet, View } from "react-native";
 import { useEvent } from 'expo';
 import { useVideoPlayer, VideoView } from 'expo-video';
 

@@ -1,6 +1,7 @@
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { Modal, View, Text, Pressable, StyleSheet, SafeAreaView } from "react-native";
+import { Modal, View, Pressable, StyleSheet, SafeAreaView } from "react-native";
 import { BlurView } from 'expo-blur';
+import CustomText from "./customText";
 
 
 interface Props {
@@ -26,8 +27,8 @@ export default function ModalBox({ animation, isVisible, setIsVisible, onClose, 
       >
         <BlurView intensity={10} style={styles.rootView} tint="dark" experimentalBlurMethod="dimezisBlurView">
           <View style={styles.modalView}>
-            <Text style={styles.modalText}>{text}</Text>
-            <Text style={styles.modalSubtext}>{subtext}</Text>
+            <CustomText style={styles.modalText}>{text}</CustomText>
+            <CustomText style={styles.modalSubtext}>{subtext}</CustomText>
             <Pressable
               style={styles.button}
               onPress={() => { setIsVisible(!isVisible); onClose(); }}>

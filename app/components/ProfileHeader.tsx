@@ -1,8 +1,9 @@
-import { FlatList, RefreshControl, StyleSheet, ScrollView, Image, View, Text, Pressable } from "react-native";
+import { FlatList, RefreshControl, StyleSheet, ScrollView, Image, View, Pressable } from "react-native";
 import { useUserData } from '../contexts/userContext';
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import RadioBtn from "../components/radioBtn";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import CustomText from "./customText";
 
 import React, { useState } from 'react';
 
@@ -25,30 +26,30 @@ export default function ProfileHeader({ userData, navigation }: Props) {
                 }}>
 
                     <View>
-                        <Text style={{ fontSize: 25, color: "white", fontWeight: "bold", width: "100%", textAlign: "left", marginTop: 40, marginLeft: 20 }}>{userData?.displayName}</Text>
-                        <Text style={styles.subtxt}>@{userData?.email}</Text>
+                        <CustomText style={{ fontSize: 25, color: "white", fontWeight: "bold", width: "100%", textAlign: "left", marginTop: 40, marginLeft: 20 }}>{userData?.displayName}</CustomText>
+                        <CustomText style={styles.subtxt}>@{userData?.email}</CustomText>
                     </View>
 
                     <Pressable style={[styles.button, { flexDirection: "row", marginRight: 40, marginTop: 20 }]} onPress={() => { navigation.navigate("EditProfile") }}>
-                        <Text style={{ color: "white", fontWeight: "bold", marginRight: 10 }}>Edit Profile</Text>
+                        <CustomText style={{ color: "white", fontWeight: "bold", marginRight: 10 }}>Edit Profile</CustomText>
                         <MaterialDesignIcons name="pencil-box-multiple" size={20} color={"white"} />
                     </Pressable>
                 </View>
-                <Text style={[styles.subtxt, { color: "white", marginTop: 20, paddingLeft: 5, paddingRight: 30 }]}>
+                <CustomText style={[styles.subtxt, { color: "white", marginTop: 20, paddingLeft: 5, paddingRight: 30 }]}>
                     {userData?.bio}
-                </Text>
+                </CustomText>
                 <View style={{ flexDirection: "row", width: "100%", alignItems: "center", justifyContent: "center", marginVertical: 10 }}>
-                    <Text style={{ fontSize: 15, color: "white", fontWeight: "bold" }}>
-                        {userData?.num_logs} <Text style={[styles.subtxt, { color: "#8492a6" }]}>Logs</Text>
-                    </Text>
+                    <CustomText style={{ fontSize: 15, color: "white", fontWeight: "bold" }}>
+                        {userData?.num_logs} <CustomText style={[styles.subtxt, { color: "#8492a6" }]}>Logs</CustomText>
+                    </CustomText>
 
-                    <Text style={{ marginLeft: 20, fontSize: 15, color: "white", fontWeight: "bold" }}>
-                        {userData?.num_trackers} <Text style={[styles.subtxt, { color: "#8492a6" }]}>Trackers</Text>
-                    </Text>
+                    <CustomText style={{ marginLeft: 20, fontSize: 15, color: "white", fontWeight: "bold" }}>
+                        {userData?.num_trackers} <CustomText style={[styles.subtxt, { color: "#8492a6" }]}>Trackers</CustomText>
+                    </CustomText>
 
-                    <Text style={{ marginLeft: 20, fontSize: 15, color: "white", fontWeight: "bold" }}>
-                        {userData?.num_tracking} <Text style={[styles.subtxt, { color: "#8492a6" }]}>Tracking</Text>
-                    </Text>
+                    <CustomText style={{ marginLeft: 20, fontSize: 15, color: "white", fontWeight: "bold" }}>
+                        {userData?.num_tracking} <CustomText style={[styles.subtxt, { color: "#8492a6" }]}>Tracking</CustomText>
+                    </CustomText>
                 </View>
             </View>
 

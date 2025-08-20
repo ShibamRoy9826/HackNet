@@ -1,4 +1,4 @@
-import { RefreshControl, View, Animated, ActivityIndicator, Text } from "react-native";
+import { RefreshControl, View, Animated, ActivityIndicator, KeyboardAvoidingView } from "react-native";
 import HomeHeader from "../components/HomeHeader";
 import Post from "../components/post";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -16,6 +16,7 @@ interface post {
     timestamp: Timestamp,
     media: string[],
     likes: number,
+    num_comments: number
 }
 
 
@@ -103,7 +104,7 @@ export default function HomeScreen({ navigation }) {
     }, [])
 
     return (
-        <View style={{ backgroundColor: "#17171d", paddingTop: insets.top, flex: 1, overflow: "hidden" }}>
+        <KeyboardAvoidingView behavior={"height"} style={{ backgroundColor: "#17171d", paddingTop: insets.top, flex: 1, overflow: "hidden" }}>
 
             <HomeHeader tY={translateY} h={50 + insets.top} pT={insets.top} />
 
@@ -112,23 +113,23 @@ export default function HomeScreen({ navigation }) {
                 data={posts}
                 keyExtractor={item => item.id}
                 renderItem={({ item }) => (
-                    <Post like_count={item.likes} user_uid={user ? user.uid : ""} id={item.id} uid={item.uid} timestamp={item.timestamp} message={item.post_message} used_media={item.used_media} media={item.media} />
+                    <Post comment_count={item.num_comments} like_count={item.likes} user_uid={user ? user.uid : ""} id={item.id} uid={item.uid} timestamp={item.timestamp} message={item.post_message} used_media={item.used_media} media={item.media} />
                 )}
-                style={{ backgroundColor: "#17171d", flex: 1, height: "100%", marginBottom: 100, }}
+                style={{ backgroundColor: "#17171d", flex: 1, height: "100%" }}
                 onScroll={e => {
                     scrollY.setValue(e.nativeEvent.contentOffset.y);
                 }}
                 onEndReached={loadPosts}
                 onEndReachedThreshold={0.5}
                 ListHeaderComponent={<View style={{ height: 50 + insets.top }}></View>}
-                ListFooterComponent={loading ? <ActivityIndicator size="large" /> : null}
+                ListFooterComponent={<View style={{ padding: 100 }}>{loading ? <ActivityIndicator size="large" /> : null}</View>}
                 removeClippedSubviews={false}
                 initialNumToRender={postLimit}
                 maxToRenderPerBatch={postLimit}
             />
 
 
-        </View>
+        </KeyboardAvoidingView>
     );
 }
 

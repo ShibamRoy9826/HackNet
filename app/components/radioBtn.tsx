@@ -1,5 +1,6 @@
-import { Pressable, Text, View, StyleSheet, StyleProp, ViewStyle } from "react-native";
+import { Pressable, View, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
+import CustomText from "./customText";
 
 interface Props {
     options: string[],
@@ -16,9 +17,9 @@ export default function RadioBtn({ iconList, style, vertical, setSelected, selec
                 options.map((e: string, i: number) => (
                     <Pressable key={i} style={[styles.btn, { backgroundColor: (selected == e) ? "#ec3750" : "#1f2226ff" }]} onPress={() => { setSelected(e) }}>
                         <MaterialDesignIcons name={iconList[i]} size={15} color={"white"} style={{ width: "auto" }} />
-                        <Text style={styles.btnTxt}>
+                        <CustomText style={styles.btnTxt}>
                             {e}
-                        </Text>
+                        </CustomText>
                     </Pressable>
                 ))
             }

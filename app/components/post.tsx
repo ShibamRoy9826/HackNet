@@ -1,11 +1,12 @@
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { StyleSheet, View, Image, Text, Pressable } from "react-native";
+import { StyleSheet, View, Image, Pressable } from "react-native";
 import { useEffect, useState } from "react";
+import CustomText from "./customText";
 import InputBox from "./inptField";
 import { getUserData } from "../auth/firebase";
 import CarouselComponent from "./carousel";
 import { ImagePickerAsset } from "expo-image-picker";
-import { collection, getDocs, doc, Timestamp, deleteDoc, setDoc, getDoc, addDoc, serverTimestamp } from "firebase/firestore";
+import { updateDoc, collection, doc, Timestamp, deleteDoc, setDoc, getDoc, addDoc, serverTimestamp, increment } from "firebase/firestore";
 import { useNavigation } from "@react-navigation/native";
 import { db } from "../auth/firebase";
 
@@ -17,7 +18,8 @@ interface Prop {
     used_media: boolean,
     media: string[],
     user_uid: string,
-    like_count: number
+    like_count: number,
+    comment_count: number
 }
 
 const monthNames = [
@@ -25,9 +27,11 @@ const monthNames = [
     "July", "August", "September", "October", "November", "December"
 ];
 
-export default function Post({ id, user_uid, media, used_media, message, uid, timestamp, like_count }: Prop) {
+export default function Post({ id, user_uid, media, used_media, message, uid, timestamp, like_count, comment_count }: Prop) {
     const navigation = useNavigation();
     const [liked, setLiked] = useState(false);
+    const [likeCount, setLikeCount] = useState(like_count);
+    const [commentCount, setCommentCount] = useState(comment_count);
 
     const [comment, setComment] = useState("");
     const [userPfp, setUserPfp] = useState("https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg");
@@ -72,6 +76,11 @@ export default function Post({ id, user_uid, media, used_media, message, uid, ti
                 likes: 0
             })
             console.log("done!");
+            await updateDoc(doc(db, "posts", id),
+                {
+                    num_comments: increment(1)
+                })
+            setCommentCount(commentCount + 1);
         } catch (e) {
             console.log(e);
         }
@@ -84,16 +93,27 @@ export default function Post({ id, user_uid, media, used_media, message, uid, ti
                     createdAt: new Date()
                 }
             )
-            // console.log("Liked post");
+            await updateDoc(doc(db, "posts", id),
+                {
+                    likes: increment(1)
+                }).then(() => {
+                    setLikeCount(likeCount + 1);
+                })
         } catch (e) {
             console.log(e);
         }
     }
 
-    async function unlikePost() {
+    async function dislikePost() {
         try {
             await deleteDoc(doc(db, "posts", id, "likes", user_uid));
-            // console.log("unliked post");
+            updateDoc(doc(db, "posts", id),
+                {
+                    likes: increment(-1)
+                }).then(() => {
+                    setLikeCount(likeCount - 1);
+                }
+                )
         } catch (e) {
             console.log(e);
         }
@@ -153,8 +173,8 @@ export default function Post({ id, user_uid, media, used_media, message, uid, ti
             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%", paddingHorizontal: 10 }}>
                 <Image source={{ uri: userPfp }} style={{ borderRadius: 50, width: 45, height: 45, margin: "auto" }} />
                 <View style={styles.detailsContainer}>
-                    <Text style={styles.username}>{OPName}</Text>
-                    <Text style={styles.timestamp}>{extractTime(timestamp)}</Text>
+                    <CustomText style={styles.username}>{OPName}</CustomText>
+                    <CustomText style={styles.timestamp}>{extractTime(timestamp)}</CustomText>
                 </View>
                 <View>
                     <Pressable style={{ padding: 5, marginLeft: "auto" }}>
@@ -164,7 +184,7 @@ export default function Post({ id, user_uid, media, used_media, message, uid, ti
             </View>
             <View style={{ paddingVertical: 10, borderColor: "#25252fff", borderTopWidth: StyleSheet.hairlineWidth, height: "auto" }}>
                 {/* Posted content */}
-                <Text style={{ color: "white", height: "auto", fontSize: 16, paddingHorizontal: 20, paddingVertical: 20 }}>{message}</Text>
+                <CustomText style={{ color: "white", height: "auto", fontSize: 16, paddingHorizontal: 20, paddingVertical: 20 }}>{message}</CustomText>
                 {
                     used_media && (
                         <CarouselComponent
@@ -176,13 +196,14 @@ export default function Post({ id, user_uid, media, used_media, message, uid, ti
 
             {/* Buttons */}
             <View style={{ flexDirection: "row", paddingHorizontal: 20, justifyContent: "flex-start", alignItems: "center", width: "auto" }}>
-                <Pressable style={{ padding: 8, flexDirection: "row" }} onPress={() => { setLiked(!liked); liked ? unlikePost() : likePost() }}>
+                <Pressable style={{ padding: 8, flexDirection: "row" }} onPress={() => { setLiked(!liked); liked ? dislikePost() : likePost() }}>
                     <MaterialDesignIcons name={liked ? "heart" : "heart-outline"} color={liked ? "#ec3750" : "#5f6878"} size={25} />
-                    <Text style={{ color: "#8492a6", marginLeft: 5 }}>{like_count}</Text>
+                    <CustomText style={{ color: "#8492a6", marginLeft: 5 }}>{likeCount}</CustomText>
                 </Pressable>
 
-                <Pressable style={{ padding: 8 }} onPress={() => { navigation.navigate("Comments", { post_id: id }) }}>
+                <Pressable style={{ padding: 8, flexDirection: "row" }} onPress={() => { navigation.navigate("Comments", { post_id: id }) }}>
                     <MaterialDesignIcons name="comment" color="#5f6878" size={25} />
+                    <CustomText style={{ color: "#8492a6", marginLeft: 5 }}>{commentCount}</CustomText>
                 </Pressable>
 
                 <Pressable style={{ padding: 8 }}>

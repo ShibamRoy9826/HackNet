@@ -1,12 +1,12 @@
 import { Button } from "@react-navigation/elements";
-import { Text, View, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet, Pressable } from "react-native";
 import InputBox from "../components/inptField";
 import { useState, useRef } from "react";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from './firebase';
 import ModalBox from "../components/modal";
-
+import CustomText from "../components/customText";
 
 export default function LoginScreen({ navigation }) {
     const [email, setEmail] = useState("");
@@ -52,25 +52,25 @@ export default function LoginScreen({ navigation }) {
                 text={modalText}
                 subtext={modalSubtext}
             />
-            <Text style={styles.heading}>
+            <CustomText style={styles.heading}>
                 Hack Net
-            </Text>
-            <Text style={styles.subHeading}>
+            </CustomText>
+            <CustomText style={styles.subHeading}>
                 Social media for teen hackers.
                 Made By a hackclubber, for hackclubbers!
-            </Text>
+            </CustomText>
 
             <View style={styles.fieldContainer}>
                 <InputBox secure={false} value={email} valueFn={setEmail} color="#8492a6" icon="email" placeholder="Your Email" type="emailAddress" />
                 <InputBox secure={true} value={password} valueFn={setPassword} color="#8492a6" icon="key" placeholder="Your Password" type="password" />
 
             </View>
-            <Text style={styles.forgotPass} onPress={() => { navigation.navigate("ForgotPass") }}>Forgot Password?</Text>
+            <CustomText style={styles.forgotPass} onPress={() => { navigation.navigate("ForgotPass") }}>Forgot Password?</CustomText>
             <Button color="white" style={[styles.button, { backgroundColor: "#ec3750" }]} onPressIn={handleLogin}>
                 Login
             </Button>
 
-            <Text style={styles.smallTxt}>Don't have an account? <Text style={styles.signupBtn} onPress={() => { navigation.navigate("SignUp") }}>Sign up here</Text></Text>
+            <CustomText style={styles.smallTxt}>Don't have an account? <CustomText style={styles.signupBtn} onPress={() => { navigation.navigate("SignUp") }}>Sign up here</CustomText></CustomText>
 
             <View
                 style={{
@@ -82,19 +82,19 @@ export default function LoginScreen({ navigation }) {
             >
             </View>
 
-            <Text style={styles.subHeading}>
+            <CustomText style={styles.subHeading}>
                 or
-            </Text>
+            </CustomText>
 
 
             <Pressable style={[styles.button, { backgroundColor: "#8492a6" }]} onPress={handleSlackLogin}>
-                <Text style={{ color: "white", fontSize: 15, marginRight: 6 }}>
+                <CustomText style={{ color: "white", fontSize: 15, marginRight: 6 }}>
                     Login With Slack
-                </Text>
+                </CustomText>
                 <MaterialDesignIcons name="slack" size={20} color="white" />
             </Pressable>
 
-            <Text style={{ color: "#8492a6" }}>(Coming soon)</Text>
+            <CustomText style={{ color: "#8492a6" }}>(Coming soon)</CustomText>
         </View>
     );
 };

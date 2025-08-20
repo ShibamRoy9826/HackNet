@@ -1,5 +1,6 @@
 import { View, StyleSheet, Image, Text, Pressable } from "react-native";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
+import CustomText from "./customText";
 
 interface Props {
     username: string,
@@ -15,12 +16,12 @@ export default function FollowBox({ avatar, username, bio }: Props) {
             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%", paddingHorizontal: 10 }}>
                 <Image source={{ uri: avatar }} style={{ borderRadius: 50, width: 45, height: 45, margin: "auto" }} />
                 <View style={styles.detailsContainer}>
-                    <Text style={styles.username}>{username}</Text>
-                    <Text style={styles.lastMessage}>{bio_mod}</Text>
+                    <CustomText style={styles.username}>{username}</CustomText>
+                    <CustomText style={styles.lastMessage}>{bio_mod}</CustomText>
                 </View>
                 <View>
                     <Pressable style={styles.followBtn}>
-                        <Text style={{ color: "white", fontWeight: "bold" }}>Track</Text>
+                        <CustomText style={{ color: "white", fontWeight: "bold" }}>Track</CustomText>
                         <MaterialDesignIcons name="plus-box" color="white" size={18} style={{ marginLeft: 10 }} />
                     </Pressable>
                 </View>

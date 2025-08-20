@@ -1,7 +1,7 @@
-import { Modal, View, Text, StyleSheet, SafeAreaView } from "react-native";
+import { Modal, View, StyleSheet, SafeAreaView } from "react-native";
 import { BlurView } from "expo-blur";
 import * as Progress from 'react-native-progress';
-
+import CustomText from "./customText";
 
 interface Props {
     animation?: "slide" | "fade" | "none",
@@ -26,8 +26,8 @@ export default function ActivityBox({ progress, animation, isVisible, setIsVisib
             >
                 <BlurView intensity={10} style={styles.centeredView} tint="dark" experimentalBlurMethod="dimezisBlurView">
                     <View style={styles.modalView}>
-                        <Text style={styles.modalText}>{text}</Text>
-                        <Text style={styles.modalSubtext}>{subtext}</Text>
+                        <CustomText style={styles.modalText}>{text}</CustomText>
+                        <CustomText style={styles.modalSubtext}>{subtext}</CustomText>
                         <Progress.Bar progress={progress} width={200} animationType="spring" color="#338eda" unfilledColor="#25252fff" borderWidth={1} borderColor="#25252fff" />
                     </View>
                 </BlurView>

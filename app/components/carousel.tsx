@@ -52,7 +52,7 @@ export default function CarouselComponent({ data }: Props) {
                             backgroundColor: "#0d0d10ff"
                         }}
                     >
-                        {/* <Text style={{ textAlign: "center", fontSize: 30 }}>0</Text> */}
+                        {/* <CustomText style={{ textAlign: "center", fontSize: 30 }}>0</CustomText> */}
                         <Media source={item.uri} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
 
                     </View>

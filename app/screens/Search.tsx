@@ -1,4 +1,5 @@
-import { RefreshControl, View, TextInput, StyleSheet, Pressable, Text, Image } from "react-native";
+import { RefreshControl, View, TextInput, StyleSheet, Pressable, Image } from "react-native";
+import CustomText from "../components/customText";
 import React, { useState, useEffect } from "react";
 import FollowBox from "../components/follow";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
@@ -137,17 +138,17 @@ export default function SearchScreen() {
                     {
                         (userResults.length == 0) ?
                             <View style={{ flex: 1 }}>
-                                <Text style={styles.heading}>Search for other hackers</Text>
+                                <CustomText style={styles.heading}>Search for other hackers</CustomText>
                                 <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }}>
                                     <Image
                                         source={require("../../assets/images/empty-box.png")}
                                         style={{ borderRadius: 50, width: 70, height: 70, marginHorizontal: 10, marginVertical: 40 }}
                                     />
-                                    <Text style={styles.subtext}>There's nothing here....</Text>
+                                    <CustomText style={styles.subtext}>There's nothing here....</CustomText>
                                 </View>
                             </View>
                             :
-                            <Text style={styles.heading}>Hackers you may be looking for</Text>
+                            <CustomText style={styles.heading}>Hackers you may be looking for</CustomText>
                     }
                     <FlatList
                         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
@@ -168,17 +169,17 @@ export default function SearchScreen() {
                     {
                         (postResults.length == 0) ?
                             <View style={{ flex: 1 }}>
-                                <Text style={styles.heading}>Search for some logs</Text>
+                                <CustomText style={styles.heading}>Search for some logs</CustomText>
                                 <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }}>
                                     <Image
                                         source={require("../../assets/images/empty-box.png")}
                                         style={{ borderRadius: 50, width: 70, height: 70, marginHorizontal: 10, marginVertical: 40 }}
                                     />
-                                    <Text style={styles.subtext}>There's nothing here....</Text>
+                                    <CustomText style={styles.subtext}>There's nothing here....</CustomText>
                                 </View>
                             </View>
                             :
-                            <Text style={styles.heading}>Logs you may be looking for</Text>
+                            <CustomText style={styles.heading}>Logs you may be looking for</CustomText>
                     }
                     <FlatList
                         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
@@ -194,7 +195,7 @@ export default function SearchScreen() {
 
             {currTab == "Suggestions" && (
                 <View style={{ width: '100%', marginVertical: 25, paddingHorizontal: 10, flex: 1 }}>
-                    <Text style={styles.heading}>Hackers you can follow</Text>
+                    <CustomText style={styles.heading}>Hackers you can follow</CustomText>
                     <FlatList
                         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                         data={suggested}

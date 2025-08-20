@@ -3,7 +3,6 @@ import HomeScreen from "./Home";
 import MyAccount from "./MyAccount";
 import FriendsScreen from "./Friends";
 import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons';
-import { BlurView } from "expo-blur";
 import { StyleSheet } from "react-native";
 import NewPostScreen from './NewPost';
 import SearchScreen from './Search';
