@@ -1,38 +1,40 @@
+//components
 import { RefreshControl, View, Animated, ActivityIndicator, KeyboardAvoidingView } from "react-native";
-import HomeHeader from "../components/HomeHeader";
-import Post from "../components/post";
+import HomeHeader from "../components/containers/HomeHeader";
+import Post from "../components/containers/post";
+
+//others
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useRef, useEffect, useState } from "react";
+
+//react
+import React, { useRef, useEffect, useState } from "react";
+
+//firebase
 import { collection, query, limit, orderBy, getDocs, startAfter, QueryDocumentSnapshot, Timestamp } from 'firebase/firestore';
 import { auth, db } from '../auth/firebase';
-import React from 'react';
+
+//typecasting
+import { post } from "../utils/types";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { AppTabParamList } from "../utils/types";
 
 const postLimit = 10;
-interface post {
-    id: string,
-    uid: string,
-    post_message: string,
-    used_media: boolean,
-    timestamp: Timestamp,
-    media: string[],
-    likes: number,
-    num_comments: number
-}
 
+type Prop = BottomTabScreenProps<AppTabParamList, "Home">
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({ navigation }: Prop) {
     const insets = useSafeAreaInsets();
-    // const scrollY = new Animated.Value(0);
+
+    //header animation
     const scrollY = useRef(new Animated.Value(0)).current;
     const diffClamp = Animated.diffClamp(scrollY, 0, 64 + insets.top);
-
     const translateY = diffClamp.interpolate({
         inputRange: [0, 50 + insets.top],
         outputRange: [0, -50 - insets.top],
     });
 
-    const [refreshing, setRefreshing] = React.useState(false);
 
+    const [refreshing, setRefreshing] = React.useState(false);
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         setLastDoc(null);
@@ -57,9 +59,9 @@ export default function HomeScreen({ navigation }) {
         let q = query(
             collection(db, "posts"),
             // orderBy("uid"),
-            orderBy("timestamp", 'asc'),
+            orderBy("timestamp", 'desc'),
             limit(postLimit),
-            // where("uid","!=",userId)
+            // where("uid","!=",userId) //TO CHANGE AFTER DEPLOYING
         );
 
         if (lastDoc) {
@@ -68,13 +70,11 @@ export default function HomeScreen({ navigation }) {
 
         const snap = await getDocs(q);
 
-        // const posts=snap.docs.map(doc=>({id:doc.id,...doc.data()}))
         const fetchedPosts: post[] = snap.docs.map(doc => ({
             id: doc.id,
             ...(doc.data() as Omit<post, 'id'>)
         }));
 
-        // console.log(fetchedPosts);
         return { fetchedPosts, lastDoc: snap.docs[snap.docs.length - 1] };
 
     }
@@ -127,7 +127,6 @@ export default function HomeScreen({ navigation }) {
                 initialNumToRender={postLimit}
                 maxToRenderPerBatch={postLimit}
             />
-
 
         </KeyboardAvoidingView>
     );

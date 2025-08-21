@@ -1,22 +1,41 @@
+//components
 import { Dimensions, Switch, StyleSheet, ScrollView, View, TextInput, Image, Pressable } from "react-native";
-import CustomText from "../components/customText";
+import CustomText from "../components/display/customText";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { useState, useRef } from "react";
-import RadioBtn from "../components/radioBtn";
-import { auth, db } from "../auth/firebase";
-import { setDoc, doc, updateDoc, increment } from "firebase/firestore";
-import { useUserData } from "../contexts/userContext";
+import RadioBtn from "../components/inputs/radioBtn";
+import CarouselComponent from "../components/display/carousel";
+import IconButton from "../components/inputs/IconButton";
+
+//react and expo
+import { useState } from "react";
 import * as ImagePicker from 'expo-image-picker';
 import { ImagePickerAsset } from "expo-image-picker";
-import CarouselComponent from "../components/carousel";
+
+//firebase
+import { auth, db } from "../auth/firebase";
+import { setDoc, doc, updateDoc, increment } from "firebase/firestore";
+
+//contexts
+import { useUserData } from "../contexts/userContext";
 import { useModalContext } from "../contexts/modalContext";
+
+//func
 import { uploadToHc, uploadFileTemp } from "../utils/otherUtils";
+import { genPostTitle } from "../utils/stringTimeUtils";
+
+//typecasting
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { AppTabParamList } from "../utils/types";
+import SquareButton from "../components/inputs/squareButton";
+
+
+type Prop = BottomTabScreenProps<AppTabParamList, "Log">
 
 const SELECTION_LIMIT = 5;
 
 const { width, height } = Dimensions.get("window");
 
-export default function NewPostScreen({ navigation }) {
+export default function NewPostScreen({ navigation }: Prop) {
     const [message, setMessage] = useState("");
     const [selectedView, setSelectedView] = useState("Everyone");
     const [comments_enabled, setComments] = useState(true);
@@ -27,86 +46,9 @@ export default function NewPostScreen({ navigation }) {
     const user = auth.currentUser;
     const { userData } = useUserData();
 
-    const scrollRef = useRef<ScrollView>(null);
-    const { alert, updateActivity, setActivityVisible } = useModalContext();
+    const { alert, updateActivity, setActivityVisible, setActivityText } = useModalContext();
+    setActivityText("Posting");
 
-
-    function gen_post_title(email: string) {
-        const userName = email.split("@")[0];
-        const dateTime = new Date();
-        const hr = dateTime.getHours();
-        const mn = dateTime.getMinutes();
-        const sec = dateTime.getSeconds();
-        const day = dateTime.getDate();
-        const month = dateTime.getMonth();
-        const year = dateTime.getFullYear();
-
-        return `${userName}-${day}-${month}-${year}_${hr}_${mn}_${sec}`;
-
-    }
-
-    function extractUrl(res: string) {
-        const match = res.match(/https?:\/\/\S+/);
-        if (match) {
-            return match[0];
-        } else {
-            return "";
-        }
-    }
-    async function uploadToHc(urls: string[]) {
-        const hc = "https://cdn.hackclub.com/api/v3/new";
-        console.log("This is the data hc upload fn got:", urls);
-
-        const hcRes = await fetch(hc,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${process.env.EXPO_PUBLIC_HACKCLUB_CDN_KEY}`
-                },
-                body: JSON.stringify(urls)
-            });
-
-        const response = await hcRes.json();
-
-        if (response) {
-            console.log('response from hc: ', response);
-            const deployedUrls = [];
-            for (let i = 0; i < response.files.length; ++i) {
-                deployedUrls.push(response.files[i].deployedUrl)
-            }
-            console.log(deployedUrls);
-            setMedia(deployedUrls);
-            return deployedUrls;
-        } else {
-            alert("Error", "Couldn't upload media, Please try again...");
-            return [];
-        }
-    }
-
-    const uploadFileTemp = async (file: any): Promise<string> => {
-        return new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.open('PUT', `https://bashupload.com/${file.fileName}`);
-
-            xhr.onload = async () => {
-                try {
-                    resolve(extractUrl(xhr.responseText))
-                } catch (err) {
-                    reject(err);
-                }
-            };
-
-            xhr.onerror = () => {
-                reject(new Error("upload failed"));
-            };
-
-            xhr.setRequestHeader('Content-Type', 'application/octet-stream');
-            xhr.send({ uri: file.uri, type: 'application/octet-stream', name: file.fileName });
-
-
-        })
-    }
 
     const uploadMedia = async (rs: any[]) => {
         try {
@@ -159,7 +101,7 @@ export default function NewPostScreen({ navigation }) {
                 uploadMedia(rs).then(
                     async (PassedMedia) => {
                         updateActivity(0.6, "Uploading info");
-                        setDoc(doc(db, "posts", gen_post_title(user.email)), {
+                        setDoc(doc(db, "posts", genPostTitle(user.email)), {
                             uid: user.uid,
                             likes: 0,
                             timestamp: new Date(),
@@ -183,7 +125,7 @@ export default function NewPostScreen({ navigation }) {
                 )
             } else {
                 updateActivity(0.6, "Uploading info");
-                setDoc(doc(db, "posts", gen_post_title(user.email)), {
+                setDoc(doc(db, "posts", genPostTitle(user.email)), {
                     uid: user.uid,
                     likes: 0,
                     timestamp: new Date(),
@@ -209,7 +151,7 @@ export default function NewPostScreen({ navigation }) {
 
 
     return (
-        <ScrollView style={{ backgroundColor: "#17171d", flex: 1, paddingTop: 50, marginBottom: 100 }} contentContainerStyle={{ alignItems: "center" }} ref={scrollRef}>
+        <ScrollView style={{ backgroundColor: "#17171d", flex: 1, paddingTop: 50, marginBottom: 100 }} contentContainerStyle={{ alignItems: "center" }}>
 
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-start", width: "100%" }}>
                 <Image source={userData?.avatar ? { uri: userData.avatar } : require("../../assets/images/pfp.jpg")} style={{ marginHorizontal: 10, borderRadius: 50, width: 30, height: 30 }} />
@@ -221,12 +163,10 @@ export default function NewPostScreen({ navigation }) {
             {/* Media */}
 
             <View style={{ flexDirection: "row", alignItems: "flex-start", width: "100%", paddingLeft: 40, marginBottom: 20 }}>
-                <Pressable style={{ padding: 8, borderWidth: StyleSheet.hairlineWidth, borderColor: "#25252fff", borderRadius: 3 }} onPress={pickMedia}>
-                    <MaterialDesignIcons name="file-image" color="#5f6878" size={25} />
-                </Pressable>
-                <Pressable style={{ padding: 8, borderWidth: StyleSheet.hairlineWidth, borderColor: "#25252fff", borderRadius: 3 }}>
-                    <MaterialDesignIcons name="file-gif-box" color="#5f6878" size={25} />
-                </Pressable>
+                <SquareButton
+                    icon="file-image"
+                    func={pickMedia}
+                />
             </View>
 
             {/* Media Preview */}
@@ -239,16 +179,16 @@ export default function NewPostScreen({ navigation }) {
                         />
 
                         <View style={{ height: "auto", width: width, alignItems: "center", justifyContent: "center", paddingVertical: 20 }}>
-                            <Pressable style={styles.button} onPressIn={() => { setMedia([]); setUsedMedia(false); }}>
-                                <CustomText style={styles.btnTxt}>Remove Attachment</CustomText>
-                                <MaterialDesignIcons name="close" color="white" size={20} />
-                            </Pressable>
+                            <IconButton
+                                icon="close"
+                                func={() => { setMedia([]); setUsedMedia(false); }}
+                                text="Remove Attachment"
+                            />
                         </View>
 
                     </View> :
-                    <View>
+                    <View />
 
-                    </View>
             }
 
             {/* Other Options */}
@@ -275,10 +215,11 @@ export default function NewPostScreen({ navigation }) {
             </View>
 
             <View style={{ height: "auto", width: width, alignItems: "center", justifyContent: "center", marginBottom: 100 }}>
-                <Pressable style={styles.button} onPressIn={newLog}>
-                    <CustomText style={styles.btnTxt}>Log</CustomText>
-                    <MaterialDesignIcons name="note-text" color="white" size={20} />
-                </Pressable>
+                <IconButton
+                    icon="note-text"
+                    text="Log"
+                    func={newLog}
+                />
             </View>
         </ScrollView>
     );
@@ -313,25 +254,6 @@ const styles = StyleSheet.create({
         color: "#8492a6",
         fontSize: 15,
         marginLeft: 5
-    },
-    btnTxt: {
-        color: "white",
-        fontSize: 15,
-        fontWeight: "bold",
-        width: "auto",
-        textAlign: "center",
-        marginHorizontal: 5
-    },
-    button: {
-        height: "auto",
-        width: "auto",
-        borderRadius: 15,
-        paddingVertical: 8,
-        paddingHorizontal: 10,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#ec3750"
     },
     heading: {
         color: "white",

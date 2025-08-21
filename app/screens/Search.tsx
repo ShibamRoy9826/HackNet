@@ -1,42 +1,33 @@
+//components
 import { RefreshControl, View, TextInput, StyleSheet, Pressable, Image } from "react-native";
-import CustomText from "../components/customText";
-import React, { useState, useEffect } from "react";
-import FollowBox from "../components/follow";
+import CustomText from "../components/display/customText";
+import FollowBox from "../components/containers/follow";
+import RadioBtn from "../components/inputs/radioBtn";
+import Post from "../components/containers/post";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import RadioBtn from "../components/radioBtn";
-import { useUserData } from "../contexts/userContext";
-import Post from "../components/post";
+import OnlyIconButton from "../components/inputs/onlyIconButton";
+
+//react
+import React, { useState, useEffect } from "react";
+
+//contexts
+// import { useUserData } from "../contexts/userContext";
+
+//firebase
 import { collection, getDocs, where, query, limit } from 'firebase/firestore';
-import { db } from "../auth/firebase";
+import { auth, db } from "../auth/firebase";
 import { FlatList } from "react-native";
 
-// import Post from "../components/post";
-
-interface user {
-    uid: string,
-    bio: string,
-    avatar: string,
-    num_trackers: number,
-    num_tracking: number,
-    num_logs: number,
-    displayName: string,
-    displayNameLower: string,
-    email: string,
-}
-interface post {
-    id: string,
-    uid: string,
-    post_message: string,
-    used_media: boolean,
-}
+//typecasting
+import { post, UserData } from "../utils/types";
 
 export default function SearchScreen() {
+    const user = auth.currentUser;
     const [search, setSearch] = useState("");
-    const [userResults, setUserResults] = useState<user[]>([]);
-    const [suggested, setSuggested] = useState<user[]>([]);
+    const [userResults, setUserResults] = useState<UserData[]>([]);
+    const [suggested, setSuggested] = useState<UserData[]>([]);
     const [postResults, setPostResults] = useState<post[]>([]);
     const [currTab, setCurrTab] = useState("Suggestions");
-    const { userData } = useUserData();
 
     const [refreshing, setRefreshing] = React.useState(false);
 
@@ -54,11 +45,7 @@ export default function SearchScreen() {
             where("displayNameLower", ">=", userQuery),
             where("displayNameLower", "<=", userQuery + "\uf8ff")
         )
-        // const getPostsQuery=query(
-        //     collection(db,"posts"),
-        //     where("post_message",">=",userQuery),
-        //     where("post_message","<=",userQuery+"\uf8ff")
-        // )
+
         const snapshot = await getDocs(getUsersQuery);
 
         return snapshot.docs.map(doc => ({
@@ -119,11 +106,10 @@ export default function SearchScreen() {
                 <View style={styles.fieldContainer}>
                     <TextInput value={search} onChangeText={setSearch} maxLength={50} autoCapitalize="none" textContentType={"none"} style={styles.text} placeholder={"Search HackNet"} placeholderTextColor={"#8492a6"} />
                 </View>
-
-                <Pressable style={styles.btn} onPress={handleSearch}>
-                    <MaterialDesignIcons name={"magnify"} size={20} color={"white"} />
-                </Pressable>
-
+                <OnlyIconButton
+                    icon="magnify"
+                    func={handleSearch}
+                />
             </View>
 
             <RadioBtn
@@ -186,7 +172,7 @@ export default function SearchScreen() {
                         data={postResults}
                         keyExtractor={item => item.id}
                         renderItem={({ item }) => (
-                            <Post uid={item.uid} timestamp="today at 12:00pm" message={item.post_message} used_media={item.used_media} />
+                            <Post comment_count={item.num_comments} like_count={item.likes} user_uid={user ? user.uid : ""} id={item.id} uid={item.uid} timestamp={item.timestamp} message={item.post_message} used_media={item.used_media} media={item.media} />
                         )}
                         removeClippedSubviews={true}
                     />
@@ -253,19 +239,6 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: "bold",
         marginBottom: 20
-    },
-    btn: {
-        backgroundColor: "#292932ff",
-        borderRadius: 10,
-        margin: 3,
-        padding: 10,
-        color: "white",
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        borderColor: "#444456ff",
-        borderWidth: StyleSheet.hairlineWidth
     }
 
 });

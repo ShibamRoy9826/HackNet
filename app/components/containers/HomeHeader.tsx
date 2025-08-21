@@ -1,8 +1,13 @@
+//components
 import { StyleSheet, Animated, Pressable, Image } from "react-native";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
+import CustomText from "../display/customText";
+
+//contexts
+import { useUserData } from "../../contexts/userContext";
+
+//react stuff
 import { useNavigation } from '@react-navigation/native';
-import { useUserData } from "../contexts/userContext";
-import CustomText from "./customText";
 
 interface Props {
     tY: any,
@@ -17,8 +22,8 @@ export default function HomeHeader({ tY, h, pT }: Props) {
 
     return (
         <Animated.View style={[styles.header, { height: h, paddingTop: pT, transform: [{ translateY: tY }] }]}>
-            <Pressable style={{}} onPress={() => { nav.navigate('MyAccount') }}>
-                <Image source={userData?.avatar ? { uri: userData.avatar } : require("../../assets/images/pfp.jpg")} style={{ borderRadius: 50, width: 30, height: 30, marginHorizontal: 10 }} />
+            <Pressable style={{}} onPress={() => { nav.navigate('Profile') }}>
+                <Image source={userData?.avatar ? { uri: userData.avatar } : require("../../../assets/images/pfp.jpg")} style={{ borderRadius: 50, width: 30, height: 30, marginHorizontal: 10 }} />
             </Pressable>
 
             <CustomText style={{ fontSize: 18, color: "white", marginRight: "auto" }}> Ahoy, Hacker!</CustomText>

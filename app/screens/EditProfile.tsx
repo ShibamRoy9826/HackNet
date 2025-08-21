@@ -1,8 +1,8 @@
 // components
-import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { Pressable, Image, View, TextInput, StyleSheet, ScrollView } from "react-native";
-import CustomText from "../components/customText";
-import { Button } from "@react-navigation/elements";
+import { Image, View, TextInput, StyleSheet, ScrollView } from "react-native";
+import CustomText from "../components/display/customText";
+import CustomButton from "../components/inputs/customButton";
+import IconButton from "../components/inputs/IconButton";
 
 //contexts
 import { useUserData } from "../contexts/userContext";
@@ -38,8 +38,10 @@ export default function EditProfileScreen({ navigation }: Props) {
     const [email, setEmail] = useState("");
     const [bio, setBio] = useState("");
 
-    const { alert, updateActivity, setActivityVisible } = useModalContext();
+    const { alert, updateActivity, setActivityVisible, setActivityText } = useModalContext();
+    setActivityText("Updating");
 
+    //////////| Functions Start |////////////////////
     const updateProfileInfo = async (providedAvatar?: string) => {
         if (currUser) {
             const userRef = doc(db, "users", currUser.uid);
@@ -49,6 +51,7 @@ export default function EditProfileScreen({ navigation }: Props) {
                     uid: currUser.uid,
                     email: currUser.email,
                     displayName: username,
+                    displayNameLower: username.toLowerCase(),
                     createdAt: userData ? userData.createdAt : new Date(),
                     num_trackers: userData ? userData.num_trackers : 0,
                     num_tracking: userData ? userData.num_tracking : 0,
@@ -66,45 +69,44 @@ export default function EditProfileScreen({ navigation }: Props) {
                 setActivityVisible(false);
                 alert('Updated Successfully', "Your details were updated, if you don't see them, try reopening the app", () => { navigation.goBack() })
             } catch (e) {
-                alert("An error occured", `${e}`)
+                alert("An error occured", "Please try again!")
                 updateActivity(0.6, "Something's wrong");
             }
         }
-        // updateActivity(0.6, "Something's wrong");
-        // setActivityVisible(false);
     }
 
     async function uploadImg(file: any) {
         try {
             const url = await uploadFileTemp(file);
+            updateActivity(0.5, "Uploaded image to temporary server");
             const deployedUrl = await uploadToHc([url]);
             setAvatar(deployedUrl[0]);
             await updateProfileInfo(deployedUrl[0]);
         } catch (e) {
             console.log('an error occured: ', e);
+            updateActivity(0.5, "Error!");
+            setActivityVisible(false);
+            alert("An error occured", "Please try again!")
         }
     }
 
+    // basically a wrapper function to update profile
     const updateProfile = async () => {
         setActivityVisible(true);
         updateActivity(0.1, "Processing data");
 
-        if (currUser) {
-
-            if (imgData) {
-                updateActivity(0.3, "Uploading image");
-                await uploadImg(imgData);
-                updateActivity(0.5, "Uploaded image");
-            } else {
-                updateActivity(0.3, "Updating info");
-                updateProfileInfo();
-            }
-
+        if (imgData) {
+            updateActivity(0.3, "Uploading image");
+            await uploadImg(imgData);  //updateProfileInfo is being called inside of uploadImg
+            updateActivity(0.7, "Uploaded image");
+        } else {
+            updateActivity(0.3, "Updating info");
+            updateProfileInfo();
         }
+
     }
 
     const pickImage = async () => {
-        // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'],
             allowsEditing: true,
@@ -112,16 +114,12 @@ export default function EditProfileScreen({ navigation }: Props) {
             quality: 1,
         });
 
-        // console.log(result);
-
         if (!result.canceled) {
             const rs = result.assets[0];
             setImgData(rs);
-        } else {
-            // console.log("It got cancelled....");
         }
     };
-
+    //////////| Functions End |////////////////////
     useEffect(() => {
         if (userData) {
             setUserName(userData.displayName ?? '');
@@ -138,10 +136,12 @@ export default function EditProfileScreen({ navigation }: Props) {
                 <Image source={(imgData) ? { uri: imgData.uri } : { uri: avatar }} style={{ borderRadius: 50, width: 60, height: 60, marginHorizontal: 10 }} />
 
                 <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
-                    <Pressable style={[styles.button, { flexDirection: "row", marginRight: 40, marginTop: 20 }]} onPress={pickImage}>
-                        <CustomText style={{ color: "white", fontWeight: "bold", marginRight: 10 }}>Edit Avatar</CustomText>
-                        <MaterialDesignIcons name="pencil-box-multiple" size={20} color={"white"} />
-                    </Pressable>
+                    <IconButton
+                        func={pickImage}
+                        style={{ flexDirection: "row", marginRight: 40, marginTop: 20 }}
+                        text={"Edit Avatar"}
+                        icon={"pencil-box-multiple"}
+                    />
                 </View>
 
                 <CustomText style={styles.label}>Email:</CustomText>
@@ -155,9 +155,10 @@ export default function EditProfileScreen({ navigation }: Props) {
 
             </View>
             <View style={{ alignItems: "center", justifyContent: "center", width: "100%", marginTop: "10%" }}>
-                <Button color="white" style={styles.button} onPressIn={updateProfile}>
-                    Save
-                </Button>
+                <CustomButton
+                    func={updateProfile}
+                    text={"Save"}
+                />
             </View>
 
         </ScrollView>
@@ -209,22 +210,5 @@ const styles = StyleSheet.create({
         justifyContent: "flex-start",
         borderColor: "#444456ff",
         borderWidth: StyleSheet.hairlineWidth
-    },
-    smallTxt: {
-        fontSize: 15,
-        marginVertical: 20,
-        color: "#8492a6"
-    },
-    button: {
-        backgroundColor: "#ec3750",
-        elevation: 10,
-        marginVertical: 5,
-        display: "flex",
-        flexDirection: "row",
-        paddingVertical: 10,
-        paddingHorizontal: 18,
-        borderRadius: 15,
-        alignItems: "center",
-        justifyContent: "center"
-    },
+    }
 })

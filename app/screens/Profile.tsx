@@ -1,27 +1,30 @@
+//components
 import { View, FlatList, StyleSheet, RefreshControl } from 'react-native';
-import CustomText from '../components/customText';
-import RadioBtn from "../components/radioBtn";
-import { useEffect, useState } from "react";
+import CustomText from '../components/display/customText';
+import RadioBtn from "../components/inputs/radioBtn";
+import Post from "../components/containers/post";
+import NothingHere from "../components/display/nothing";
+import ProfileHeader from "../components/containers/ProfileHeader";
+
+//react
+import React, { useEffect, useState } from "react";
+
+//firestore
 import { db, auth } from "../auth/firebase";
-import Post from "../components/post";
+import { limit, query, collection, where, getDocs } from "firebase/firestore";
+
+//contexts
 import { useUserData } from '../contexts/userContext';
-import React from 'react';
-import { limit, query, collection, where, getDocs, Timestamp } from "firebase/firestore";
-import NothingHere from "../components/nothing";
-import ProfileHeader from "../components/ProfileHeader";
 
-interface post {
-    id: string,
-    uid: string,
-    post_message: string,
-    used_media: boolean,
-    timestamp: Timestamp,
-    likes: number,
-    media: string[],
-    num_comments: number
-}
+//typecasting
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { post, AppTabParamList } from "../utils/types";
 
-export default function MyAccount({ navigation }) {
+
+type Prop = BottomTabScreenProps<AppTabParamList, "Profile">
+
+
+export default function ProfileScreen({ navigation }: Prop) {
     const [userOwnPosts, setOwnPosts] = useState<post[]>([]);
     const [likedPosts, setLikedPosts] = useState<post[]>([]);
 

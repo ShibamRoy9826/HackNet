@@ -1,15 +1,35 @@
+//components
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { StyleSheet, View, Image, Pressable } from "react-native";
+import CustomText from "../display/customText";
+import InputBox from "../inputs/inptField";
+import CarouselComponent from "../display/carousel";
+
+//firebase
+import { db } from "../../auth/firebase";
+import { getUserData } from "../../auth/firebase";
+import {
+    updateDoc,
+    collection,
+    doc,
+    Timestamp,
+    deleteDoc,
+    setDoc,
+    getDoc,
+    addDoc,
+    serverTimestamp,
+    increment
+} from "firebase/firestore";
+
+//react and expo
 import { useEffect, useState } from "react";
-import CustomText from "./customText";
-import InputBox from "./inptField";
-import { getUserData } from "../auth/firebase";
-import CarouselComponent from "./carousel";
 import { ImagePickerAsset } from "expo-image-picker";
-import { updateDoc, collection, doc, Timestamp, deleteDoc, setDoc, getDoc, addDoc, serverTimestamp, increment } from "firebase/firestore";
+
+//func
+import { extractTime } from "../../utils/stringTimeUtils";
+
+//typecasting
 import { useNavigation } from "@react-navigation/native";
-import { db } from "../auth/firebase";
-import { extractTime } from "../utils/stringTimeUtils";
 
 interface Prop {
     id: string,
@@ -32,7 +52,7 @@ export default function Post({ id, user_uid, media, used_media, message, uid, ti
 
     const [comment, setComment] = useState("");
     const [userPfp, setUserPfp] = useState("https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg");
-    const [OPName, setOPName] = useState("Random User");
+    const [OPName, setOPName] = useState("Your Name");
 
     const mediaMod: ImagePickerAsset[] = media.map(uri => ({
         uri,

@@ -79,3 +79,18 @@ export function calcTime(time: Timestamp) {
     return "just now";
 
 }
+
+
+export function genPostTitle(email: string) {
+    const userName = email.split("@")[0];
+    const dateTime = new Date();
+    const hr = dateTime.getHours();
+    const mn = dateTime.getMinutes();
+    const sec = dateTime.getSeconds();
+    const day = dateTime.getDate();
+    const month = dateTime.getMonth();
+    const year = dateTime.getFullYear();
+
+    return `${userName}-${day}-${month}-${year}_${hr}_${mn}_${sec}`;
+
+}

@@ -1,13 +1,19 @@
+//components
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from "./Home";
-import MyAccount from "./MyAccount";
-import FriendsScreen from "./Friends";
 import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons';
 import { StyleSheet } from "react-native";
-import NewPostScreen from './NewPost';
+
+//screens
+import HomeScreen from "./Home";
+import ProfileScreen from "./Profile";
+import FriendsScreen from "./Friends";
+import NewPostScreen from './NewLog';
 import SearchScreen from './Search';
 
-const Tab = createBottomTabNavigator();
+//types
+import { AppTabParamList } from '../utils/types';
+
+const Tab = createBottomTabNavigator<AppTabParamList>();
 
 export default function TabsContainer() {
   return (
@@ -80,11 +86,11 @@ export default function TabsContainer() {
           }
         } />
       <Tab.Screen
-        name="MyAccount"
-        component={MyAccount}
+        name="Profile"
+        component={ProfileScreen}
         options={
           {
-            title: "My Account",
+            title: "My Profile",
             headerShown: false,
             tabBarIcon: (tabInfo) => {
               return (

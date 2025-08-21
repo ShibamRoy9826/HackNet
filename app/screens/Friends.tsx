@@ -1,40 +1,39 @@
-import { View, ScrollView, StyleSheet, Pressable } from "react-native";
-import CustomText from "../components/customText";
-import InputBox from "../components/inptField";
-import FriendElement from "../components/friendElement";
-import { useState } from "react";
-import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
+//components
+import { View, ScrollView, StyleSheet } from "react-native";
+import CustomText from "../components/display/customText";
+import InputBox from "../components/inputs/inptField";
+import OnlyIconButton from "../components/inputs/onlyIconButton";
 
-export default function FriendsScreen({ navigation }) {
+//react
+import { useState } from "react";
+
+//typecasting
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { AppTabParamList } from "../utils/types";
+import NothingHere from "../components/display/nothing";
+
+type Prop = BottomTabScreenProps<AppTabParamList, "Friends">
+
+
+export default function FriendsScreen({ navigation }: Prop) {
     const [search, setSearch] = useState("");
     return (
         <View style={{ backgroundColor: "#17171d", flex: 1, paddingTop: 50, paddingBottom: 100, alignItems: "center" }}>
             <View style={{ flexDirection: "row", alignItems: "center", width: "100%" }}>
                 <CustomText style={{ color: "white", fontSize: 20, textAlign: "center", fontWeight: "bold", marginVertical: 10, marginLeft: "10%" }}>Your Friends</CustomText>
-                <Pressable style={{ marginLeft: "auto", marginRight: 30 }}>
-                    <MaterialDesignIcons size={20} color={"white"} name="account-plus-outline" />
-                </Pressable>
+                <OnlyIconButton
+                    icon="account-plus-outline"
+                    func={() => { }}
+                    style={{ marginLeft: "auto", marginRight: 30 }}
+                />
             </View>
 
             <InputBox secure={false} value={search} valueFn={setSearch} color="white" icon="magnify" type="none" placeholder="Search your friends here" />
 
-
             <ScrollView style={styles.listContainer}>
-                <FriendElement username="Random Guy" lastMessage="Hey there! nice to meet you" />
-                <FriendElement username="Cool person" lastMessage="Hey there! nice to meet you" />
-                <FriendElement username="Hacker 3" lastMessage="Hey there! nice to meet you" />
-                <FriendElement username="Random Guy" lastMessage="Hey there! nice to meet you" />
-                <FriendElement username="Cool person" lastMessage="Hey there! nice to meet you" />
-                <FriendElement username="Hacker 3" lastMessage="Hey there! nice to meet you" />
-                <FriendElement username="Random Guy" lastMessage="Hey there! nice to meet you" />
-                <FriendElement username="Cool person" lastMessage="Hey there! nice to meet you" />
-                <FriendElement username="Hacker 3" lastMessage="Hey there! nice to meet you" />
-                <FriendElement username="Random Guy" lastMessage="Hey there! nice to meet you" />
-                <FriendElement username="Cool person" lastMessage="Hey there! nice to meet you" />
-                <FriendElement username="Hacker 3" lastMessage="Hey there! nice to meet you" />
-                <FriendElement username="Random Guy" lastMessage="Hey there! nice to meet you" />
-                <FriendElement username="Cool person" lastMessage="Hey there! nice to meet you" />
-                <FriendElement username="Hacker 3" lastMessage="Hey there! nice to meet you" />
+                <NothingHere
+                    text="You have no friends... Go make some!"
+                />
             </ScrollView>
         </View>
     );

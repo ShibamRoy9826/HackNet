@@ -1,4 +1,6 @@
 import { extractUrl } from "./stringTimeUtils";
+import { increment, doc, addDoc, collection, serverTimestamp, updateDoc } from "firebase/firestore";
+import { db } from "../auth/firebase";
 
 export async function uploadToHc(urls: string[]) {
     const hc = "https://cdn.hackclub.com/api/v3/new";
@@ -51,4 +53,30 @@ export const uploadFileTemp = async (file: any): Promise<string> => {
 
 
     })
+}
+
+
+export async function addComment(comment: string, post_id: string, uid: string, fn?: () => void) {
+    try {
+        await addDoc(collection(db, "posts", post_id, "comments"), {
+            uid: uid,
+            message: comment,
+            timestamp: serverTimestamp(),
+            likes: 0
+        })
+        await updateDoc(doc(db, "posts", post_id),
+            {
+                num_comments: increment(1)
+            })
+        if (fn) {
+            fn();
+        }
+    } catch (e) {
+        console.log("Couldn't comment: ", e);
+    }
+}
+
+
+export function handleSlackLogin() {
+    console.log("Tried slack login");
 }

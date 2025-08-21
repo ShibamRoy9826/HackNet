@@ -1,6 +1,6 @@
 import { Pressable, View, StyleSheet, StyleProp, ViewStyle } from "react-native";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import CustomText from "./customText";
+import CustomText from "../display/customText";
 
 interface Props {
     options: string[],
@@ -10,6 +10,7 @@ interface Props {
     vertical?: boolean,
     style?: StyleProp<ViewStyle>
 }
+
 export default function RadioBtn({ iconList, style, vertical, setSelected, selected, options }: Props) {
     return (
         <View style={[style, styles.container, { flexDirection: vertical ? "column" : "row" }]}>

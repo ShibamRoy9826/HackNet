@@ -1,7 +1,7 @@
 import { Modal, View, StyleSheet, SafeAreaView } from "react-native";
 import { BlurView } from "expo-blur";
 import * as Progress from 'react-native-progress';
-import CustomText from "./customText";
+import CustomText from "../display/customText";
 
 interface Props {
     animation?: "slide" | "fade" | "none",

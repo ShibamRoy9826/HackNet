@@ -1,6 +1,6 @@
 import { View, StyleSheet, Image, Text, Pressable } from "react-native";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import CustomText from "./customText";
+import CustomText from "../display/customText";
 
 interface Props {
     username: string,

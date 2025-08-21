@@ -1,14 +1,25 @@
-import { Button } from "@react-navigation/elements";
-import { ScrollView, View, StyleSheet, Pressable, RefreshControl } from "react-native";
-import InputBox from "../components/inptField";
-import { useState, } from "react";
-import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
+//components
+import { ScrollView, View, StyleSheet, RefreshControl } from "react-native";
+import InputBox from "../components/inputs/inptField";
+import CustomText from "../components/display/customText";
+import CustomButton from "../components/inputs/customButton";
+import IconButton from "../components/inputs/IconButton";
+
+//react
+import React, { useState, } from "react";
+
+//firebase
 import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
 import { auth, db } from './firebase';
 import { doc, setDoc } from "firebase/firestore";
-import React from "react";
-import CustomText from "../components/customText";
+
+//contexts
 import { useModalContext } from "../contexts/modalContext";
+
+//func
+import { handleSlackLogin } from "../utils/otherUtils";
+
+//typecasting
 import { AppStackParamList } from "../utils/types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
@@ -19,7 +30,8 @@ function isValidEmail(email: string) {
     return pattern.test(email);
 }
 export default function SignUpScreen({ navigation }: Props) {
-    const { alert, updateActivity, setActivityVisible } = useModalContext();
+    const { alert, updateActivity, setActivityVisible, setActivityText } = useModalContext();
+    setActivityText("Signing Up");
     const [username, setUserName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -130,11 +142,13 @@ export default function SignUpScreen({ navigation }: Props) {
                 <InputBox secure={true} value={password} valueFn={setPassword} color="#8492a6" icon="key" placeholder="Your Password" type="password" />
                 <InputBox secure={true} value={confirmpassword} valueFn={setCpassword} color="#8492a6" icon="key" placeholder="Confirm Password" type="password" />
             </View>
-            <Button color="white" style={styles.button} onPressIn={createUser}>
-                Create Account
-            </Button>
 
-            <CustomText style={styles.smallTxt}>Already have an account? <CustomText style={styles.signupBtn} onPress={() => { navigation.navigate("Login") }}>Login here</CustomText></CustomText>
+            <CustomButton
+                func={createUser}
+                text="Create Account"
+            />
+
+            <CustomText style={styles.smallTxt}>Already have an account? <CustomText style={styles.link} onPress={() => { navigation.navigate("Login") }}>Login here</CustomText></CustomText>
 
             <View
                 style={{
@@ -151,12 +165,12 @@ export default function SignUpScreen({ navigation }: Props) {
             </CustomText>
 
 
-            <Pressable style={[styles.button, { backgroundColor: "#8492a6" }]} onPress={() => { console.log("tried slack login"); }}>
-                <CustomText style={{ color: "white", fontSize: 15, marginRight: 6 }}>
-                    Login With Slack
-                </CustomText>
-                <MaterialDesignIcons name="slack" size={20} color="white" />
-            </Pressable>
+            <IconButton
+                text="Login With Slack"
+                icon="slack"
+                func={handleSlackLogin}
+                disabled
+            />
 
             <CustomText style={{ color: "#8492a6" }}>(Coming soon)</CustomText>
         </ScrollView>
@@ -205,18 +219,8 @@ const styles = StyleSheet.create(
             marginVertical: 20,
             color: "#8492a6"
         },
-        button: {
-            backgroundColor: "#ec3750",
-            elevation: 10,
-            marginVertical: 5,
-            display: "flex",
-            flexDirection: "row",
-            paddingVertical: 10,
-            paddingHorizontal: 18,
-            borderRadius: 15
-        },
-        signupBtn: {
-            color: "#ec3750",
+        link: {
+            color: "#338eda",
             textDecorationLine: "underline",
             fontSize: 15
         }

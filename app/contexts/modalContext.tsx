@@ -1,11 +1,12 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from "react";
-import ModalBox from "../components/modal";
-import ActivityBox from "../components/activity";
+import React, { createContext, useContext, useState, useRef } from "react";
+import ModalBox from "../components/alerts/modal";
+import ActivityBox from "../components/alerts/activity";
 
 type modalContextType = {
     alert: (text: string, subtext: string, onClose?: () => void) => void;
     updateActivity: (progress: number, activityInfo: string) => void;
     setActivityVisible: (a: boolean) => void;
+    setActivityText: (t: string) => void;
 }
 const ModalContext = createContext<modalContextType | null>(null);
 
@@ -17,8 +18,8 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
     const modalFnRef = useRef<() => void>(() => { });
 
 
-    const activityText = useRef("Signing up");
-    const activitySubtext = useRef("Finding user");
+    const activityText = useRef("");
+    const activitySubtext = useRef("");
     const [activityVisible, setActivityVisible] = useState(false);
     const activityProgress = useRef(0);
 
@@ -32,18 +33,22 @@ export function ModalProvider({ children }: { children: React.ReactNode }) {
         activityProgress.current = progress;
         activitySubtext.current = activityInfo;
     }
+    function setActivityText(text: string) {
+        activityText.current = text;
+    }
     return (
         <ModalContext.Provider
             value={{
                 alert,
                 updateActivity,
-                setActivityVisible
+                setActivityVisible,
+                setActivityText
             }}
         >
             {children}
             <ModalBox
                 onClose={() => modalFnRef.current()}
-                animation="slide"
+                animation="fade"
                 isVisible={modalVisible}
                 setIsVisible={setModalVisible}
                 text={modalText}
