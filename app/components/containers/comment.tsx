@@ -2,7 +2,7 @@
 import { View, Image, Pressable, StyleSheet } from 'react-native';
 import CustomText from '../display/customText';
 import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons';
-import { calcTime } from '@/app/utils/stringTimeUtils';
+import { calcTime } from '../../utils/stringTimeUtils';
 import { Timestamp } from 'firebase/firestore';
 
 type Prop = {
