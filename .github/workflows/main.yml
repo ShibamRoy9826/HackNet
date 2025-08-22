@@ -16,7 +16,6 @@ on:
         description: "Build type to run"
         options:
           - dev
-          - prod-apk
           - all
 
 env:
@@ -168,19 +167,11 @@ jobs:
         env:
           NODE_ENV: development
 
-      - name: 📱 Build Production APK
-        if: github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'prod-apk' || github.event_name == 'push'
-        run: |
-          export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-          eas build --platform android --profile production-apk --local --non-interactive --output=./app-prod.apk
-        env:
-          NODE_ENV: production
-
       - name: 📦 Upload build artifacts to GitHub
         uses: actions/upload-artifact@v4
         with:
           name: app-builds
           path: |
             ./app-dev.apk
-            ./app-prod.apk
           retention-days: 7
+
