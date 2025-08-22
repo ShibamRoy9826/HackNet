@@ -15,7 +15,7 @@ on:
         type: choice
         description: "Build type to run"
         options:
-          - dev
+          - prod-apk
           - all
 
 env:
@@ -102,7 +102,7 @@ jobs:
           echo "EXPO_PUBLIC_FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID }}" >> .env
           echo "EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID=${{ secrets.FIREBASE_MEASUREMENT_ID }}" >> .env
           echo "EXPO_PUBLIC_HACKCLUB_CDN=${{ secrets.HACKCLUB_CDN }}" >> .env
-          echo ".env file created:"
+          echo ".env file created"
 
       - name: 📱 Setup EAS build cache
         uses: actions/cache@v3
@@ -170,20 +170,18 @@ jobs:
             echo "metro.config.js not found"
           fi
 
-      - name: 📱 Build Development APK
-        if: github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'dev' || github.event_name == 'push'
+      - name: 📱 Build Production APK
+        if: github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'prod-apk' || github.event_name == 'push'
         run: |
-          # Build with increased memory limit
           export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-          eas build --platform android --profile development --local --non-interactive --output=./app-dev.apk
+          eas build --platform android --profile production-apk --local --non-interactive --output=./app-prod.apk
         env:
-          NODE_ENV: development
+          NODE_ENV: production
 
       - name: 📦 Upload build artifacts to GitHub
         uses: actions/upload-artifact@v4
         with:
           name: app-builds
           path: |
-            ./app-dev.apk
+            ./app-prod.apk
           retention-days: 7
-
