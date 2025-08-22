@@ -101,7 +101,7 @@ export default function NewPostScreen({ navigation }: Prop) {
                 uploadMedia(rs).then(
                     async (PassedMedia) => {
                         updateActivity(0.6, "Uploading info");
-                        setDoc(doc(db, "posts", genPostTitle(user.email)), {
+                        setDoc(doc(db, "posts", genPostTitle(user.email ? user.email : "randomuser@domain.com")), {
                             uid: user.uid,
                             likes: 0,
                             timestamp: new Date(),
@@ -125,7 +125,7 @@ export default function NewPostScreen({ navigation }: Prop) {
                 )
             } else {
                 updateActivity(0.6, "Uploading info");
-                setDoc(doc(db, "posts", genPostTitle(user.email)), {
+                setDoc(doc(db, "posts", genPostTitle(user.email ? user.email : "randomuser@domain.com")), {
                     uid: user.uid,
                     likes: 0,
                     timestamp: new Date(),

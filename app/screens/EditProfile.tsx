@@ -52,11 +52,11 @@ export default function EditProfileScreen({ navigation }: Props) {
                     email: currUser.email,
                     displayName: username,
                     displayNameLower: username.toLowerCase(),
+                    avatar: userData ? userData.avatar : "",
                     createdAt: userData ? userData.createdAt : new Date(),
                     num_trackers: userData ? userData.num_trackers : 0,
                     num_tracking: userData ? userData.num_tracking : 0,
                     num_logs: userData ? userData.num_logs : 0,
-                    friends: userData ? userData.friends : [],
                     bio: bio
                 }
 

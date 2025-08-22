@@ -1,18 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { onSnapshot, doc, Timestamp } from "firebase/firestore";
 import { auth, db } from "../auth/firebase";
+import { UserData } from "../utils/types";
 
-type UserData = {
-  bio?: string;
-  avatar?: string;
-  email?: string;
-  num_logs?: number;
-  num_trackers?: number;
-  num_tracking?: number;
-  displayName?: string;
-  createdAt?: Timestamp;
-  friends?: string[];
-};
 
 type UserContextType = {
   userData: UserData | null;

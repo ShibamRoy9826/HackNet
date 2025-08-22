@@ -9,20 +9,26 @@ import { useUserData } from "../../contexts/userContext";
 //react stuff
 import { useNavigation } from '@react-navigation/native';
 
+//typecasting
+import { AppHomeHeaderList } from "@/app/utils/types";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
+
 interface Props {
     tY: any,
     h: number,
     pT: number
 }
 
+type NavType = BottomTabNavigationProp<AppHomeHeaderList, "Home">
+
 export default function HomeHeader({ tY, h, pT }: Props) {
-    const nav = useNavigation();
+    const nav = useNavigation<NavType>();
 
     const { userData } = useUserData();
 
     return (
         <Animated.View style={[styles.header, { height: h, paddingTop: pT, transform: [{ translateY: tY }] }]}>
-            <Pressable style={{}} onPress={() => { nav.navigate('Profile') }}>
+            <Pressable onPress={() => nav.navigate('Profile')}>
                 <Image source={userData?.avatar ? { uri: userData.avatar } : require("../../../assets/images/pfp.jpg")} style={{ borderRadius: 50, width: 30, height: 30, marginHorizontal: 10 }} />
             </Pressable>
 

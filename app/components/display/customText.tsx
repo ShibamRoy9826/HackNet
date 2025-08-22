@@ -1,6 +1,6 @@
-import { Text } from 'react-native';
+import { Text, TextProps } from 'react-native';
 
-export default function CustomText(props) {
+export default function CustomText(props: TextProps) {
     return (
         <Text
             {...props}
@@ -8,8 +8,5 @@ export default function CustomText(props) {
         >
             {props.children}
         </ Text>
-        // <Text {...props} style={[{ fontFamily: "PhantomSans-Regular" }, props.style]}>
-        //     {props.children}
-        // </Text>
     )
 }

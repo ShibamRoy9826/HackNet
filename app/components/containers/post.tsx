@@ -29,6 +29,8 @@ import { extractTime } from "../../utils/stringTimeUtils";
 
 //typecasting
 import { useNavigation } from "@react-navigation/native";
+import { AppHomeHeaderList } from "@/app/utils/types";
+import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 
 interface Prop {
     id: string,
@@ -42,9 +44,10 @@ interface Prop {
     comment_count: number
 }
 
+type NavType = BottomTabNavigationProp<AppHomeHeaderList, "Home">
 
 export default function Post({ id, user_uid, media, used_media, message, uid, timestamp, like_count, comment_count }: Prop) {
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavType>();
     const [liked, setLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(like_count);
     const [commentCount, setCommentCount] = useState(comment_count);

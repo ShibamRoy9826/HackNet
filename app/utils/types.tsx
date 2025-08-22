@@ -20,6 +20,7 @@ export interface comment {
 }
 
 export type UserData = {
+    uid: string;
     bio?: string;
     avatar?: string;
     email?: string;
@@ -48,4 +49,12 @@ export type AppTabParamList = {
     Home: undefined;
     Friends: undefined;
     Search: undefined;
+}
+
+export type AppHomeHeaderList = {
+    Home: undefined;
+    Profile: undefined | { uid: string };
+    Comments: { post_id: string };
+    Settings: undefined;
+    Notifications: undefined;
 }

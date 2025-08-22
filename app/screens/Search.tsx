@@ -13,12 +13,25 @@ import React, { useState, useEffect } from "react";
 // import { useUserData } from "../contexts/userContext";
 
 //firebase
-import { collection, getDocs, where, query, limit } from 'firebase/firestore';
+import { Timestamp, collection, getDocs, where, query, limit } from 'firebase/firestore';
 import { auth, db } from "../auth/firebase";
 
 //typecasting
-import { post, UserData } from "../utils/types";
+import { post } from "../utils/types";
 import NothingHere from "../components/display/nothing";
+
+type UserData = {
+    id: string;
+    bio?: string;
+    avatar?: string;
+    email?: string;
+    num_logs?: number;
+    num_trackers?: number;
+    num_tracking?: number;
+    displayName?: string;
+    displayNameLower?: string;
+    createdAt?: Timestamp;
+};
 
 export default function SearchScreen() {
     const user = auth.currentUser;
@@ -65,7 +78,7 @@ export default function SearchScreen() {
 
         return snapshot.docs.map(doc => ({
             id: doc.id,
-            ...doc.data()
+            ...(doc.data()) as Omit<post, "id">
         }));
     }
 
@@ -135,9 +148,9 @@ export default function SearchScreen() {
                         keyExtractor={item => item.id}
                         renderItem={({ item }) => (
                             <FollowBox
-                                avatar={item.avatar}
-                                username={item.displayName}
-                                bio={item.bio}
+                                avatar={item.avatar ? item.avatar : ""}
+                                username={item.displayName ? item.displayName : ""}
+                                bio={item.bio ? item.bio : ""}
                             />
                         )} />
                 </View>
@@ -175,9 +188,9 @@ export default function SearchScreen() {
                         keyExtractor={item => item.id}
                         renderItem={({ item }) => (
                             <FollowBox
-                                avatar={item.avatar}
-                                username={item.displayName}
-                                bio={item.bio}
+                                avatar={item.avatar ? item.avatar : ""}
+                                username={item.displayName ? item.displayName : ""}
+                                bio={item.bio ? item.bio : ""}
                             />
                         )}
                         style={{ backgroundColor: "#17171d", flex: 1, height: "80%", marginBottom: 100, }}

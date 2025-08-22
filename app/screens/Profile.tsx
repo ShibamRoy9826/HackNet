@@ -54,7 +54,7 @@ export default function ProfileScreen({ navigation }: Prop) {
 
             return snapshot.docs.map(doc => ({
                 id: doc.id,
-                ...doc.data()
+                ...(doc.data()) as Omit<post, "id">
             }));
         } else {
             return [];

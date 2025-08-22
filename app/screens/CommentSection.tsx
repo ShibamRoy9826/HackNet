@@ -30,11 +30,15 @@ import Comment from "../components/containers/comment";
 
 type Props = NativeStackScreenProps<AppStackParamList, 'Comments'>;
 
+type UserDataWithId = UserData & {
+    id: string;
+}
+
 export default function CommentsScreen({ navigation, route }: Props) {
     const { post_id } = route.params;
     const user = auth.currentUser;
 
-    const [usersData, setUsersData] = useState<[uid: UserData]>([])
+    const [usersData, setUsersData] = useState<Record<string, UserData>>({})
     const [comment, setComment] = useState("");
     const [commentData, setCommentData] = useState<comment[]>([]);
 
@@ -54,7 +58,7 @@ export default function CommentsScreen({ navigation, route }: Props) {
             return [];
         };
 
-        let userData = {};
+        let userData: Record<string, UserDataWithId> = {};
 
         const q = query(
             collection(db, "users"),
@@ -62,7 +66,7 @@ export default function CommentsScreen({ navigation, route }: Props) {
         );
         const snap = await getDocs(q);
         snap.forEach(doc => {
-            const data = doc.data();
+            const data = doc.data() as UserData;
             userData[data.uid] = { id: doc.id, ...data };
         });
         // return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -87,7 +91,7 @@ export default function CommentsScreen({ navigation, route }: Props) {
                 const comments: comment[] = data.docs.map(doc => (
                     {
                         id: doc.id,
-                        ...(doc.data())
+                        ...(doc.data() as Omit<comment, "id">)
                     }
                 ));
 
@@ -121,7 +125,7 @@ export default function CommentsScreen({ navigation, route }: Props) {
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 data={commentData}
                 keyExtractor={item => item.id}
-                renderItem={({ item }) => (
+                renderItem={({ item }: { item: comment }) => (
                     <Comment
                         imgSrc={usersData[item.uid]?.avatar ?? "https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg"}
                         displayName={usersData[item.uid]?.displayName ?? "Some User..."}
@@ -137,7 +141,7 @@ export default function CommentsScreen({ navigation, route }: Props) {
             />
             <View style={{ marginBottom: 70, flexDirection: "row", alignItems: "center", width: "100%", borderColor: "#25252fff", borderTopWidth: StyleSheet.hairlineWidth }}>
                 <InputBox secure={false} value={comment} valueFn={setComment} color="#8492a6" icon="comment" type="none" placeholder="Comment here" />
-                <Pressable style={{ padding: 8 }} onPress={() => { addComment(comment, post_id, user?.uid, () => { loadComments(); setComment(""); }) }}>
+                <Pressable style={{ padding: 8 }} onPress={() => { addComment(comment, post_id, user ? user.uid : "", () => { loadComments(); setComment(""); }) }}>
                     <MaterialDesignIcons name="send" color="#5f6878" size={25} />
                 </Pressable>
             </View>
