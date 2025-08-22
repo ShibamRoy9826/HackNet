@@ -1,6 +1,5 @@
 import { Dimensions, View } from "react-native";
-import { useSharedValue } from "react-native-reanimated";
-import { configureReanimatedLogger, ReanimatedLogLevel, } from "react-native-reanimated";
+import { useSharedValue , configureReanimatedLogger, ReanimatedLogLevel, } from "react-native-reanimated";
 import Media from './media';
 import Carousel, { ICarouselInstance, Pagination, } from "react-native-reanimated-carousel";
 import { useRef } from 'react';

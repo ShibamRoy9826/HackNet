@@ -1,10 +1,9 @@
 //components
-import { RefreshControl, View, TextInput, StyleSheet, Pressable, Image } from "react-native";
+import { FlatList, RefreshControl, View, TextInput, StyleSheet } from "react-native";
 import CustomText from "../components/display/customText";
 import FollowBox from "../components/containers/follow";
 import RadioBtn from "../components/inputs/radioBtn";
 import Post from "../components/containers/post";
-import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import OnlyIconButton from "../components/inputs/onlyIconButton";
 
 //react
@@ -16,10 +15,10 @@ import React, { useState, useEffect } from "react";
 //firebase
 import { collection, getDocs, where, query, limit } from 'firebase/firestore';
 import { auth, db } from "../auth/firebase";
-import { FlatList } from "react-native";
 
 //typecasting
 import { post, UserData } from "../utils/types";
+import NothingHere from "../components/display/nothing";
 
 export default function SearchScreen() {
     const user = auth.currentUser;
@@ -119,19 +118,13 @@ export default function SearchScreen() {
                 setSelected={setCurrTab}
             />
 
-            {currTab == "Hackers" && (
+            {currTab === "Hackers" && (
                 <View style={{ width: '100%', marginVertical: 25, paddingHorizontal: 10, flex: 1 }}>
                     {
-                        (userResults.length == 0) ?
+                        (userResults.length === 0) ?
                             <View style={{ flex: 1 }}>
                                 <CustomText style={styles.heading}>Search for other hackers</CustomText>
-                                <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }}>
-                                    <Image
-                                        source={require("../../assets/images/empty-box.png")}
-                                        style={{ borderRadius: 50, width: 70, height: 70, marginHorizontal: 10, marginVertical: 40 }}
-                                    />
-                                    <CustomText style={styles.subtext}>There's nothing here....</CustomText>
-                                </View>
+                                <NothingHere />
                             </View>
                             :
                             <CustomText style={styles.heading}>Hackers you may be looking for</CustomText>
@@ -150,19 +143,13 @@ export default function SearchScreen() {
                 </View>
             )}
 
-            {currTab == "Posts" && (
+            {currTab === "Posts" && (
                 <View style={{ width: '100%', marginVertical: 25, paddingHorizontal: 10, flex: 1 }}>
                     {
-                        (postResults.length == 0) ?
+                        (postResults.length === 0) ?
                             <View style={{ flex: 1 }}>
                                 <CustomText style={styles.heading}>Search for some logs</CustomText>
-                                <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }}>
-                                    <Image
-                                        source={require("../../assets/images/empty-box.png")}
-                                        style={{ borderRadius: 50, width: 70, height: 70, marginHorizontal: 10, marginVertical: 40 }}
-                                    />
-                                    <CustomText style={styles.subtext}>There's nothing here....</CustomText>
-                                </View>
+                                <NothingHere />
                             </View>
                             :
                             <CustomText style={styles.heading}>Logs you may be looking for</CustomText>
@@ -179,7 +166,7 @@ export default function SearchScreen() {
                 </View>
             )}
 
-            {currTab == "Suggestions" && (
+            {currTab === "Suggestions" && (
                 <View style={{ width: '100%', marginVertical: 25, paddingHorizontal: 10, flex: 1 }}>
                     <CustomText style={styles.heading}>Hackers you can follow</CustomText>
                     <FlatList

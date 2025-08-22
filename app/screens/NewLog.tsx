@@ -1,5 +1,5 @@
 //components
-import { Dimensions, Switch, StyleSheet, ScrollView, View, TextInput, Image, Pressable } from "react-native";
+import { Dimensions, Switch, StyleSheet, ScrollView, View, TextInput, Image } from "react-native";
 import CustomText from "../components/display/customText";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import RadioBtn from "../components/inputs/radioBtn";
@@ -40,7 +40,7 @@ export default function NewPostScreen({ navigation }: Prop) {
     const [selectedView, setSelectedView] = useState("Everyone");
     const [comments_enabled, setComments] = useState(true);
     const [used_media, setUsedMedia] = useState(false)
-    const [media, setMedia] = useState<string[]>([])
+    // const [media, setMedia] = useState<string[]>([])
     const [rs, setRs] = useState<ImagePickerAsset[]>([]);
 
     const user = auth.currentUser;
@@ -59,11 +59,11 @@ export default function NewPostScreen({ navigation }: Prop) {
             }
             const deployedUrls = await uploadToHc(tempUrls);
 
-            if (deployedUrls.length == 0) {
+            if (deployedUrls.length === 0) {
                 throw new Error("Couldn't deploy to hackclub cdn");
             }
 
-            setMedia(deployedUrls);
+            // setMedia(deployedUrls);
 
             return deployedUrls;
 
@@ -107,7 +107,7 @@ export default function NewPostScreen({ navigation }: Prop) {
                             timestamp: new Date(),
                             media: PassedMedia,
                             post_message: message,
-                            public: (selectedView == "Everyone") ? true : false,
+                            public: (selectedView === "Everyone") ? true : false,
                             users_liked: [],
                             used_media: true,
                             comments_enabled: comments_enabled,
@@ -131,7 +131,7 @@ export default function NewPostScreen({ navigation }: Prop) {
                     timestamp: new Date(),
                     media: [],
                     post_message: message,
-                    public: (selectedView == "Everyone") ? true : false,
+                    public: (selectedView === "Everyone") ? true : false,
                     users_liked: [],
                     used_media: false,
                     comments_enabled: comments_enabled,
@@ -181,7 +181,8 @@ export default function NewPostScreen({ navigation }: Prop) {
                         <View style={{ height: "auto", width: width, alignItems: "center", justifyContent: "center", paddingVertical: 20 }}>
                             <IconButton
                                 icon="close"
-                                func={() => { setMedia([]); setUsedMedia(false); }}
+                                // func={() => { setMedia([]); setUsedMedia(false); }}
+                                func={() => { setUsedMedia(false); }}
                                 text="Remove Attachment"
                             />
                         </View>

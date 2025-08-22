@@ -68,7 +68,7 @@ export default function EditProfileScreen({ navigation }: Props) {
                 updateActivity(0.9, "Updated Successfully!")
                 setActivityVisible(false);
                 alert('Updated Successfully', "Your details were updated, if you don't see them, try reopening the app", () => { navigation.goBack() })
-            } catch (e) {
+            } catch {
                 alert("An error occured", "Please try again!")
                 updateActivity(0.6, "Something's wrong");
             }

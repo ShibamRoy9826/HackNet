@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, Text, Pressable } from "react-native";
+import { View, StyleSheet, Image, Pressable } from "react-native";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import CustomText from "../display/customText";
 

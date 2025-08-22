@@ -23,8 +23,7 @@ import { addComment } from "../utils/otherUtils";
 import { chunkArray } from "../utils/arrayUtils";
 
 //typecasting
-import { comment, UserData } from "../utils/types";
-import { AppStackParamList } from "../utils/types";
+import { comment, UserData, AppStackParamList } from "../utils/types";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Comment from "../components/containers/comment";
 
@@ -51,7 +50,7 @@ export default function CommentsScreen({ navigation, route }: Props) {
 
 
     async function getUsersData(userList: string[]) {
-        if (userList.length == 0) {
+        if (userList.length === 0) {
             return [];
         };
 
@@ -114,7 +113,7 @@ export default function CommentsScreen({ navigation, route }: Props) {
 
     useEffect(() => {
         loadComments();
-    }, [])
+    }, [loadComments])
 
     return (
         <KeyboardAvoidingView behavior={"height"} style={{ backgroundColor: "#17171d", flex: 1, alignItems: "center" }}>

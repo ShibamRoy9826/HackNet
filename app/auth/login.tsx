@@ -64,7 +64,7 @@ export default function LoginScreen({ navigation }: Props) {
                 Hack Net
             </CustomText>
             <CustomText style={styles.subHeading}>
-                Social media for teen hackers.
+                Social media for teen hackers.{"\n"}
                 Made By a hackclubber, for hackclubbers!
             </CustomText>
 
@@ -81,7 +81,7 @@ export default function LoginScreen({ navigation }: Props) {
             />
 
 
-            <CustomText style={styles.smallTxt}>Don't have an account? <CustomText style={styles.signupBtn} onPress={() => { navigation.navigate("SignUp") }}>Sign up here</CustomText></CustomText>
+            <CustomText style={styles.smallTxt}>Don&apos;t have an account? <CustomText style={styles.signupBtn} onPress={() => { navigation.navigate("SignUp") }}>Sign up here</CustomText></CustomText>
 
             <View
                 style={{
@@ -121,8 +121,10 @@ const styles = StyleSheet.create({
         fontSize: 30,
         fontWeight: "bold",
         textAlign: "center",
+        width: "100%"
     },
     subHeading: {
+        width: "100%",
         color: "#8492a6",
         fontSize: 15,
         fontWeight: "normal",

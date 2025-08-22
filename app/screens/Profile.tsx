@@ -68,12 +68,12 @@ export default function ProfileScreen({ navigation }: Prop) {
 
     useEffect(() => {
         showPosts();
-    }, [])
+    }, [showPosts])
 
     return (
         <FlatList
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            data={(currTab == "Logs") ? userOwnPosts : likedPosts}
+            data={(currTab === "Logs") ? userOwnPosts : likedPosts}
             keyExtractor={item => item.id}
             renderItem={({ item }) => (
                 <Post comment_count={item.num_comments} user_uid={userData ? userData.uid : ""} id={item.id} uid={item.uid} timestamp={item.timestamp} message={item.post_message} used_media={item.used_media} media={item.media} like_count={item.likes} />
@@ -98,7 +98,7 @@ export default function ProfileScreen({ navigation }: Prop) {
                         style={{
                             color: "white", textAlign: "left", paddingLeft: 10, fontSize: 20, fontWeight: "bold", marginVertical: 20
                         }}>
-                        {(currTab == "Logs") ? "Your Logs" : "Liked Logs"}</CustomText>
+                        {(currTab === "Logs") ? "Your Logs" : "Liked Logs"}</CustomText>
                 </View>
 
             }

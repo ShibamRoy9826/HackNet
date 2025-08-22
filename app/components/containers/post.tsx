@@ -6,8 +6,7 @@ import InputBox from "../inputs/inptField";
 import CarouselComponent from "../display/carousel";
 
 //firebase
-import { db } from "../../auth/firebase";
-import { getUserData } from "../../auth/firebase";
+import { db, getUserData } from "../../auth/firebase";
 import {
     updateDoc,
     collection,
@@ -63,7 +62,7 @@ export default function Post({ id, user_uid, media, used_media, message, uid, ti
 
     useEffect(() => {
         getOP();
-    }, [uid])
+    }, [uid, getOP])
 
     useEffect(() => {
         checkIfUserLiked();

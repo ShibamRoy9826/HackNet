@@ -73,13 +73,13 @@ export default function SignUpScreen({ navigation }: Props) {
     };
 
     function createUser() {
-        if (password != confirmpassword) {
+        if (password !== confirmpassword) {
             alert("Failed", "Passwords don't match! Please re-enter")
-        } else if (username == "") {
+        } else if (username === "") {
             alert("Failed", "Username Can't be empty! You can't be that much anonymous")
-        } else if (password == "") {
+        } else if (password === "") {
             alert("Failed", "Password can't be empty! You don't want other hackers to hack into it!")
-        } else if (email == "") {
+        } else if (email === "") {
             alert("Failed", "Email can't be empty! You will be in problem if you forget the password")
         }
         else if (!isValidEmail(email)) {

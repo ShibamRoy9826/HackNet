@@ -16,7 +16,7 @@ export default function RadioBtn({ iconList, style, vertical, setSelected, selec
         <View style={[style, styles.container, { flexDirection: vertical ? "column" : "row" }]}>
             {
                 options.map((e: string, i: number) => (
-                    <Pressable key={i} style={[styles.btn, { backgroundColor: (selected == e) ? "#ec3750" : "#1f2226ff" }]} onPress={() => { setSelected(e) }}>
+                    <Pressable key={i} style={[styles.btn, { backgroundColor: (selected === e) ? "#ec3750" : "#1f2226ff" }]} onPress={() => { setSelected(e) }}>
                         <MaterialDesignIcons name={iconList[i]} size={15} color={"white"} style={{ width: "auto" }} />
                         <CustomText style={styles.btnTxt}>
                             {e}

@@ -10,13 +10,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import React, { useRef, useEffect, useState } from "react";
 
 //firebase
-import { collection, query, limit, orderBy, getDocs, startAfter, QueryDocumentSnapshot, Timestamp } from 'firebase/firestore';
+import { collection, query, limit, orderBy, getDocs, startAfter, QueryDocumentSnapshot } from 'firebase/firestore';
 import { auth, db } from '../auth/firebase';
 
 //typecasting
-import { post } from "../utils/types";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
-import { AppTabParamList } from "../utils/types";
+import { post, AppTabParamList } from "../utils/types";
 
 const postLimit = 10;
 
@@ -44,7 +43,7 @@ export default function HomeScreen({ navigation }: Prop) {
         setTimeout(() => {
             setRefreshing(false);
         }, 1000);
-    }, []);
+    }, [loadPosts]);
 
     const user = auth.currentUser;
 
@@ -85,7 +84,7 @@ export default function HomeScreen({ navigation }: Prop) {
             setLoading(true);
             const { fetchedPosts: newPosts, lastDoc: newLastDoc } = await fetchPosts(lastDoc, user?.uid);
 
-            if (newPosts.length == 0) {
+            if (newPosts.length === 0) {
                 setEndReached(true);
             } else {
                 setPosts(prev => {

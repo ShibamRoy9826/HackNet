@@ -1,9 +1,7 @@
 //components
-import { Pressable, StyleProp, StyleSheet } from "react-native"
+import { ViewStyle, Pressable, StyleProp, StyleSheet } from "react-native"
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons"
 
-//typecasting
-import { ViewStyle } from "react-native"
 
 type Props = {
     func: () => void;

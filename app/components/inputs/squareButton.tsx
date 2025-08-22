@@ -1,6 +1,4 @@
-import { Pressable, StyleProp, StyleSheet } from "react-native"
-import CustomText from "../display/customText"
-import { ViewStyle } from "react-native"
+import { Pressable, StyleProp, StyleSheet, ViewStyle } from "react-native"
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons"
 
 type Props = {

@@ -36,7 +36,16 @@ export default function Media({ onBuffer, onError, source, style, resizeMode }: 
             type = "video";
         }
     }
-    if (type == "image") {
+
+    const player = useVideoPlayer(source, player => {
+        player.loop = false;
+        player.play();
+        player.muted = false;
+    });
+
+    useEvent(player, 'playingChange', { isPlaying: player.playing });
+
+    if (type === "image") {
         return (
             <>
                 <Image
@@ -48,14 +57,6 @@ export default function Media({ onBuffer, onError, source, style, resizeMode }: 
             </>
         );
     }
-    const player = useVideoPlayer(source, player => {
-        player.loop = false;
-        player.play();
-        player.muted = false;
-    });
-
-    const { isPlaying } = useEvent(player, 'playingChange', { isPlaying: player.playing });
-
     return (
         <>
             <VideoView

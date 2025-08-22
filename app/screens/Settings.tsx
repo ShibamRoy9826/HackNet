@@ -1,5 +1,5 @@
 //components
-import { View, ScrollView, StyleSheet, Pressable } from "react-native";
+import { View, ScrollView, StyleSheet } from "react-native";
 import CustomButton from "../components/inputs/customButton";
 
 //firebase
