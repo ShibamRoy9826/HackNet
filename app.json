@@ -9,12 +9,13 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.shibamroy.hacknet"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/adaptive-icon/foreground.png",
+        "backgroundColor": "#17171d"
       },
       "edgeToEdgeEnabled": true,
       "permissions": [
@@ -38,7 +39,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/icon.png",
+          "image": "./assets/images/splash.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#17171d"
@@ -64,14 +65,18 @@
                 "fontFamily": "PhantomSans",
                 "fontDefinitions": [
                   {
+                    "path": "./assets/fonts/PhantomSans-Regular.otf",
+                    "weight": 400,
+                    "style": "normal"
+                  },
+                  {
                     "path": "./assets/fonts/PhantomSans-Italic.otf",
                     "weight": 400,
                     "style": "italic"
                   },
                   {
                     "path": "./assets/fonts/PhantomSans-Bold.otf",
-                    "weight": 700,
-                    "style": "normal"
+                    "weight": 700
                   }
                 ]
               }
@@ -79,8 +84,9 @@
           },
           "ios": {
             "fonts": [
-              "PhantomSans-Bold.otf",
-              "PhantomSans-Italic.otf"
+              "./assets/fonts/PhantomSans-Regular.otf",
+              "./assets/fonts/PhantomSans-Bold.otf",
+              "./assets/fonts/PhantomSans-Italic.otf"
             ]
           }
         }

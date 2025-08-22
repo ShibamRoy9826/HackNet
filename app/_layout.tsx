@@ -18,7 +18,7 @@ import { auth } from './auth/firebase';
 //components
 import TabsContainer from "./screens/TabContainer";
 
-//react stuff
+//react and expo
 import { useEffect, useState } from 'react';
 
 //contexts
@@ -39,6 +39,7 @@ SplashScreen.setOptions({
 const AppStack = createNativeStackNavigator<AppStackParamList>();
 
 export default function RootLayout() {
+
   // handling loading state
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -49,7 +50,6 @@ export default function RootLayout() {
       setLoading(false);
     });
     return () => unsubscribe();
-
   }, [])
 
   if (loading) {
