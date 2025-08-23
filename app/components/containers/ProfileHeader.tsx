@@ -6,36 +6,55 @@ import CustomText from "../display/customText";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import React from 'react';
 import IconButton from "../inputs/IconButton";
+import OnlyIconButton from "../inputs/onlyIconButton";
 
 interface Props {
     userData: any;
     navigation: any;
+    user_id?: string;
 }
 
-export default function ProfileHeader({ userData, navigation }: Props) {
+export default function ProfileHeader({ user_id, userData, navigation }: Props) {
     const insets = useSafeAreaInsets();
     return (
         <View style={{ backgroundColor: "#17171d", flex: 1, paddingTop: insets.top }}>
+            {
+                user_id ?
+                    <OnlyIconButton
+                        icon="arrow-left"
+                        func={() => { navigation.goBack() }}
+                        style={{ position: "absolute", zIndex: 2, elevation: 20, top: 30, left: 10 }}
+                    /> :
+                    <></>
+            }
             <View style={{ position: "relative", height: 100 }}>
-                <Image source={require("../../../assets/images/banner.jpeg")} style={{ width: '100%', position: "absolute", height: "100%", borderBottomWidth: 1, borderColor: "#ec3750" }} />
-                <Image source={userData?.avatar ? { uri: userData.avatar } : require("../../../assets/images/pfp.jpg")} style={{ position: "absolute", bottom: -30, left: 20, width: 70, height: 70, borderRadius: 50, borderWidth: 2, borderColor: "#ec3750" }} />
+                <Image source={require("../../../assets/images/banner.jpeg")} style={{ width: '100%', zIndex: 1, position: "absolute", height: "100%", borderBottomWidth: 1, borderColor: "#ec3750" }} />
+                <Image source={userData?.avatar ? { uri: userData.avatar } : require("../../../assets/images/pfp.jpg")} style={{ zIndex: 3, position: "absolute", bottom: -30, left: 20, width: 70, height: 70, borderRadius: 50, borderWidth: 2, borderColor: "#ec3750" }} />
             </View>
             <View style={{ position: "relative", width: "100%" }}>
                 <View style={{
                     flexDirection: "row", alignItems: "center", justifyContent: "space-between"
                 }}>
-
                     <View>
                         <CustomText style={{ fontSize: 25, color: "white", fontWeight: "bold", width: "100%", textAlign: "left", marginTop: 40, marginLeft: 20 }}>{userData?.displayName}</CustomText>
                         <CustomText style={styles.subtxt}>@{userData?.displayNameLower}</CustomText>
                     </View>
+                    {
+                        user_id ?
+                            <IconButton
+                                text="Track"
+                                style={{ marginRight: 40, marginTop: 20 }}
+                                func={() => { }}
+                                icon="plus-box"
+                            /> :
+                            <IconButton
+                                text="Edit Profile"
+                                style={{ marginRight: 40, marginTop: 20 }}
+                                func={() => { navigation.navigate("EditProfile") }}
+                                icon="pencil-box-multiple"
+                            />
 
-                    <IconButton
-                        text="Edit Profile"
-                        style={{ marginRight: 40, marginTop: 20 }}
-                        func={() => { navigation.navigate("EditProfile") }}
-                        icon="pencil-box-multiple"
-                    />
+                    }
                 </View>
                 <CustomText style={[styles.subtxt, { color: "white", marginTop: 20, paddingLeft: 5, paddingRight: 30 }]}>
                     {userData?.bio}

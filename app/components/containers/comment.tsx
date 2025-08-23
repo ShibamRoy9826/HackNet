@@ -2,26 +2,47 @@
 import { View, Image, Pressable, StyleSheet } from 'react-native';
 import CustomText from '../display/customText';
 import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons';
-import { calcTime } from '../../utils/stringTimeUtils';
+import { useNavigation } from '@react-navigation/native';
+
+//firestore
 import { Timestamp } from 'firebase/firestore';
+import { auth } from '../../auth/firebase';
+
+//func
+import { calcTime } from '../../utils/stringTimeUtils';
+import { AppAllList } from "../../utils/types";
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+type NavProp = NativeStackNavigationProp<AppAllList, 'Comments'>;
 
 type Prop = {
+    uid: string;
     imgSrc: string;
     displayName: string;
     timestamp: Timestamp;
     message: string;
 }
 
-export default function Comment({ imgSrc, displayName, timestamp, message }: Prop) {
+export default function Comment({ uid, imgSrc, displayName, timestamp, message }: Prop) {
+    const nav = useNavigation<NavProp>();
+    const user = auth.currentUser;
+
+    function redirectOtherUser() {
+        nav.navigate("OtherUser", { user_id: uid });
+    }
     return (
         <View style={styles.commentContainer}>
             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%" }}>
                 <View style={{ alignItems: "center", justifyContent: "flex-start", width: "auto", height: "100%", marginTop: 25 }}>
-                    <Image source={{ uri: imgSrc }} style={{ borderRadius: 50, width: 40, height: 40 }} />
+                    <Pressable onPress={() => { (uid !== (user ? user.uid : "")) ? redirectOtherUser() : nav.navigate("Tabs", { screen: "Profile" }) }}>
+                        <Image source={{ uri: imgSrc }} style={{ borderRadius: 50, width: 40, height: 40 }} />
+                    </Pressable>
                 </View>
                 <View style={styles.detailsContainer}>
                     <View style={{ flexDirection: "row", alignContent: "center", position: "static" }}>
-                        <CustomText style={styles.username}>{displayName}</CustomText>
+                        <Pressable onPress={() => { (uid !== (user ? user.uid : "")) ? redirectOtherUser() : nav.navigate("Tabs", { screen: "Profile" }) }}>
+                            <CustomText style={styles.username}>{displayName}</CustomText>
+                        </Pressable>
                         <CustomText style={[styles.subtxt, { marginLeft: 20 }]}>{calcTime(timestamp)}</CustomText>
                         <Pressable style={{ top: 5, right: 0, padding: 5, position: "absolute" }}>
                             <MaterialDesignIcons name="dots-vertical" color="#5f6878" size={25} />

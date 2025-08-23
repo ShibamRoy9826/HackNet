@@ -1,11 +1,11 @@
-import { Pressable, StyleProp, StyleSheet , ViewStyle } from "react-native"
+import { Pressable, StyleProp, StyleSheet, ViewStyle } from "react-native"
 import CustomText from "../display/customText"
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons"
 
 type Props = {
     func: () => void;
     style?: StyleProp<ViewStyle>;
-    icon: "pencil-box-multiple" | "slack" | "note-text" | "close";
+    icon: "pencil-box-multiple" | "slack" | "note-text" | "close" | "plus-box";
     text: string;
     disabled?: boolean;
 }

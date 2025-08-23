@@ -38,13 +38,32 @@ export type AppStackParamList = {
     SignUp: undefined;
     Notifications: undefined;
     Comments: { post_id: string };
+    OtherUser: { user_id: string };
     ForgotPass: undefined;
     Login: undefined;
     Settings: undefined;
 }
 
+export type AppAllList = {
+    EditProfile: undefined;
+    Tabs: undefined | { screen: string };
+    SignUp: undefined;
+    Notifications: undefined;
+    Comments: { post_id: string };
+    OtherUser: { user_id: string };
+    ForgotPass: undefined;
+    Login: undefined;
+    Settings: undefined;
+    Profile: undefined;
+    Log: undefined;
+    Home: undefined;
+    Friends: undefined;
+    Search: undefined;
+
+}
+
 export type AppTabParamList = {
-    Profile: undefined | { uid: string };
+    Profile: undefined;
     Log: undefined;
     Home: undefined;
     Friends: undefined;
@@ -53,7 +72,7 @@ export type AppTabParamList = {
 
 export type AppHomeHeaderList = {
     Home: undefined;
-    Profile: undefined | { uid: string };
+    Profile: undefined;
     Comments: { post_id: string };
     Settings: undefined;
     Notifications: undefined;

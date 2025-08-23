@@ -19,6 +19,9 @@ import { auth, db } from "../auth/firebase";
 //typecasting
 import { post } from "../utils/types";
 import NothingHere from "../components/display/nothing";
+import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { AppTabParamList } from "../utils/types";
+
 
 type UserData = {
     id: string;
@@ -33,7 +36,9 @@ type UserData = {
     createdAt?: Timestamp;
 };
 
-export default function SearchScreen() {
+type Prop = BottomTabScreenProps<AppTabParamList, "Search">
+
+export default function SearchScreen({ navigation }: Prop) {
     const user = auth.currentUser;
     const [search, setSearch] = useState("");
     const [userResults, setUserResults] = useState<UserData[]>([]);
@@ -116,7 +121,7 @@ export default function SearchScreen() {
             <View style={{ flexDirection: "row", alignItems: "center" }}>
 
                 <View style={styles.fieldContainer}>
-                    <TextInput value={search} onChangeText={setSearch} maxLength={50} autoCapitalize="none" textContentType={"none"} style={styles.text} placeholder={"Search HackNet"} placeholderTextColor={"#8492a6"} />
+                    <TextInput onSubmitEditing={handleSearch} value={search} onChangeText={setSearch} maxLength={50} autoCapitalize="none" textContentType={"none"} style={styles.text} placeholder={"Search HackNet"} placeholderTextColor={"#8492a6"} />
                 </View>
                 <OnlyIconButton
                     icon="magnify"
@@ -151,6 +156,8 @@ export default function SearchScreen() {
                                 avatar={item.avatar ? item.avatar : ""}
                                 username={item.displayName ? item.displayName : ""}
                                 bio={item.bio ? item.bio : ""}
+                                navigation={navigation}
+                                user_id={item.id}
                             />
                         )} />
                 </View>
@@ -191,6 +198,8 @@ export default function SearchScreen() {
                                 avatar={item.avatar ? item.avatar : ""}
                                 username={item.displayName ? item.displayName : ""}
                                 bio={item.bio ? item.bio : ""}
+                                navigation={navigation}
+                                user_id={item.id}
                             />
                         )}
                         style={{ backgroundColor: "#17171d", flex: 1, height: "80%", marginBottom: 100, }}

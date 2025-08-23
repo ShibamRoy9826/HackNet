@@ -117,7 +117,7 @@ export default function CommentsScreen({ navigation, route }: Props) {
 
     useEffect(() => {
         loadComments();
-    }, [loadComments])
+    }, [])
 
     return (
         <KeyboardAvoidingView behavior={"height"} style={{ backgroundColor: "#17171d", flex: 1, alignItems: "center" }}>
@@ -127,6 +127,7 @@ export default function CommentsScreen({ navigation, route }: Props) {
                 keyExtractor={item => item.id}
                 renderItem={({ item }: { item: comment }) => (
                     <Comment
+                        uid={item.uid}
                         imgSrc={usersData[item.uid]?.avatar ?? "https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg"}
                         displayName={usersData[item.uid]?.displayName ?? "Some User..."}
                         message={item.message}

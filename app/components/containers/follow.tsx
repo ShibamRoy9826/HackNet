@@ -5,19 +5,26 @@ import CustomText from "../display/customText";
 interface Props {
     username: string,
     bio: string,
-    avatar: string
+    avatar: string,
+    navigation: any,
+    user_id: string
 }
 const bio_limit = 20;
-export default function FollowBox({ avatar, username, bio }: Props) {
 
+export default function FollowBox({ navigation, avatar, username, bio, user_id }: Props) {
     let bio_mod = bio.slice(0, bio_limit) + "...";
     return (
         <View style={styles.friendBox}>
             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%", paddingHorizontal: 10 }}>
-                <Image source={{ uri: avatar }} style={{ borderRadius: 50, width: 45, height: 45, margin: "auto" }} />
+                <Pressable onPress={() => { navigation.navigate("OtherUser", { user_id: user_id }) }}>
+                    <Image source={{ uri: avatar }} style={{ borderRadius: 50, width: 45, height: 45, margin: "auto" }} />
+                </Pressable>
                 <View style={styles.detailsContainer}>
-                    <CustomText style={styles.username}>{username}</CustomText>
-                    <CustomText style={styles.lastMessage}>{bio_mod}</CustomText>
+
+                    <Pressable onPress={() => { navigation.navigate("OtherUser", { user_id: user_id }) }}>
+                        <CustomText style={styles.username}>{username}</CustomText>
+                        <CustomText style={styles.lastMessage}>{bio_mod}</CustomText>
+                    </Pressable>
                 </View>
                 <View>
                     <Pressable style={styles.followBtn}>

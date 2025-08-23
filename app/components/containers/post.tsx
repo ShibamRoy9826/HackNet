@@ -19,6 +19,7 @@ import {
     serverTimestamp,
     increment
 } from "firebase/firestore";
+import { auth } from "../../auth/firebase";
 
 //react and expo
 import { useEffect, useState } from "react";
@@ -29,7 +30,7 @@ import { extractTime } from "../../utils/stringTimeUtils";
 
 //typecasting
 import { useNavigation } from "@react-navigation/native";
-import { AppHomeHeaderList } from "@/app/utils/types";
+import { AppAllList } from "@/app/utils/types";
 import { BottomTabNavigationProp } from "@react-navigation/bottom-tabs";
 
 interface Prop {
@@ -44,13 +45,14 @@ interface Prop {
     comment_count: number
 }
 
-type NavType = BottomTabNavigationProp<AppHomeHeaderList, "Home">
+type NavType = BottomTabNavigationProp<AppAllList, "Home">
 
 export default function Post({ id, user_uid, media, used_media, message, uid, timestamp, like_count, comment_count }: Prop) {
     const navigation = useNavigation<NavType>();
     const [liked, setLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(like_count);
     const [commentCount, setCommentCount] = useState(comment_count);
+
 
     const [comment, setComment] = useState("");
     const [userPfp, setUserPfp] = useState("https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg");
@@ -149,15 +151,22 @@ export default function Post({ id, user_uid, media, used_media, message, uid, ti
         );
     }
 
+    function redirectOtherUser() {
+        navigation.navigate("OtherUser", { user_id: uid });
+    }
 
     return (
         <View style={styles.postBox}>
             {/* OP details */}
             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%", paddingHorizontal: 10 }}>
-                <Image source={{ uri: userPfp }} style={{ borderRadius: 50, width: 45, height: 45, margin: "auto" }} />
+                <Pressable style={{ margin: "auto" }} onPress={() => { (user_uid !== uid) ? redirectOtherUser() : navigation.navigate("Tabs", { screen: "Profile" }) }}>
+                    <Image source={{ uri: userPfp }} style={{ borderRadius: 50, width: 45, height: 45, margin: "auto" }} />
+                </Pressable>
                 <View style={styles.detailsContainer}>
-                    <CustomText style={styles.username}>{OPName}</CustomText>
-                    <CustomText style={styles.timestamp}>{extractTime(timestamp)}</CustomText>
+                    <Pressable onPress={() => { (user_uid !== uid) ? redirectOtherUser() : navigation.navigate("Tabs", { screen: "Profile" }) }}>
+                        <CustomText style={styles.username}>{OPName}</CustomText>
+                        <CustomText style={styles.timestamp}>{extractTime(timestamp)}</CustomText>
+                    </Pressable>
                 </View>
                 <View>
                     <Pressable style={{ padding: 5, marginLeft: "auto" }}>
