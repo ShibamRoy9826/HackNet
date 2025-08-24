@@ -12,14 +12,6 @@ import { useEffect, useState } from 'react';
 import { ModalProvider } from "@/contexts/modalContext";
 import { UserDataProvider } from "@/contexts/userContext";
 
-//Splash screen
-import * as SplashScreen from 'expo-splash-screen';
-
-SplashScreen.setOptions({
-  duration: 1000,
-  fade: true,
-});
-
 
 export default function RootLayout() {
   // handling loading state
@@ -40,9 +32,7 @@ export default function RootLayout() {
         <Stack.Screen name="loading" options={{ headerShown: false }} />
       </Stack>
     )
-  } else {
-    SplashScreen.hide();
-  }
+  } 
 
   return (
     <ModalProvider>
