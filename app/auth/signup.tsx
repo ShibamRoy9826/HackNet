@@ -1,35 +1,32 @@
 //components
 import { ScrollView, View, StyleSheet, RefreshControl } from "react-native";
-import InputBox from "../components/inputs/inptField";
-import CustomText from "../components/display/customText";
-import CustomButton from "../components/inputs/customButton";
-import IconButton from "../components/inputs/IconButton";
+import InputBox from "@/components/inputs/inptField";
+import CustomText from "@/components/display/customText";
+import CustomButton from "@/components/inputs/customButton";
+import IconButton from "@/components/inputs/IconButton";
 
 //react
 import React, { useState, } from "react";
 
 //firebase
 import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
-import { auth, db } from './firebase';
+import { auth, db } from '@/auth/firebase';
 import { doc, setDoc } from "firebase/firestore";
 
 //contexts
-import { useModalContext } from "../contexts/modalContext";
+import { useModalContext } from "../../src/contexts/modalContext";
 
 //func
-import { handleSlackLogin } from "../utils/otherUtils";
+import { handleSlackLogin } from "@/utils/otherUtils";
+import { useRouter } from "expo-router";
 
-//typecasting
-import { AppStackParamList } from "../utils/types";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-
-type Props = NativeStackScreenProps<AppStackParamList, 'SignUp'>;
 
 function isValidEmail(email: string) {
     const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return pattern.test(email);
 }
-export default function SignUpScreen({ navigation }: Props) {
+export default function SignUpScreen() {
+    const router = useRouter();
     const { alert, updateActivity, setActivityVisible, setActivityText } = useModalContext();
     setActivityText("Signing Up");
     const [username, setUserName] = useState("");
@@ -100,7 +97,7 @@ export default function SignUpScreen({ navigation }: Props) {
         else {
             registerUser(email, password, username).then(
                 () => {
-                    alert("Success!", "Further instructions for verification have been sent to your mail", () => { navigation.navigate("Login") });
+                    alert("Success!", "Further instructions for verification have been sent to your mail", () => { router.navigate("/auth/login") });
                 }
             ).catch(
                 (error) => {
@@ -128,7 +125,6 @@ export default function SignUpScreen({ navigation }: Props) {
     return (
 
         <ScrollView contentContainerStyle={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-
             <CustomText style={styles.heading}>
                 Sign Up
             </CustomText>
@@ -148,7 +144,7 @@ export default function SignUpScreen({ navigation }: Props) {
                 text="Create Account"
             />
 
-            <CustomText style={styles.smallTxt}>Already have an account? <CustomText style={styles.link} onPress={() => { navigation.navigate("Login") }}>Login here</CustomText></CustomText>
+            <CustomText style={styles.smallTxt}>Already have an account? <CustomText style={styles.link} onPress={() => { router.navigate("/auth/login") }}>Login here</CustomText></CustomText>
 
             <View
                 style={{

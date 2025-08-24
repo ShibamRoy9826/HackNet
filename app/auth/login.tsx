@@ -1,30 +1,30 @@
 //components
 import { View, StyleSheet } from "react-native";
-import InputBox from "../components/inputs/inptField";
-import IconButton from "../components/inputs/IconButton";
-import CustomText from "../components/display/customText";
+import InputBox from "@/components/inputs/inptField";
+import IconButton from "@/components/inputs/IconButton";
+import CustomText from "@/components/display/customText";
+import CustomButton from "@/components/inputs/customButton";
 
 //firebase
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 //contexts
-import { useModalContext } from "../contexts/modalContext";
-import { auth } from './firebase';
+import { useModalContext } from "../../src/contexts/modalContext";
+import { auth } from '@/auth/firebase';
 
 //func
-import { handleSlackLogin } from "../utils/otherUtils";
+import { handleSlackLogin } from "@/utils/otherUtils";
 
-//react
+//react 
 import { useState } from "react";
 
-//typecasting
-import { AppStackParamList } from "../utils/types";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import CustomButton from "../components/inputs/customButton";
+//navigation
+import { useRouter } from "expo-router";
 
-type Props = NativeStackScreenProps<AppStackParamList, 'Login'>;
 
-export default function LoginScreen({ navigation }: Props) {
+
+export default function LoginScreen() {
+    const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -44,7 +44,7 @@ export default function LoginScreen({ navigation }: Props) {
                 } else {
                     updateActivity(1, "Done!");
                     setActivityVisible(false);
-                    navigation.replace("Tabs");
+                    router.replace("/loading");
                 }
             } else {
                 updateActivity(0.6, "Something wrong happened");
@@ -73,7 +73,7 @@ export default function LoginScreen({ navigation }: Props) {
                 <InputBox secure={true} value={password} valueFn={setPassword} color="#8492a6" icon="key" placeholder="Your Password" type="password" />
 
             </View>
-            <CustomText style={styles.forgotPass} onPress={() => { navigation.navigate("ForgotPass") }}>Forgot Password?</CustomText>
+            <CustomText style={styles.forgotPass} onPress={() => { router.navigate("/auth/forgotPass") }}>Forgot Password?</CustomText>
 
             <CustomButton
                 text="Login"
@@ -81,7 +81,7 @@ export default function LoginScreen({ navigation }: Props) {
             />
 
 
-            <CustomText style={styles.smallTxt}>Don&apos;t have an account? <CustomText style={styles.signupBtn} onPress={() => { navigation.navigate("SignUp") }}>Sign up here</CustomText></CustomText>
+            <CustomText style={styles.smallTxt}>Don&apos;t have an account? <CustomText style={styles.signupBtn} onPress={() => { router.navigate("/auth/signup") }}>Sign up here</CustomText></CustomText>
 
             <View
                 style={{

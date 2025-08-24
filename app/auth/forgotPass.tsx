@@ -1,27 +1,26 @@
 //components
-import CustomText from "../components/display/customText";
+import CustomText from "@/components/display/customText";
 import { View, StyleSheet } from "react-native";
-import InputBox from "../components/inputs/inptField";
-import OnlyIconButton from "../components/inputs/onlyIconButton";
+import InputBox from "@/components/inputs/inptField";
+import OnlyIconButton from "@/components/inputs/onlyIconButton";
+import CustomButton from "@/components/inputs/customButton";
 
 //firebase
 import { sendPasswordResetEmail, } from "firebase/auth";
-import { auth } from './firebase';
+import { auth } from '@/auth/firebase';
 
 //react
 import { useState } from "react";
 
 //contexts
-import { useModalContext } from "../contexts/modalContext";
+import { useModalContext } from "../../src/contexts/modalContext";
 
-//typecasting
-import { AppStackParamList } from "../utils/types";
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import CustomButton from "../components/inputs/customButton";
+//navigation
+import { useRouter } from "expo-router";
 
-type Props = NativeStackScreenProps<AppStackParamList, 'ForgotPass'>;
 
-export default function ForgotPassScreen({ navigation }: Props) {
+export default function ForgotPassScreen() {
+    const router = useRouter();
     const [email, setEmail] = useState("");
 
     const { alert, updateActivity, setActivityVisible, setActivityText } = useModalContext();
@@ -44,7 +43,7 @@ export default function ForgotPassScreen({ navigation }: Props) {
     }
     return (
         <View style={styles.container}>
-            <OnlyIconButton icon="arrow-left" func={() => { navigation.goBack() }} style={{ position: "absolute", top: 50, left: 20 }} />
+            <OnlyIconButton icon="arrow-left" func={() => { router.back() }} style={{ position: "absolute", top: 50, left: 20 }} />
 
             <CustomText style={styles.heading}>
                 Forgot password?
@@ -62,7 +61,7 @@ export default function ForgotPassScreen({ navigation }: Props) {
                 func={handleForgotPass}
                 text="Send Email"
             />
-            <CustomText style={styles.smallTxt}>Recalled it? <CustomText style={styles.link} onPress={() => { navigation.navigate("Login") }}> Login back in here</CustomText></CustomText>
+            <CustomText style={styles.smallTxt}>Recalled it? <CustomText style={styles.link} onPress={() => { router.navigate("/auth/login") }}> Login back in here</CustomText></CustomText>
         </View>
     );
 };
