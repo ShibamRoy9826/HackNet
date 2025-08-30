@@ -3,6 +3,7 @@ import CustomText from "@components/display/customText";
 import CustomButton from "@components/inputs/customButton";
 import IconButton from "@components/inputs/IconButton";
 import InputBox from "@components/inputs/inptField";
+import OnlyIconButton from "@components/inputs/onlyIconButton";
 import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 
 //react
@@ -125,6 +126,7 @@ export default function SignUpScreen() {
     return (
 
         <ScrollView contentContainerStyle={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+            <OnlyIconButton icon="arrow-left" func={() => { router.back() }} style={{ position: "absolute", top: 50, left: 20 }} />
             <CustomText style={styles.heading}>
                 Sign Up
             </CustomText>
