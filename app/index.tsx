@@ -1,45 +1,16 @@
-// navigation and components
-import { Stack, useRouter } from "expo-router";
-import { Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { Pressable, Text, View } from "react-native";
 
-// firebase stuff
-import { auth } from "@auth/firebase";
-import { onAuthStateChanged } from "firebase/auth";
-
-//react and expo
-import { useEffect, useState } from 'react';
-
-export default function RootPage() {
-    // handling loading state
-    const router = useRouter();
-    // const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            // setUser(currentUser);
-            setLoading(false);
-        });
-        return () => unsubscribe();
-    }, [])
-
-    useEffect(() => {
-        if (!loading) {
-            router.replace("/auth/login");
-        }
-    }, [loading])
-
-    if (loading) {
-        return (
-            <Stack>
-                <Stack.Screen name="loading" options={{ headerShown: false }} />
-            </Stack>
-        )
-    }
-
+export default function Home() {
+    const r = useRouter();
     return (
-        <View >
-            <Text>This is the root page</Text>
+        <View>
+            <Text> Hello World</Text>
+            <Pressable onPressIn={() => { r.push("/auth/login") }}>
+                <Text>
+                    login
+                </Text>
+            </Pressable>
         </View>
     );
 }
