@@ -4,7 +4,7 @@ import { Text, View } from "react-native";
 
 // firebase stuff
 import { auth } from "@auth/firebase";
-import { onAuthStateChanged, User } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 
 //react and expo
 import { useEffect, useState } from 'react';
@@ -12,22 +12,22 @@ import { useEffect, useState } from 'react';
 export default function RootPage() {
     // handling loading state
     const router = useRouter();
-    const [user, setUser] = useState<User | null>(null);
+    // const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser);
+            // setUser(currentUser);
             setLoading(false);
         });
         return () => unsubscribe();
     }, [])
 
     useEffect(() => {
-        if (!user && !loading) {
+        if (!loading) {
             router.replace("/auth/login");
         }
-    }, [loading, user])
+    }, [loading])
 
     if (loading) {
         return (
