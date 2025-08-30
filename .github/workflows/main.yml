@@ -8,13 +8,14 @@ on:
       - "LICENSE"
       - "docs/**"
   pull_request:
-    branches: [main, master]
+    branches: [main, debug]
   workflow_dispatch:
     inputs:
       buildType:
         type: choice
         description: "Build type to run"
         options:
+          - dev
           - prod-apk
           - all
 
@@ -58,12 +59,27 @@ jobs:
       - name: 📦 Install dependencies
         run: yarn install
 
+      - name: 📝 Create .env file
+        run: |
+          echo "EXPO_PUBLIC_FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" >> .env
+          echo "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=${{ secrets.FIREBASE_AUTH_DOMAIN }}" >> .env
+          echo "EXPO_PUBLIC_FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}" >> .env
+          echo "EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}" >> .env
+          echo "EXPO_PUBLIC_FIREBASE_MESSAGE_SENDER_ID=${{ secrets.FIREBASE_MESSAGE_SENDER_ID }}" >> .env
+          echo "EXPO_PUBLIC_FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID }}" >> .env
+          echo "EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID=${{ secrets.FIREBASE_MEASUREMENT_ID }}" >> .env
+          echo "EXPO_PUBLIC_HACKCLUB_CDN=${{ secrets.HACKCLUB_CDN }}" >> .env
+          echo ".env file created"
+
+      - name: 🧪 Run TypeScript check
+        run: yarn tsc
+
       - name: 🧹 Run ESLint
         run: yarn lint
 
   build-and-deploy:
     needs: test
-    if: (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')) || github.event_name == 'workflow_dispatch'
+    if: (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/debug')) || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - name: 🏗 Checkout repository
@@ -91,18 +107,6 @@ jobs:
         run: |
           yarn install
           yarn global add eas-cli@latest
-
-      - name: 📝 Create .env file
-        run: |
-          echo "EXPO_PUBLIC_FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }}" >> .env
-          echo "EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=${{ secrets.FIREBASE_AUTH_DOMAIN }}" >> .env
-          echo "EXPO_PUBLIC_FIREBASE_PROJECT_ID=${{ secrets.FIREBASE_PROJECT_ID }}" >> .env
-          echo "EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=${{ secrets.FIREBASE_STORAGE_BUCKET }}" >> .env
-          echo "EXPO_PUBLIC_FIREBASE_MESSAGE_SENDER_ID=${{ secrets.FIREBASE_MESSAGE_SENDER_ID }}" >> .env
-          echo "EXPO_PUBLIC_FIREBASE_APP_ID=${{ secrets.FIREBASE_APP_ID }}" >> .env
-          echo "EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID=${{ secrets.FIREBASE_MEASUREMENT_ID }}" >> .env
-          echo "EXPO_PUBLIC_HACKCLUB_CDN=${{ secrets.HACKCLUB_CDN }}" >> .env
-          echo ".env file created"
 
       - name: 📱 Setup EAS build cache
         uses: actions/cache@v3
@@ -170,6 +174,15 @@ jobs:
             echo "metro.config.js not found"
           fi
 
+      - name: 📱 Build Development APK
+        if: github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'dev' || github.event_name == 'push'
+        run: |
+          # Build with increased memory limit
+          export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
+          eas build --platform android --profile development --local --non-interactive --output=./app-dev.apk
+        env:
+          NODE_ENV: development
+
       - name: 📱 Build Production APK
         if: github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'prod-apk' || github.event_name == 'push'
         run: |
@@ -183,5 +196,6 @@ jobs:
         with:
           name: app-builds
           path: |
+            ./app-dev.apk
             ./app-prod.apk
           retention-days: 7
