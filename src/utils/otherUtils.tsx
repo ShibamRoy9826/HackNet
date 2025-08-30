@@ -1,10 +1,10 @@
-import { extractUrl } from "./stringTimeUtils";
-import { increment, doc, addDoc, collection, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db } from "@/auth/firebase";
+import { addDoc, collection, doc, increment, serverTimestamp, updateDoc } from "firebase/firestore";
+import { extractUrl } from "./stringTimeUtils";
 
 export async function uploadToHc(urls: string[]) {
     const hc = "https://cdn.hackclub.com/api/v3/new";
-    console.log("This is the data hc upload fn got:", urls);
+    // console.log("This is the data hc upload fn got:", urls);
 
     const hcRes = await fetch(hc,
         {
@@ -19,12 +19,12 @@ export async function uploadToHc(urls: string[]) {
     const response = await hcRes.json();
 
     if (response) {
-        console.log('response from hc: ', response);
+        // console.log('response from hc: ', response);
         const deployedUrls = [];
         for (let i = 0; i < response.files.length; ++i) {
             deployedUrls.push(response.files[i].deployedUrl)
         }
-        console.log(deployedUrls);
+        // console.log(deployedUrls);
         return deployedUrls;
     } else {
         return [];

@@ -12,14 +12,6 @@ import { useEffect, useState } from 'react';
 import { ModalProvider } from "@/contexts/modalContext";
 import { UserDataProvider } from "@/contexts/userContext";
 
-//Splash screen
-import * as SplashScreen from 'expo-splash-screen';
-
-SplashScreen.setOptions({
-  duration: 1000,
-  fade: true,
-});
-
 
 export default function RootLayout() {
   // handling loading state
@@ -40,16 +32,13 @@ export default function RootLayout() {
         <Stack.Screen name="loading" options={{ headerShown: false }} />
       </Stack>
     )
-  } else {
-    SplashScreen.hide();
   }
 
   return (
     <ModalProvider>
       <UserDataProvider>
-        <Stack initialRouteName={user ? "(tabs)" : "auth/login"} screenOptions={{ contentStyle: { backgroundColor: "#17171d" }, headerShown: false, animation: "fade" }}>
-          <Stack.Screen name="notifications" options={{ title: "Notifications", headerShown: true, headerTintColor: "white", headerStyle: { backgroundColor: "#17171d" } }} />
-        </Stack >
+        <Stack initialRouteName={"auth/login"} screenOptions={{ contentStyle: { backgroundColor: "#17171d" }, headerShown: false, animation: "fade" }}>
+        </Stack>
       </UserDataProvider>
     </ModalProvider>
   );
