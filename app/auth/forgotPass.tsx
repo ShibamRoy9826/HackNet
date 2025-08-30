@@ -1,13 +1,13 @@
 //components
-import CustomText from "@/components/display/customText";
-import { View, StyleSheet } from "react-native";
-import InputBox from "@/components/inputs/inptField";
-import OnlyIconButton from "@/components/inputs/onlyIconButton";
-import CustomButton from "@/components/inputs/customButton";
+import CustomText from "@components/display/customText";
+import CustomButton from "@components/inputs/customButton";
+import InputBox from "@components/inputs/inptField";
+import OnlyIconButton from "@components/inputs/onlyIconButton";
+import { StyleSheet, View } from "react-native";
 
 //firebase
+import { auth } from '@auth/firebase';
 import { sendPasswordResetEmail, } from "firebase/auth";
-import { auth } from '@/auth/firebase';
 
 //react
 import { useState } from "react";

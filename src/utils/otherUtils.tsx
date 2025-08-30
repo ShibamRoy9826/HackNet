@@ -1,4 +1,4 @@
-import { db } from "@/auth/firebase";
+import { db } from "@auth/firebase";
 import { addDoc, collection, doc, increment, serverTimestamp, updateDoc } from "firebase/firestore";
 import { extractUrl } from "./stringTimeUtils";
 

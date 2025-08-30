@@ -1,7 +1,7 @@
+import CustomText from "@components/display/customText";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { Modal, View, Pressable, StyleSheet, SafeAreaView } from "react-native";
 import { BlurView } from 'expo-blur';
-import CustomText from "@/components/display/customText";
+import { Modal, Pressable, SafeAreaView, StyleSheet, View } from "react-native";
 
 
 interface Props {

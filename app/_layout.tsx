@@ -2,15 +2,15 @@
 import { Stack } from "expo-router";
 
 // firebase stuff
-import { auth } from "@/auth/firebase";
+import { auth } from "@auth/firebase";
 import { onAuthStateChanged, User } from "firebase/auth";
 
 //react and expo
 import { useEffect, useState } from 'react';
 
 //contexts
-import { ModalProvider } from "@/contexts/modalContext";
-import { UserDataProvider } from "@/contexts/userContext";
+import { ModalProvider } from "@contexts/modalContext";
+import { UserDataProvider } from "@contexts/userContext";
 
 
 export default function RootLayout() {

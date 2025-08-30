@@ -1,4 +1,4 @@
-import CustomText from "@/components/display/customText";
+import CustomText from "@components/display/customText";
 import { BlurView } from "expo-blur";
 import { Modal, SafeAreaView, StyleSheet, View } from "react-native";
 import { Bar } from 'react-native-progress';

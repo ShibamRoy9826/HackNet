@@ -1,19 +1,19 @@
 //components
-import { View, StyleSheet } from "react-native";
-import InputBox from "@/components/inputs/inptField";
-import IconButton from "@/components/inputs/IconButton";
-import CustomText from "@/components/display/customText";
-import CustomButton from "@/components/inputs/customButton";
+import CustomText from "@components/display/customText";
+import CustomButton from "@components/inputs/customButton";
+import IconButton from "@components/inputs/IconButton";
+import InputBox from "@components/inputs/inptField";
+import { StyleSheet, View } from "react-native";
 
 //firebase
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 //contexts
+import { auth } from '@auth/firebase';
 import { useModalContext } from "../../src/contexts/modalContext";
-import { auth } from '@/auth/firebase';
 
 //func
-import { handleSlackLogin } from "@/utils/otherUtils";
+import { handleSlackLogin } from "@utils/otherUtils";
 
 //react 
 import { useState } from "react";

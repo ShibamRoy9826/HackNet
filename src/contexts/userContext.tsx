@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { onSnapshot, doc } from "firebase/firestore";
-import { auth, db } from "@/auth/firebase";
-import { UserData } from "@/utils/types";
+import { auth, db } from "@auth/firebase";
+import { UserData } from "@utils/types";
+import { doc, onSnapshot } from "firebase/firestore";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 type UserContextType = {
   userData: UserData | null;

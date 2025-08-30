@@ -1,23 +1,23 @@
 //components
-import { ScrollView, View, StyleSheet, RefreshControl } from "react-native";
-import InputBox from "@/components/inputs/inptField";
-import CustomText from "@/components/display/customText";
-import CustomButton from "@/components/inputs/customButton";
-import IconButton from "@/components/inputs/IconButton";
+import CustomText from "@components/display/customText";
+import CustomButton from "@components/inputs/customButton";
+import IconButton from "@components/inputs/IconButton";
+import InputBox from "@components/inputs/inptField";
+import { RefreshControl, ScrollView, StyleSheet, View } from "react-native";
 
 //react
 import React, { useState, } from "react";
 
 //firebase
+import { auth, db } from '@auth/firebase';
 import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } from "firebase/auth";
-import { auth, db } from '@/auth/firebase';
 import { doc, setDoc } from "firebase/firestore";
 
 //contexts
 import { useModalContext } from "../../src/contexts/modalContext";
 
 //func
-import { handleSlackLogin } from "@/utils/otherUtils";
+import { handleSlackLogin } from "@utils/otherUtils";
 import { useRouter } from "expo-router";
 
 
