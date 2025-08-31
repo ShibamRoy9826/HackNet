@@ -26,11 +26,11 @@ export default function HomeHeader({ tY, h, pT }: Props) {
     return (
         <Animated.View style={[styles.header, { height: h, paddingTop: pT, transform: [{ translateY: tY }] }]}>
             <Pressable onPress={() => router.navigate('/(tabs)/profile/')}>
-                <Image source={userData?.avatar ? { uri: userData.avatar } : require("@/assets/images/pfp.jpg")} style={{ borderRadius: 50, width: 30, height: 30, marginHorizontal: 10 }} />
+                <Image source={userData?.avatar ? { uri: userData.avatar } : require("@assets/images/pfp.jpg")} style={{ borderRadius: 50, width: 30, height: 30, marginHorizontal: 10 }} />
             </Pressable>
 
             <CustomText style={{ fontSize: 18, color: "white", marginRight: "auto" }}> Ahoy, Hacker!</CustomText>
-            <Pressable style={styles.button} onPress={() => { router.push('/notifications') }}>
+            <Pressable style={styles.button} onPress={() => { router.push('/(tabs)/home/notifications') }}>
                 <MaterialDesignIcons name="bell" color="white" size={25} />
             </Pressable>
             <Pressable style={styles.button} onPress={() => { router.navigate('/(tabs)/home/settings') }}>

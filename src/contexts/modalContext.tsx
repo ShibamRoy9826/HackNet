@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, useRef } from "react";
-import ModalBox from "@/components/alerts/modal";
-import ActivityBox from "@/components/alerts/activity";
+import ActivityBox from "@components/alerts/activity";
+import ModalBox from "@components/alerts/modal";
+import React, { createContext, useContext, useRef, useState } from "react";
 
 type modalContextType = {
     alert: (text: string, subtext: string, onClose?: () => void) => void;

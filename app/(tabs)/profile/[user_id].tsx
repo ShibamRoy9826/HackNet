@@ -1,93 +1,116 @@
 //components
-import Post from "@/components/containers/post";
-import ProfileHeader from "@/components/containers/ProfileHeader";
-import CustomText from '@/components/display/customText';
-import NothingHere from "@/components/display/nothing";
-import RadioBtn from "@/components/inputs/radioBtn";
-import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
+import Post from "@components/containers/post";
+import ProfileHeader from "@components/containers/ProfileHeader";
+import CustomText from '@components/display/customText';
+import NothingHere from "@components/display/nothing";
+import RadioBtn from "@components/inputs/radioBtn";
+import { FlatList, RefreshControl, StyleSheet, View , ListRenderItem, ListRenderItemInfo } from 'react-native';
 
 //react
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 //firestore
-import { auth, db } from "@/auth/firebase";
-import { collection, doc, getDoc, getDocs, limit, query, where } from "firebase/firestore";
+import { auth, db } from "@auth/firebase";
+import { collection, doc, getDoc, getDocs, limit, orderBy, query, where } from "firebase/firestore";
 
 //typecasting
-import { UserData, post } from "@/utils/types";
+import { UserData, post } from "@utils/types";
 import { useLocalSearchParams } from 'expo-router';
 
 
 export default function OtherProfileScreen() {
     const { user_id } = useLocalSearchParams<{ user_id: string }>()
 
-    const user = auth.currentUser;
-    const sameUser = (user ? user.uid : "") === user_id;
-
-    const [userOwnPosts, setOwnPosts] = useState<post[]>([]);
-    const [likedPosts, setLikedPosts] = useState<post[]>([]);
-
+    const [refreshing, setRefreshing] = useState(false);
     const [currTab, setCurrTab] = useState("Logs");
 
-    const [refreshing, setRefreshing] = React.useState(false);
-
+    const [ownPosts, setOwnPosts] = useState<post[]>([]);
+    const [likedPosts, setUserOwnPosts] = useState<post[]>([]);
     const [userData, setUserData] = useState<UserData>();
+    const [sameUser, setSameUser] = useState(true);
+
+    const currentUser = auth.currentUser;
+
+
+    const [uid, setUid] = useState(currentUser ? (currentUser.uid) : "");
 
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
-        showPosts();
+        postWrapper();
         setTimeout(() => {
             setRefreshing(false);
-        }, 2000);
+        }, 1000);
     }, []);
 
-    async function showOwnPosts() {
-        if (userData) {
-            const getUsersQuery = query(
-                collection(db, "posts"),
-                where('uid', '==', user_id),
-                limit(5)
-            )
-            const snapshot = await getDocs(getUsersQuery);
+    //func
+    const renderPost: ListRenderItem<post> = useCallback(({ item }: ListRenderItemInfo<post>) =>
+    (
+        <Post comment_count={item.num_comments}
+            like_count={item.likes} user_uid={currentUser ? currentUser.uid : ""}
+            id={item.id}
+            uid={item.uid}
+            timestamp={item.timestamp}
+            message={item.post_message}
+            used_media={item.used_media}
+            media={item.media} />
 
-            return snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...(doc.data()) as Omit<post, "id">
-            }));
-        } else {
-            return [];
-        }
-    }
+    ), [currentUser])
 
     async function showPosts() {
-        const ownPosts = await showOwnPosts();
-        setOwnPosts(ownPosts);
-        const snap = await getDoc(doc(db, "users", user_id));
-        setUserData({
-            uid: user_id,
-            ...(snap.data()) as Omit<UserData, "uid">
-        });
+        const c = collection(db, "posts");
+        const q = query(c,
+            where("uid", "==", uid),
+            orderBy("timestamp", "desc"),
+            limit(5)
+        )
+        const snap = await getDocs(q);
+
+        return snap.docs.map(doc => ({
+            id: doc.id,
+            ...(doc.data()) as Omit<post, "id">
+        }));
     }
 
+    async function postWrapper() {
+        const posts = await showPosts();
+        setOwnPosts(posts);
+
+        const userSnap = await getDoc(doc(db, "users", uid));
+        setUserData({
+            uid: user_id,
+            ...(userSnap.data()) as Omit<UserData, "uid">
+        });
+
+    }
+
+
+    //effects
     useEffect(() => {
-        showPosts();
+        if (user_id) {
+            if (user_id !== uid) {
+                setSameUser(false);
+                setUid(user_id);
+            }
+        }
+        postWrapper();
+
     }, [])
+
+
 
     return (
         <FlatList
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            data={(currTab === "Logs") ? userOwnPosts : likedPosts}
+            data={(currTab === "Logs") ? ownPosts : likedPosts}
             keyExtractor={item => item.id}
-            renderItem={({ item }) => (
-                <Post comment_count={item.num_comments} user_uid={userData ? userData.uid : ""} id={item.id} uid={item.uid} timestamp={item.timestamp} message={item.post_message} used_media={item.used_media} media={item.media} like_count={item.likes} />
-            )}
+            renderItem={renderPost}
             removeClippedSubviews={true}
             ListEmptyComponent={
                 <NothingHere />
             }
             ListHeaderComponent={
                 <View style={{ backgroundColor: "#17171d", flex: 1 }}>
-                    <ProfileHeader user_id={user_id} userData={userData} />
+                    <ProfileHeader sameUser={sameUser} user_id={user_id} userData={userData} />
                     <RadioBtn
                         options={["Logs", "Liked Logs"]}
                         iconList={["post", "heart"]}
@@ -103,7 +126,9 @@ export default function OtherProfileScreen() {
                         }}>
                         {(currTab === "Logs") ? (sameUser ? "Your Logs" : "Logs") : "Liked Logs"}</CustomText>
                 </View>
-
+            }
+            ListFooterComponent={
+                <View style={{ paddingBottom: 100 }} />
             }
             style={{ backgroundColor: "#17171d" }}
         />

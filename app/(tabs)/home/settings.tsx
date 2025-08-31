@@ -1,12 +1,12 @@
 //components
-import CustomButton from "@/components/inputs/customButton";
+import CustomButton from "@components/inputs/customButton";
 import { ScrollView, StyleSheet, View } from "react-native";
 
 //others
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 //firebase
-import { auth } from '@/auth/firebase';
+import { auth } from '@auth/firebase';
 import { signOut } from "firebase/auth";
 
 //storage

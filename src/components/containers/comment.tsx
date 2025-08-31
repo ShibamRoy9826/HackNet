@@ -1,5 +1,5 @@
 //components
-import CustomText from '@/components/display/customText';
+import CustomText from '@components/display/customText';
 import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 
@@ -7,7 +7,7 @@ import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { Timestamp } from 'firebase/firestore';
 
 //func
-import { calcTime } from '@/utils/stringTimeUtils';
+import { calcTime } from '@utils/stringTimeUtils';
 import { useRouter } from 'expo-router';
 
 type Prop = {

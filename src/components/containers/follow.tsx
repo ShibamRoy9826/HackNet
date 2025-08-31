@@ -1,7 +1,7 @@
-import { View, StyleSheet, Image, Pressable } from "react-native";
+import CustomText from "@components/display/customText";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import CustomText from "@/components/display/customText";
 import { useRouter } from "expo-router";
+import { Image, Pressable, StyleSheet, View } from "react-native";
 
 interface Props {
     username: string,

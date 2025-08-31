@@ -1,24 +1,24 @@
 // components
-import { Image, View, TextInput, StyleSheet, ScrollView } from "react-native";
-import CustomText from "@/components/display/customText";
-import CustomButton from "@/components/inputs/customButton";
-import IconButton from "@/components/inputs/IconButton";
+import CustomText from "@components/display/customText";
+import CustomButton from "@components/inputs/customButton";
+import IconButton from "@components/inputs/IconButton";
+import { Image, ScrollView, StyleSheet, TextInput, View } from "react-native";
 
 //contexts
-import { useUserData } from "@/contexts/userContext";
-import { useModalContext } from "@/contexts/modalContext";
+import { useModalContext } from "@contexts/modalContext";
+import { useUserData } from "@contexts/userContext";
 
 //firebase
-import { auth, db } from '@/auth/firebase';
+import { auth, db } from '@auth/firebase';
 import { doc, updateDoc } from "firebase/firestore";
 
 //others
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useState, useEffect } from "react";
 import * as ImagePicker from 'expo-image-picker';
+import { useEffect, useState } from "react";
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 //func
-import { uploadFileTemp, uploadToHc } from '@/utils/otherUtils';
+import { uploadFileTemp, uploadToHc } from '@utils/otherUtils';
 import { useRouter } from "expo-router";
 
 

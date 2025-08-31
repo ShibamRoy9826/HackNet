@@ -1,34 +1,38 @@
 //components
-import { View, StyleSheet } from "react-native";
-import InputBox from "@/components/inputs/inptField";
-import IconButton from "@/components/inputs/IconButton";
-import CustomText from "@/components/display/customText";
-import CustomButton from "@/components/inputs/customButton";
+import CustomText from "@components/display/customText";
+import CustomButton from "@components/inputs/customButton";
+import IconButton from "@components/inputs/IconButton";
+import InputBox from "@components/inputs/inptField";
+import { StyleSheet, View } from "react-native";
 
 //firebase
 import { signInWithEmailAndPassword } from "firebase/auth";
 
 //contexts
+import { auth } from '@auth/firebase';
 import { useModalContext } from "../../src/contexts/modalContext";
-import { auth } from '@/auth/firebase';
 
 //func
-import { handleSlackLogin } from "@/utils/otherUtils";
+import { handleSlackLogin } from "@utils/otherUtils";
 
 //react 
 import { useState } from "react";
 
 //navigation
-import { useRouter } from "expo-router";
-
+import { Redirect, useRouter } from "expo-router";
 
 
 export default function LoginScreen() {
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
+    const user = auth.currentUser;
     const { alert, updateActivity, setActivityVisible, setActivityText } = useModalContext();
+
+    if (user) {
+        return <Redirect href={"/(tabs)/home"} />
+    }
+
     setActivityText("Logging in");
 
     function handleLogin() {
@@ -44,7 +48,7 @@ export default function LoginScreen() {
                 } else {
                     updateActivity(1, "Done!");
                     setActivityVisible(false);
-                    router.replace("/loading");
+                    router.replace("/(tabs)/home");
                 }
             } else {
                 updateActivity(0.6, "Something wrong happened");

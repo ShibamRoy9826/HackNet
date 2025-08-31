@@ -1,5 +1,5 @@
-import { Pressable, StyleProp, StyleSheet, ViewStyle } from "react-native"
-import CustomText from "@/components/display/customText"
+import CustomText from "@components/display/customText";
+import { Pressable, StyleProp, StyleSheet, ViewStyle } from "react-native";
 
 type Props = {
     func: () => void;

@@ -1,20 +1,20 @@
 //components
-import HomeHeader from "@/components/containers/HomeHeader";
-import Post from "@/components/containers/post";
-import { ActivityIndicator, Animated, KeyboardAvoidingView, RefreshControl, View } from "react-native";
+import HomeHeader from "@components/containers/HomeHeader";
+import Post from "@components/containers/post";
+import { ActivityIndicator, Animated, KeyboardAvoidingView, RefreshControl, View , ListRenderItem, ListRenderItemInfo } from "react-native";
 
 //others
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 //react
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 //firebase
-import { auth, db } from '@/auth/firebase';
+import { auth, db } from '@auth/firebase';
 import { collection, getDocs, limit, orderBy, query, QueryDocumentSnapshot, startAfter } from 'firebase/firestore';
 
 //typecasting
-import { post } from "@/utils/types";
+import { post } from "@utils/types";
 
 const postLimit = 10;
 
@@ -49,6 +49,19 @@ export default function HomeScreen() {
     const [endReached, setEndReached] = useState(false);
 
     const loadingRef = useRef(false);
+
+    const renderPost: ListRenderItem<post> = useCallback(({ item }: ListRenderItemInfo<post>) =>
+    (
+        <Post comment_count={item.num_comments}
+            like_count={item.likes} user_uid={user ? user.uid : ""}
+            id={item.id}
+            uid={item.uid}
+            timestamp={item.timestamp}
+            message={item.post_message}
+            used_media={item.used_media}
+            media={item.media} />
+
+    ), [user])
 
     async function fetchPosts(lastDoc: QueryDocumentSnapshot | null, userId: string) {
         let q = query(
@@ -106,16 +119,14 @@ export default function HomeScreen() {
             <Animated.FlatList
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 data={posts}
-                keyExtractor={item => item.id}
-                renderItem={({ item }) => (
-                    <Post comment_count={item.num_comments} like_count={item.likes} user_uid={user ? user.uid : ""} id={item.id} uid={item.uid} timestamp={item.timestamp} message={item.post_message} used_media={item.used_media} media={item.media} />
-                )}
+                keyExtractor={item => item.id.toString()}
+                renderItem={renderPost}
                 style={{ backgroundColor: "#17171d", flex: 1, height: "100%" }}
                 onScroll={e => {
                     scrollY.setValue(e.nativeEvent.contentOffset.y);
                 }}
-                // onEndReached={loadPosts}
-                // onEndReachedThreshold={0.5}
+                onEndReached={loadPosts}
+                onEndReachedThreshold={0.5}
                 ListHeaderComponent={<View style={{ height: 50 + insets.top }}></View>}
                 ListFooterComponent={<View style={{ padding: 100 }}>{loading ? <ActivityIndicator size="large" /> : null}</View>}
                 removeClippedSubviews={false}

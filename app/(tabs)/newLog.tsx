@@ -1,28 +1,28 @@
 //components
-import { Dimensions, Switch, StyleSheet, ScrollView, View, TextInput, Image } from "react-native";
-import CustomText from "@/components/display/customText";
+import CarouselComponent from "@components/display/carousel";
+import CustomText from "@components/display/customText";
+import IconButton from "@components/inputs/IconButton";
+import RadioBtn from "@components/inputs/radioBtn";
+import SquareButton from "@components/inputs/squareButton";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import RadioBtn from "@/components/inputs/radioBtn";
-import CarouselComponent from "@/components/display/carousel";
-import IconButton from "@/components/inputs/IconButton";
-import SquareButton from "@/components/inputs/squareButton";
+import { Dimensions, Image, ScrollView, StyleSheet, Switch, TextInput, View } from "react-native";
 
 //react and expo
-import { useState } from "react";
 import * as ImagePicker from 'expo-image-picker';
 import { ImagePickerAsset } from "expo-image-picker";
+import { useState } from "react";
 
 //firebase
-import { auth, db } from "@/auth/firebase";
-import { setDoc, doc, updateDoc, increment } from "firebase/firestore";
+import { auth, db } from "@auth/firebase";
+import { doc, increment, setDoc, updateDoc } from "firebase/firestore";
 
 //contexts
-import { useUserData } from "@/contexts/userContext";
-import { useModalContext } from "@/contexts/modalContext";
+import { useModalContext } from "@contexts/modalContext";
+import { useUserData } from "@contexts/userContext";
 
 //func
-import { uploadToHc, uploadFileTemp } from "@/utils/otherUtils";
-import { genPostTitle } from "@/utils/stringTimeUtils";
+import { uploadFileTemp, uploadToHc } from "@utils/otherUtils";
+import { genPostTitle } from "@utils/stringTimeUtils";
 
 
 
@@ -149,7 +149,7 @@ export default function NewPostScreen() {
         <ScrollView style={{ backgroundColor: "#17171d", flex: 1, paddingTop: 50, marginBottom: 100 }} contentContainerStyle={{ alignItems: "center" }}>
 
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-start", width: "100%" }}>
-                <Image source={userData?.avatar ? { uri: userData.avatar } : require("@/assets/images/pfp.jpg")} style={{ marginHorizontal: 10, borderRadius: 50, width: 30, height: 30 }} />
+                <Image source={userData?.avatar ? { uri: userData.avatar } : require("@assets/images/pfp.jpg")} style={{ marginHorizontal: 10, borderRadius: 50, width: 30, height: 30 }} />
                 <CustomText style={{ color: "white", fontSize: 20, textAlign: "center", fontWeight: "bold", marginLeft: 10, marginVertical: 10 }}>Create New Log</CustomText>
                 <MaterialDesignIcons name={"plus-box"} size={20} color={"white"} style={{ marginLeft: 10 }} />
             </View>

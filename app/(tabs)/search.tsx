@@ -1,10 +1,10 @@
 //components
-import FollowBox from "@/components/containers/follow";
-import Post from "@/components/containers/post";
-import CustomText from "@/components/display/customText";
-import NothingHere from "@/components/display/nothing";
-import OnlyIconButton from "@/components/inputs/onlyIconButton";
-import RadioBtn from "@/components/inputs/radioBtn";
+import FollowBox from "@components/containers/follow";
+import Post from "@components/containers/post";
+import CustomText from "@components/display/customText";
+import NothingHere from "@components/display/nothing";
+import OnlyIconButton from "@components/inputs/onlyIconButton";
+import RadioBtn from "@components/inputs/radioBtn";
 import { FlatList, RefreshControl, StyleSheet, TextInput, View } from "react-native";
 
 //react
@@ -14,11 +14,11 @@ import React, { useEffect, useState } from "react";
 // import { useUserData } from "../contexts/userContext";
 
 //firebase
-import { auth, db } from "@/auth/firebase";
+import { auth, db } from "@auth/firebase";
 import { Timestamp, collection, getDocs, limit, query, where } from 'firebase/firestore';
 
 //typecasting
-import { post } from "@/utils/types";
+import { post } from "@utils/types";
 
 ///navigation
 

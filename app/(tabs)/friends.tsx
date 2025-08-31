@@ -1,14 +1,14 @@
 //components
-import { View, ScrollView, StyleSheet } from "react-native";
-import CustomText from "@/components/display/customText";
-import InputBox from "@/components/inputs/inptField";
-import OnlyIconButton from "@/components/inputs/onlyIconButton";
+import CustomText from "@components/display/customText";
+import InputBox from "@components/inputs/inptField";
+import OnlyIconButton from "@components/inputs/onlyIconButton";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 //react
 import { useState } from "react";
 
 //typecasting
-import NothingHere from "@/components/display/nothing";
+import NothingHere from "@components/display/nothing";
 
 
 export default function FriendsScreen() {

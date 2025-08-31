@@ -4,11 +4,23 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "src/*"
-      ],
       "@firebase/auth": [
         "./node_modules/@firebase/auth/dist/index.rn.d.ts"
+      ],
+      "@components/*": [
+        "src/components/*"
+      ],
+      "@utils/*": [
+        "src/utils/*"
+      ],
+      "@contexts/*": [
+        "src/contexts/*"
+      ],
+      "@auth/*": [
+        "src/auth/*"
+      ],
+      "@assets/*": [
+        "assets/*"
       ]
     }
   },

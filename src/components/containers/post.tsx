@@ -6,7 +6,7 @@ import CustomText from "../display/customText";
 import InputBox from "../inputs/inptField";
 
 //firebase
-import { db, getUserData } from "@/auth/firebase";
+import { db, getUserData } from "@auth/firebase";
 import {
     addDoc,
     collection,
@@ -23,10 +23,10 @@ import {
 //react and expo
 import { ImagePickerAsset } from "expo-image-picker";
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 //func
-import { extractTime } from "@/utils/stringTimeUtils";
+import { extractTime } from "@utils/stringTimeUtils";
 
 
 interface Prop {
@@ -42,7 +42,7 @@ interface Prop {
 }
 
 
-export default function Post({ id, user_uid, media, used_media, message, uid, timestamp, like_count, comment_count }: Prop) {
+const Post = memo(function Post({ id, user_uid, media, used_media, message, uid, timestamp, like_count, comment_count }: Prop) {
     const router = useRouter();
     const [liked, setLiked] = useState(false);
     const [likeCount, setLikeCount] = useState(like_count);
@@ -66,6 +66,7 @@ export default function Post({ id, user_uid, media, used_media, message, uid, ti
 
     useEffect(() => {
         checkIfUserLiked();
+        console.log("rendering: ", id);
     }, [])
 
 
@@ -84,14 +85,12 @@ export default function Post({ id, user_uid, media, used_media, message, uid, ti
 
     async function addComment() {
         try {
-            console.log("trying to comment");
             await addDoc(collection(db, "posts", id, "comments"), {
                 uid: user_uid,
                 message: comment,
                 timestamp: serverTimestamp(),
                 likes: 0
             })
-            console.log("done!");
             await updateDoc(doc(db, "posts", id),
                 {
                     num_comments: increment(1)
@@ -115,6 +114,7 @@ export default function Post({ id, user_uid, media, used_media, message, uid, ti
                 }).then(() => {
                     setLikeCount(likeCount + 1);
                 })
+
         } catch (e) {
             console.log(e);
         }
@@ -208,7 +208,7 @@ export default function Post({ id, user_uid, media, used_media, message, uid, ti
 
         </View>
     );
-}
+})
 
 const styles = StyleSheet.create({
     postBox: {
@@ -240,3 +240,6 @@ const styles = StyleSheet.create({
         alignItems: "flex-start"
     }
 })
+
+
+export default Post;

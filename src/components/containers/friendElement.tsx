@@ -1,6 +1,6 @@
-import { View, StyleSheet, Image, Pressable } from "react-native";
+import CustomText from '@components/display/customText';
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import CustomText from '@/components/display/customText';
+import { Image, Pressable, StyleSheet, View } from "react-native";
 
 interface Props {
     username: string,
@@ -10,7 +10,7 @@ export default function FriendElement({ username, lastMessage }: Props) {
     return (
         <View style={styles.friendBox}>
             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%", paddingHorizontal: 10 }}>
-                <Image source={require("@/assets/images/pfp.jpg")} style={{ borderRadius: 50, width: 45, height: 45, margin: "auto" }} />
+                <Image source={require("@assets/images/pfp.jpg")} style={{ borderRadius: 50, width: 45, height: 45, margin: "auto" }} />
                 <View style={styles.detailsContainer}>
                     <CustomText style={styles.username}>{username}</CustomText>
                     <CustomText style={styles.lastMessage}>{lastMessage}</CustomText>

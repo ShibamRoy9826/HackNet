@@ -1,6 +1,6 @@
-import { View, TextInput, StyleSheet } from "react-native";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { Dispatch, SetStateAction } from "react";
+import { StyleSheet, TextInput, View } from "react-native";
 
 interface Props {
     value: string,
@@ -27,7 +27,6 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         margin: 10,
         width: "80%",
-        height: "auto",
         paddingHorizontal: 12,
         color: "white",
         display: "flex",
@@ -41,6 +40,6 @@ const styles = StyleSheet.create({
         color: "white",
         textAlign: "left",
         paddingLeft: 10,
-        width: '100%'
+        flex: 1
     }
 });

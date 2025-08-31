@@ -1,41 +1,49 @@
 //components
-import Comment from "@/components/containers/comment";
-import NothingHere from "@/components/display/nothing";
-import InputBox from "@/components/inputs/inptField";
+import Comment from "@components/containers/comment";
+import Post from "@components/containers/post";
+import NothingHere from "@components/display/nothing";
+import InputBox from "@components/inputs/inptField";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
+import { Stack } from "expo-router";
 import { FlatList, KeyboardAvoidingView, Pressable, RefreshControl, StyleSheet, View } from "react-native";
 
 //firebase
 import {
     collection,
+    doc,
+    getDoc,
     getDocs,
     orderBy,
     query,
     where
 } from "firebase/firestore";
 
-import { auth, db } from "@/auth/firebase";
+import { auth, db } from "@auth/firebase";
 
 //others
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 //react 
 import React, { useEffect, useState } from 'react';
 
 //func
-import { chunkArray } from "@/utils/arrayUtils";
-import { addComment } from "@/utils/otherUtils";
+import { chunkArray } from "@utils/arrayUtils";
+import { addComment } from "@utils/otherUtils";
 
 //typecasting
-import { comment, UserData } from "@/utils/types";
-import { useLocalSearchParams } from "expo-router";
+import CustomText from "@components/display/customText";
+import OnlyIconButton from "@components/inputs/onlyIconButton";
+import { comment, post, UserData } from "@utils/types";
 
 type UserDataWithId = UserData & {
     id: string;
 }
 
 export default function CommentsScreen() {
+    const [loading, setLoading] = useState(true);
     const insets = useSafeAreaInsets();
+    const router = useRouter();
 
     const { post_id } = useLocalSearchParams<{ post_id: string }>();
     const user = auth.currentUser;
@@ -44,7 +52,10 @@ export default function CommentsScreen() {
     const [comment, setComment] = useState("");
     const [commentData, setCommentData] = useState<comment[]>([]);
 
+    const [postData, setPostData] = useState<post>();
+
     const [refreshing, setRefreshing] = React.useState(false);
+
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         loadComments();
@@ -52,8 +63,6 @@ export default function CommentsScreen() {
             setRefreshing(false);
         }, 1000);
     }, []);
-
-
 
     async function getUsersData(userList: string[]) {
         if (userList.length === 0) {
@@ -71,8 +80,6 @@ export default function CommentsScreen() {
             const data = doc.data() as UserData;
             userData[data.uid] = { id: doc.id, ...data };
         });
-        // return snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        // return userData;
         setUsersData(prev => {
             const d = {
                 ...prev,
@@ -87,7 +94,6 @@ export default function CommentsScreen() {
     async function loadComments() {
         const c = collection(db, "posts", post_id, "comments");
         const q = query(c, orderBy("timestamp", "desc"));
-        console.log(post_id, "is the postid");
         try {
             getDocs(q).then((data) => {
                 const comments: comment[] = data.docs.map(doc => (
@@ -117,9 +123,31 @@ export default function CommentsScreen() {
         }
     }
 
+    async function getPostData() {
+        const d = doc(db, "posts", post_id);
+        const snap = await getDoc(d);
+        setPostData(snap.data() as post);
+    }
     useEffect(() => {
         loadComments();
+        getPostData();
     }, [])
+
+    useEffect(() => {
+        if (!user && !usersData && !commentData && !postData) {
+            setLoading(true);
+        } else {
+            setLoading(false);
+        }
+    })
+
+    if (loading) {
+        return (
+            <Stack>
+                <Stack.Screen name="loading" options={{ headerShown: false }} />
+            </Stack>
+        );
+    }
 
     return (
         <KeyboardAvoidingView behavior={"height"} style={{ backgroundColor: "#17171d", flex: 1, alignItems: "center", paddingTop: insets.top }}>
@@ -136,6 +164,19 @@ export default function CommentsScreen() {
                         timestamp={item.timestamp}
                     />
                 )}
+                ListHeaderComponent={
+                    <View style={{ paddingTop: insets.top }}>
+                        <OnlyIconButton icon="arrow-left" func={() => { router.back() }} style={{ position: "absolute", top: 0, left: 20, zIndex: 5 }} />
+                        <CustomText style={{ color: "white", left: 80, fontSize: 18, top: 0, fontWeight: 700 }}>Comments</CustomText>
+                        {
+                            postData ?
+                                <Post id={post_id} user_uid={postData.uid} media={postData.media} used_media={postData.used_media} message={postData.post_message}
+                                    timestamp={postData.timestamp} like_count={postData.likes} comment_count={postData.num_comments} uid={postData.uid} />
+                                : <View></View>
+                        }
+
+                    </View>
+                }
                 ListEmptyComponent={
                     <NothingHere text="No comments yet... " />
                 }
