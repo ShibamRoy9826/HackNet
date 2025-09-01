@@ -4,7 +4,7 @@ import ProfileHeader from "@components/containers/ProfileHeader";
 import CustomText from '@components/display/customText';
 import NothingHere from "@components/display/nothing";
 import RadioBtn from "@components/inputs/radioBtn";
-import { FlatList, RefreshControl, StyleSheet, View , ListRenderItem, ListRenderItemInfo } from 'react-native';
+import { FlatList, ListRenderItem, ListRenderItemInfo, RefreshControl, StyleSheet, View } from 'react-native';
 
 //react
 import React, { useCallback, useEffect, useState } from "react";
@@ -46,7 +46,8 @@ export default function OtherProfileScreen() {
     const renderPost: ListRenderItem<post> = useCallback(({ item }: ListRenderItemInfo<post>) =>
     (
         <Post comment_count={item.num_comments}
-            like_count={item.likes} user_uid={currentUser ? currentUser.uid : ""}
+            like_count={item.likes}
+            user_uid={currentUser ? currentUser.uid : ""}
             id={item.id}
             uid={item.uid}
             timestamp={item.timestamp}
@@ -56,10 +57,10 @@ export default function OtherProfileScreen() {
 
     ), [currentUser])
 
-    async function showPosts() {
+    async function showPosts(UID) {
         const c = collection(db, "posts");
         const q = query(c,
-            where("uid", "==", uid),
+            where("uid", "==", UID),
             orderBy("timestamp", "desc"),
             limit(5)
         )
@@ -72,14 +73,25 @@ export default function OtherProfileScreen() {
     }
 
     async function postWrapper() {
-        const posts = await showPosts();
-        setOwnPosts(posts);
+        if (user_id == uid) {
+            const posts = await showPosts(uid);
+            setOwnPosts(posts);
 
-        const userSnap = await getDoc(doc(db, "users", uid));
-        setUserData({
-            uid: user_id,
-            ...(userSnap.data()) as Omit<UserData, "uid">
-        });
+            const userSnap = await getDoc(doc(db, "users", uid));
+            setUserData({
+                uid: uid,
+                ...(userSnap.data()) as Omit<UserData, "uid">
+            });
+        } else {
+            const posts = await showPosts(user_id);
+            setOwnPosts(posts);
+            const userSnap = await getDoc(doc(db, "users", user_id));
+            setUserData({
+                uid: user_id,
+                ...(userSnap.data()) as Omit<UserData, "uid">
+            });
+
+        }
 
     }
 
@@ -93,7 +105,6 @@ export default function OtherProfileScreen() {
             }
         }
         postWrapper();
-
     }, [])
 
 

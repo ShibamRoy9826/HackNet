@@ -51,7 +51,6 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
 
     useEffect(() => {
         getOP();
-        console.log(user_uid, message, "OP: ", uid);
     }, [uid])
 
 
