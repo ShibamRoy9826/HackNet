@@ -114,7 +114,7 @@ export default function SearchScreen() {
     }, [])
 
     return (
-        <View style={{ backgroundColor: "#17171d", flex: 1, paddingTop: 50, paddingBottom: 100, alignItems: "center" }}>
+        <View style={{ backgroundColor: "#17171d", flex: 1, paddingTop: 50, alignItems: "center" }}>
 
             <View style={{ flexDirection: "row", alignItems: "center" }}>
 

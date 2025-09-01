@@ -3,21 +3,11 @@ import MaterialDesignIcons from "@react-native-vector-icons/material-design-icon
 import { Image, Pressable, StyleSheet, View } from "react-native";
 import CarouselComponent from "../display/carousel";
 import CustomText from "../display/customText";
-import InputBox from "../inputs/inptField";
 
 //firebase
-import { db, getUserData } from "@auth/firebase";
+import { getUserData } from "@auth/firebase";
 import {
-    addDoc,
-    collection,
-    deleteDoc,
-    doc,
-    getDoc,
-    increment,
-    serverTimestamp,
-    setDoc,
-    Timestamp,
-    updateDoc
+    Timestamp
 } from "firebase/firestore";
 
 //react and expo
@@ -26,6 +16,9 @@ import { useRouter } from 'expo-router';
 import { memo, useEffect, useState } from "react";
 
 //func
+// import { checkUserLiked, dislikePost, likePost } from "@utils/otherUtils";
+import CommentBox from "@components/inputs/commentBox";
+import LikeButton from "@components/inputs/likeButton";
 import { extractTime } from "@utils/stringTimeUtils";
 
 
@@ -44,12 +37,8 @@ interface Prop {
 
 const Post = memo(function Post({ id, user_uid, media, used_media, message, uid, timestamp, like_count, comment_count }: Prop) {
     const router = useRouter();
-    const [liked, setLiked] = useState(false);
-    const [likeCount, setLikeCount] = useState(like_count);
     const [commentCount, setCommentCount] = useState(comment_count);
 
-
-    const [comment, setComment] = useState("");
     const [userPfp, setUserPfp] = useState("https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg");
     const [OPName, setOPName] = useState("Your Name");
 
@@ -62,78 +51,9 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
 
     useEffect(() => {
         getOP();
+        console.log(user_uid, message, "OP: ", uid);
     }, [uid])
 
-    useEffect(() => {
-        checkIfUserLiked();
-        console.log("rendering: ", id);
-    }, [])
-
-
-    async function checkIfUserLiked() {
-        const likeRef = doc(db, "posts", id, "likes", user_uid);
-        try {
-
-            const likeSnap = await getDoc(likeRef);
-            const liked = likeSnap.exists();
-            setLiked(liked);
-        }
-        catch (e) {
-            console.log(e, " there's an error...");
-        }
-    }
-
-    async function addComment() {
-        try {
-            await addDoc(collection(db, "posts", id, "comments"), {
-                uid: user_uid,
-                message: comment,
-                timestamp: serverTimestamp(),
-                likes: 0
-            })
-            await updateDoc(doc(db, "posts", id),
-                {
-                    num_comments: increment(1)
-                })
-            setCommentCount(commentCount + 1);
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
-    async function likePost() {
-        try {
-            await setDoc(doc(db, "posts", id, "likes", user_uid),
-                {
-                    createdAt: new Date()
-                }
-            )
-            await updateDoc(doc(db, "posts", id),
-                {
-                    likes: increment(1)
-                }).then(() => {
-                    setLikeCount(likeCount + 1);
-                })
-
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
-    async function dislikePost() {
-        try {
-            await deleteDoc(doc(db, "posts", id, "likes", user_uid));
-            updateDoc(doc(db, "posts", id),
-                {
-                    likes: increment(-1)
-                }).then(() => {
-                    setLikeCount(likeCount - 1);
-                }
-                )
-        } catch (e) {
-            console.log(e);
-        }
-    }
 
     async function getOP() {
         await getUserData("users", uid).then(
@@ -183,10 +103,7 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
 
             {/* Buttons */}
             <View style={{ flexDirection: "row", paddingHorizontal: 20, justifyContent: "flex-start", alignItems: "center", width: "auto" }}>
-                <Pressable style={{ padding: 8, flexDirection: "row" }} onPress={() => { setLiked(!liked); liked ? dislikePost() : likePost() }}>
-                    <MaterialDesignIcons name={liked ? "heart" : "heart-outline"} color={liked ? "#ec3750" : "#5f6878"} size={25} />
-                    <CustomText style={{ color: "#8492a6", marginLeft: 5 }}>{likeCount}</CustomText>
-                </Pressable>
+                <LikeButton likeCount={like_count} userId={user_uid} postId={id} />
 
                 <Pressable style={{ padding: 8, flexDirection: "row" }} onPress={() => { router.push(`/comments/${id}`) }}>
                     <MaterialDesignIcons name="comment" color="#5f6878" size={25} />
@@ -197,15 +114,7 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
                     <MaterialDesignIcons name="share" color="#5f6878" size={25} />
                 </Pressable>
             </View>
-
-            {/* add a comment*/}
-            <View style={{ flexDirection: "row", alignItems: "center", width: "100%" }}>
-                <InputBox secure={false} value={comment} valueFn={setComment} color="#8492a6" icon="comment" type="none" placeholder="Comment here" />
-                <Pressable style={{ padding: 8 }} onPress={addComment}>
-                    <MaterialDesignIcons name="send" color="#5f6878" size={25} />
-                </Pressable>
-            </View>
-
+            <CommentBox userId={user_uid} postId={id} />
         </View>
     );
 })

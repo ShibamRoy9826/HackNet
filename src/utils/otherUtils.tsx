@@ -1,5 +1,5 @@
-import { db } from "@auth/firebase";
-import { addDoc, collection, doc, increment, serverTimestamp, updateDoc } from "firebase/firestore";
+import { auth, db } from "@auth/firebase";
+import { addDoc, collection, deleteDoc, doc, getDoc, increment, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { extractUrl } from "./stringTimeUtils";
 
 export async function uploadToHc(urls: string[]) {
@@ -56,7 +56,9 @@ export const uploadFileTemp = async (file: any): Promise<string> => {
 }
 
 
-export async function addComment(comment: string, post_id: string, uid: string, fn?: () => void) {
+export async function addComment(comment: string, post_id: string, fn?: () => void) {
+    const uid = auth.currentUser ? auth.currentUser.uid : "";
+    console.log("Trying to add comment as ", uid, " comment: ", comment);
     try {
         await addDoc(collection(db, "posts", post_id, "comments"), {
             uid: uid,
@@ -79,4 +81,50 @@ export async function addComment(comment: string, post_id: string, uid: string, 
 
 export function handleSlackLogin() {
     console.log("Tried slack login");
+}
+
+
+
+// post functions
+export async function checkUserLiked(postId: string, userUid: string) {
+    const likeRef = doc(db, "posts", postId, "likes", userUid);
+    try {
+
+        const likeSnap = await getDoc(likeRef);
+        const liked = likeSnap.exists();
+        return liked;
+    }
+    catch (e) {
+        console.log(e, " there's an error...");
+        return false;
+    }
+}
+
+export async function likePost(postId: string, userUid: string) {
+    try {
+        await setDoc(doc(db, "posts", postId, "likes", userUid),
+            {
+                createdAt: new Date()
+            }
+        )
+        await updateDoc(doc(db, "posts", postId),
+            {
+                likes: increment(1)
+            })
+
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+export async function dislikePost(postId: string, userUid: string) {
+    try {
+        await deleteDoc(doc(db, "posts", postId, "likes", userUid));
+        updateDoc(doc(db, "posts", postId),
+            {
+                likes: increment(-1)
+            })
+    } catch (e) {
+        console.log(e);
+    }
 }

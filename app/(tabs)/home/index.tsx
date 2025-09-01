@@ -1,7 +1,7 @@
 //components
 import HomeHeader from "@components/containers/HomeHeader";
 import Post from "@components/containers/post";
-import { ActivityIndicator, Animated, KeyboardAvoidingView, RefreshControl, View , ListRenderItem, ListRenderItemInfo } from "react-native";
+import { ActivityIndicator, Animated, KeyboardAvoidingView, ListRenderItem, ListRenderItemInfo, RefreshControl, View } from "react-native";
 
 //others
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -53,7 +53,8 @@ export default function HomeScreen() {
     const renderPost: ListRenderItem<post> = useCallback(({ item }: ListRenderItemInfo<post>) =>
     (
         <Post comment_count={item.num_comments}
-            like_count={item.likes} user_uid={user ? user.uid : ""}
+            like_count={item.likes}
+            user_uid={user ? user.uid : ""}
             id={item.id}
             uid={item.uid}
             timestamp={item.timestamp}

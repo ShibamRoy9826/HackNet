@@ -2,10 +2,8 @@
 import Comment from "@components/containers/comment";
 import Post from "@components/containers/post";
 import NothingHere from "@components/display/nothing";
-import InputBox from "@components/inputs/inptField";
-import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { Stack } from "expo-router";
-import { FlatList, KeyboardAvoidingView, Pressable, RefreshControl, StyleSheet, View } from "react-native";
+import { FlatList, KeyboardAvoidingView, RefreshControl, View } from "react-native";
 
 //firebase
 import {
@@ -29,7 +27,6 @@ import React, { useEffect, useState } from 'react';
 
 //func
 import { chunkArray } from "@utils/arrayUtils";
-import { addComment } from "@utils/otherUtils";
 
 //typecasting
 import CustomText from "@components/display/customText";
@@ -49,7 +46,6 @@ export default function CommentsScreen() {
     const user = auth.currentUser;
 
     const [usersData, setUsersData] = useState<Record<string, UserData>>({})
-    const [comment, setComment] = useState("");
     const [commentData, setCommentData] = useState<comment[]>([]);
 
     const [postData, setPostData] = useState<post>();
@@ -180,15 +176,12 @@ export default function CommentsScreen() {
                 ListEmptyComponent={
                     <NothingHere text="No comments yet... " />
                 }
+                ListFooterComponent={
+                    <View style={{ paddingBottom: 100 }} />
+                }
                 style={{ backgroundColor: "#17171d", flex: 1, height: "100%" }}
                 removeClippedSubviews={true}
             />
-            <View style={{ marginBottom: 70, flexDirection: "row", alignItems: "center", width: "100%", borderColor: "#25252fff", borderTopWidth: StyleSheet.hairlineWidth }}>
-                <InputBox secure={false} value={comment} valueFn={setComment} color="#8492a6" icon="comment" type="none" placeholder="Comment here" />
-                <Pressable style={{ padding: 8 }} onPress={() => { addComment(comment, post_id, user ? user.uid : "", () => { loadComments(); setComment(""); }) }}>
-                    <MaterialDesignIcons name="send" color="#5f6878" size={25} />
-                </Pressable>
-            </View>
         </KeyboardAvoidingView>
     );
 }
