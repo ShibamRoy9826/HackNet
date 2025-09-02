@@ -30,17 +30,17 @@ interface Prop {
     used_media: boolean,
     media: string[],
     user_uid: string,
-    like_count: number,
     comment_count: number
 }
 
 
-const Post = memo(function Post({ id, user_uid, media, used_media, message, uid, timestamp, like_count, comment_count }: Prop) {
+const Post = memo(function Post({ id, user_uid, media, used_media, message, uid, timestamp, comment_count }: Prop) {
     const router = useRouter();
     const [commentCount, setCommentCount] = useState(comment_count);
 
     const [userPfp, setUserPfp] = useState("https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg");
     const [OPName, setOPName] = useState("Your Name");
+
 
     const mediaMod: ImagePickerAsset[] = media.map(uri => ({
         uri,
@@ -102,7 +102,7 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
 
             {/* Buttons */}
             <View style={{ flexDirection: "row", paddingHorizontal: 20, justifyContent: "flex-start", alignItems: "center", width: "auto" }}>
-                <LikeButton likeCount={like_count} userId={user_uid} postId={id} />
+                <LikeButton userId={user_uid} postId={id} />
 
                 <Pressable style={{ padding: 8, flexDirection: "row" }} onPress={() => { router.push(`/comments/${id}`) }}>
                     <MaterialDesignIcons name="comment" color="#5f6878" size={25} />

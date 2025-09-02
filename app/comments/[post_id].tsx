@@ -115,7 +115,7 @@ export default function CommentsScreen() {
                 console.log("error: ", e)
             });
         } catch (e) {
-            console.log(e);
+            console.log("comment error:", e);
         }
     }
 
@@ -167,7 +167,7 @@ export default function CommentsScreen() {
                         {
                             postData ?
                                 <Post id={post_id} user_uid={postData.uid} media={postData.media} used_media={postData.used_media} message={postData.post_message}
-                                    timestamp={postData.timestamp} like_count={postData.likes} comment_count={postData.num_comments} uid={postData.uid} />
+                                    timestamp={postData.timestamp} comment_count={postData.num_comments} uid={postData.uid} />
                                 : <View></View>
                         }
 

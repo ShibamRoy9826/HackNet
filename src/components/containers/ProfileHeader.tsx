@@ -3,9 +3,10 @@ import { Image, StyleSheet, View } from "react-native";
 import CustomText from "../display/customText";
 
 //react
-import { auth } from "@auth/firebase";
+import { auth, db } from "@auth/firebase";
 import { useRouter } from "expo-router";
-import React from 'react';
+import { collection, getCountFromServer } from "firebase/firestore";
+import React, { useEffect, useState } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import IconButton from "../inputs/IconButton";
 import OnlyIconButton from "../inputs/onlyIconButton";
@@ -19,7 +20,16 @@ interface Props {
 export default function ProfileHeader({ sameUser, user_id, userData }: Props) {
     const router = useRouter();
     const insets = useSafeAreaInsets();
+    const [num_trackers, setNumTrackers] = useState(0);
     const user = auth.currentUser;
+    async function setTrackersCount() {
+        const col = collection(db, "users", user_id ? user_id : user ? user.uid : "", "trackers");
+        const trackers = await getCountFromServer(col);
+        setNumTrackers(trackers.data().count);
+    }
+    useEffect(() => {
+        setTrackersCount();
+    }, [])
     return (
         <View style={{ backgroundColor: "#17171d", flex: 1, paddingTop: insets.top }}>
             {
@@ -70,7 +80,7 @@ export default function ProfileHeader({ sameUser, user_id, userData }: Props) {
                     </CustomText>
 
                     <CustomText style={[{ marginLeft: 20 }, styles.flexBox]}>
-                        {userData?.num_trackers} <CustomText style={[styles.subtxt, { color: "#8492a6", marginLeft: 5 }]}>Trackers</CustomText>
+                        {num_trackers} <CustomText style={[styles.subtxt, { color: "#8492a6", marginLeft: 5 }]}>Trackers</CustomText>
                     </CustomText>
 
                     <CustomText style={[{ marginLeft: 20 }, styles.flexBox]}>

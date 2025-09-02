@@ -1,6 +1,6 @@
 import CustomText from "@components/display/customText";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { checkUserLiked, dislikePost, likePost } from "@utils/otherUtils";
+import { checkUserLiked, dislikePost, getLikeCount, likePost } from "@utils/otherUtils";
 import { useEffect, useRef, useState } from "react";
 import { Pressable } from 'react-native';
 
@@ -19,34 +19,35 @@ export default function LikeButton({ likeCount, userId, postId }: Prop) {
     }, [])
 
     function handleLike() {
-        setLiked(!liked);
         // because liked changes after next render, we gotta use opposite thingy
         if (liked) {
             if (!likeCooldown.current) {
                 likeRef.current -= 1;
-                likeCooldown.current = true;
                 dislikePost(postId, userId).then(
-                    () => {
-                        likeCooldown.current = false
+                    (val) => {
+                        likeRef.current = val;
                     }
                 ).catch((e) => { console.log("dislike failed!") });
             }
         } else {
             if (!likeCooldown.current) {
                 likeRef.current += 1;
-                likeCooldown.current = true;
                 likePost(postId, userId).then(
-                    () => {
-                        likeCooldown.current = false
+                    (val) => {
+                        likeRef.current = val;
                     }
                 ).catch((e) => { console.log("like failed!") });
             }
         }
+
+        setLiked(!liked);
     }
 
     async function setDefaultLikedState() {
         const userLiked = await checkUserLiked(postId, userId);
         setLiked(userLiked);
+
+        likeRef.current = await getLikeCount(postId);
     }
 
     return (

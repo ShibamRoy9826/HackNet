@@ -34,8 +34,6 @@ export default function RootLayout() {
 
   if (!loaded) {
     return <LoadingScreen />
-  } else {
-    console.log("LOADED!!");
   }
 
   return (

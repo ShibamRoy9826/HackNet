@@ -53,7 +53,6 @@ export default function HomeScreen() {
     const renderPost: ListRenderItem<post> = useCallback(({ item }: ListRenderItemInfo<post>) =>
     (
         <Post comment_count={item.num_comments}
-            like_count={item.likes}
             user_uid={user ? user.uid : ""}
             id={item.id}
             uid={item.uid}

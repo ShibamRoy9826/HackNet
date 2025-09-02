@@ -46,7 +46,6 @@ export default function OtherProfileScreen() {
     const renderPost: ListRenderItem<post> = useCallback(({ item }: ListRenderItemInfo<post>) =>
     (
         <Post comment_count={item.num_comments}
-            like_count={item.likes}
             user_uid={currentUser ? currentUser.uid : ""}
             id={item.id}
             uid={item.uid}
@@ -73,7 +72,7 @@ export default function OtherProfileScreen() {
     }
 
     async function postWrapper() {
-        if (user_id == uid) {
+        if (!user_id) {
             const posts = await showPosts(uid);
             setOwnPosts(posts);
 

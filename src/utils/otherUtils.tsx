@@ -1,5 +1,5 @@
 import { auth, db } from "@auth/firebase";
-import { addDoc, collection, deleteDoc, doc, getDoc, increment, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getCountFromServer, getDoc, increment, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { extractUrl } from "./stringTimeUtils";
 
 export async function uploadToHc(urls: string[]) {
@@ -83,13 +83,67 @@ export function handleSlackLogin() {
     console.log("Tried slack login");
 }
 
+// user functions
+
+export async function checkFollow(userId: string) {
+    const currUser = auth.currentUser;
+    const followRef = doc(db, "users", userId, "trackers", currUser ? currUser.uid : "");
+    try {
+        const followSnap = await getDoc(followRef);
+        const follow = followSnap.exists();
+        return follow;
+    }
+    catch (e) {
+        console.log(e, " there's an error...");
+        return false;
+    }
+
+}
+export async function followUser(userId: string) {
+    const currUser = auth.currentUser;
+    const follow = doc(db, "users", userId, "trackers", currUser ? currUser.uid : "");
+    console.log("Trying to follow");
+    try {
+        console.log("About to created doc");
+        await setDoc(follow,
+            {
+                trackedAt: new Date()
+            }
+        );
+        await updateDoc(doc(db, "users", currUser ? currUser.uid : ""),
+            {
+                num_tracking: increment(1)
+            })
+    }
+    catch (e) {
+        console.log(e, " there's an error...");
+    }
+}
+
+export async function unfollowUser(userId: string) {
+    const currUser = auth.currentUser;
+    const follow = doc(db, "users", userId, "trackers", currUser ? currUser.uid : "")
+    try {
+        await deleteDoc(follow);
+        await updateDoc(doc(db, "users", currUser ? currUser.uid : ""),
+            {
+                num_tracking: increment(1)
+            })
+    } catch (e) {
+        console.log(e);
+    }
+}
 
 
 // post functions
+export async function getLikeCount(postId: string) {
+    const col = collection(db, "posts", postId, "likes");
+    const likeCount = await getCountFromServer(col);
+    return likeCount.data().count;
+}
 export async function checkUserLiked(postId: string, userUid: string) {
     const likeRef = doc(db, "posts", postId, "likes", userUid);
     try {
-
         const likeSnap = await getDoc(likeRef);
         const liked = likeSnap.exists();
         return liked;
@@ -107,24 +161,19 @@ export async function likePost(postId: string, userUid: string) {
                 createdAt: new Date()
             }
         )
-        await updateDoc(doc(db, "posts", postId),
-            {
-                likes: increment(1)
-            })
-
+        return await getLikeCount(postId);
     } catch (e) {
         console.log(e);
+        return 0;
     }
 }
 
 export async function dislikePost(postId: string, userUid: string) {
     try {
         await deleteDoc(doc(db, "posts", postId, "likes", userUid));
-        updateDoc(doc(db, "posts", postId),
-            {
-                likes: increment(-1)
-            })
+        return await getLikeCount(postId);
     } catch (e) {
         console.log(e);
+        return 0;
     }
 }

@@ -25,7 +25,6 @@ export type UserData = {
     avatar?: string;
     email?: string;
     num_logs?: number;
-    num_trackers?: number;
     num_tracking?: number;
     displayName?: string;
     displayNameLower?: string;

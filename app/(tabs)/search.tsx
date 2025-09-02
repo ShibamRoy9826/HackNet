@@ -29,7 +29,6 @@ type UserData = {
     avatar?: string;
     email?: string;
     num_logs?: number;
-    num_trackers?: number;
     num_tracking?: number;
     displayName?: string;
     displayNameLower?: string;
@@ -136,19 +135,16 @@ export default function SearchScreen() {
 
             {currTab === "Hackers" && (
                 <View style={{ width: '100%', marginVertical: 25, paddingHorizontal: 10, flex: 1 }}>
-                    {
-                        (userResults.length === 0) ?
-                            <View style={{ flex: 1 }}>
-                                <CustomText style={styles.heading}>Search for other hackers</CustomText>
-                                <NothingHere />
-                            </View>
-                            :
-                            <CustomText style={styles.heading}>Hackers you may be looking for</CustomText>
-                    }
                     <FlatList
                         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                        style={styles.listContainer}
                         data={userResults}
                         keyExtractor={item => item.id}
+                        ListEmptyComponent={
+                            <View style={{ flex: 1 }}>
+                                <NothingHere text="Search for someone here" />
+                            </View>
+                        }
                         renderItem={({ item }) => (
                             <FollowBox
                                 avatar={item.avatar ? item.avatar : ""}
@@ -162,21 +158,18 @@ export default function SearchScreen() {
 
             {currTab === "Posts" && (
                 <View style={{ width: '100%', marginVertical: 25, paddingHorizontal: 10, flex: 1 }}>
-                    {
-                        (postResults.length === 0) ?
-                            <View style={{ flex: 1 }}>
-                                <CustomText style={styles.heading}>Search for some logs</CustomText>
-                                <NothingHere />
-                            </View>
-                            :
-                            <CustomText style={styles.heading}>Logs you may be looking for</CustomText>
-                    }
                     <FlatList
                         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                        style={styles.listContainer}
                         data={postResults}
+                        ListEmptyComponent={
+                            <View style={{ flex: 1 }}>
+                                <NothingHere text="Search for some posts  here" />
+                            </View>
+                        }
                         keyExtractor={item => item.id}
                         renderItem={({ item }) => (
-                            <Post comment_count={item.num_comments} like_count={item.likes} user_uid={user ? user.uid : ""} id={item.id} uid={item.uid} timestamp={item.timestamp} message={item.post_message} used_media={item.used_media} media={item.media} />
+                            <Post comment_count={item.num_comments} user_uid={user ? user.uid : ""} id={item.id} uid={item.uid} timestamp={item.timestamp} message={item.post_message} used_media={item.used_media} media={item.media} />
                         )}
                         removeClippedSubviews={true}
                     />
@@ -188,6 +181,7 @@ export default function SearchScreen() {
                     <CustomText style={styles.heading}>Hackers you can follow</CustomText>
                     <FlatList
                         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                        style={styles.listContainer}
                         data={suggested}
                         keyExtractor={item => item.id}
                         renderItem={({ item }) => (
@@ -198,7 +192,6 @@ export default function SearchScreen() {
                                 user_id={item.id}
                             />
                         )}
-                        style={{ backgroundColor: "#17171d", flex: 1, height: "80%", marginBottom: 100, }}
                         removeClippedSubviews={true}
                     />
                 </View>
@@ -244,6 +237,15 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: "bold",
         marginBottom: 20
+    },
+    listContainer: {
+        width: '95%',
+        marginVertical: 10,
+        marginBottom: 100,
+        borderRadius: 12,
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: "#444456ff",
     }
 
+    // style={{ backgroundColor: "#17171d", flex: 1, height: "80%", marginBottom: 100, }}
 });

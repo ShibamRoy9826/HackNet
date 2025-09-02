@@ -54,7 +54,6 @@ export default function SignUpScreen() {
             displayNameLower: user.displayName?.toLowerCase(),
             createdAt: new Date(),
             avatar: user.photoURL || null,
-            num_trackers: 0,
             num_tracking: 0,
             num_logs: 0,
             friends: [],

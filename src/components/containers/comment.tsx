@@ -48,7 +48,7 @@ export default function Comment({ uid, imgSrc, displayName, timestamp, message }
             </View>
             <View style={{ flexDirection: "row", gap: 10 }}>
                 <Pressable style={{ padding: 5, flexDirection: "row", alignItems: "center" }}>
-                    <MaterialDesignIcons name="thumb-up-outline" color="#5f6878" size={25} />
+                    <MaterialDesignIcons name="heart-outline" color="#5f6878" size={25} />
                     <CustomText style={{ color: "#8492a6", marginLeft: 5 }}>0</CustomText>
                 </Pressable>
                 <Pressable style={{ padding: 5, flexDirection: "row", alignItems: "center" }}>
