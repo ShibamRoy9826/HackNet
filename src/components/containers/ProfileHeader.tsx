@@ -4,9 +4,12 @@ import CustomText from "../display/customText";
 
 //react
 import { auth, db } from "@auth/firebase";
+import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
+import { checkFollow, followUser, unfollowUser } from "@utils/otherUtils";
 import { useRouter } from "expo-router";
 import { collection, getCountFromServer } from "firebase/firestore";
 import React, { useEffect, useState } from 'react';
+import { Pressable } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import IconButton from "../inputs/IconButton";
 import OnlyIconButton from "../inputs/onlyIconButton";
@@ -22,10 +25,23 @@ export default function ProfileHeader({ sameUser, user_id, userData }: Props) {
     const insets = useSafeAreaInsets();
     const [num_trackers, setNumTrackers] = useState(0);
     const user = auth.currentUser;
+    const [followed, setFollow] = useState(false);
+
+    async function followBtnWrapper() {
+        if (followed) {
+            setFollow(false);
+            await unfollowUser(user_id ? user_id : user ? user.uid : "");
+        } else {
+            setFollow(true);
+            await followUser(user_id ? user_id : user ? user.uid : "");
+        }
+    }
     async function setTrackersCount() {
         const col = collection(db, "users", user_id ? user_id : user ? user.uid : "", "trackers");
         const trackers = await getCountFromServer(col);
         setNumTrackers(trackers.data().count);
+        const isTracking = await checkFollow(user_id ? user_id : user ? user.uid : "");
+        setFollow(isTracking);
     }
     useEffect(() => {
         setTrackersCount();
@@ -56,19 +72,24 @@ export default function ProfileHeader({ sameUser, user_id, userData }: Props) {
                     </View>
                     {
                         !sameUser ?
-                            <IconButton
-                                text="Track"
-                                style={{ marginRight: 40, marginTop: 20 }}
-                                func={() => { }}
-                                icon="plus-box"
-                            /> :
+                            followed ?
+                                <Pressable style={styles.followActivatedBtn} onPress={followBtnWrapper}>
+                                    <CustomText style={{ color: "white", fontWeight: "bold" }}>Untrack</CustomText>
+                                    <MaterialDesignIcons name="account-minus" color="white" size={18} style={{ marginLeft: 5 }} />
+                                </Pressable>
+                                :
+                                <Pressable style={styles.followBtn} onPress={followBtnWrapper}>
+                                    <CustomText style={{ color: "white", fontWeight: "bold" }}>Track</CustomText>
+                                    <MaterialDesignIcons name="plus-box" color="white" size={18} style={{ marginLeft: 5 }} />
+                                </Pressable>
+
+                            :
                             <IconButton
                                 text="Edit Profile"
                                 style={{ marginRight: 40, marginTop: 20 }}
                                 func={() => { router.push("/(tabs)/profile/edit") }}
                                 icon="pencil-box-multiple"
                             />
-
                     }
                 </View>
                 <CustomText style={[styles.subtxt, { color: "white", marginTop: 20, paddingLeft: 5, paddingRight: 30 }]}>
@@ -95,6 +116,20 @@ export default function ProfileHeader({ sameUser, user_id, userData }: Props) {
 
 
 const styles = StyleSheet.create({
+    followActivatedBtn: {
+        backgroundColor: '#b42c3eff',
+        padding: 10,
+        borderRadius: 12,
+        flexDirection: "row",
+        marginRight: 30
+    },
+    followBtn: {
+        backgroundColor: '#ec3750',
+        padding: 10,
+        borderRadius: 12,
+        flexDirection: "row",
+        marginRight: 30
+    },
     flexBox: {
         fontSize: 15,
         color: "white",

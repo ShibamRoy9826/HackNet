@@ -96,6 +96,9 @@ export default function SearchScreen() {
     }
 
     async function handleSearch() {
+        if (currTab == "Suggestions") {
+            setCurrTab("Hackers");
+        }
         const userMatches = await searchUsers();
         const postMatches = await searchPosts();
 

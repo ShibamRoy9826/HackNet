@@ -127,7 +127,7 @@ export async function unfollowUser(userId: string) {
         await deleteDoc(follow);
         await updateDoc(doc(db, "users", currUser ? currUser.uid : ""),
             {
-                num_tracking: increment(1)
+                num_tracking: increment(-1)
             })
     } catch (e) {
         console.log(e);
