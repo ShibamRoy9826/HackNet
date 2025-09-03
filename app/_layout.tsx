@@ -2,6 +2,7 @@
 import { Stack } from "expo-router";
 
 //contexts
+import { BottomSheetProvider } from "@contexts/BottomSheetContext";
 import { ModalProvider } from "@contexts/modalContext";
 import { UserDataProvider } from "@contexts/userContext";
 
@@ -11,6 +12,7 @@ import { useEffect, useState } from "react";
 //auth
 import { auth } from "@auth/firebase";
 import { User, onAuthStateChanged } from "firebase/auth";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import LoadingScreen from "./loading";
 
 
@@ -37,11 +39,15 @@ export default function RootLayout() {
   }
 
   return (
-    <ModalProvider>
-      <UserDataProvider>
-        <Stack initialRouteName={"auth/login"} screenOptions={{ contentStyle: { backgroundColor: "#17171d" }, headerShown: false, animation: "fade" }}>
-        </Stack>
-      </UserDataProvider>
-    </ModalProvider>
+    <GestureHandlerRootView>
+      <BottomSheetProvider>
+        <ModalProvider>
+          <UserDataProvider>
+            <Stack initialRouteName={"auth/login"} screenOptions={{ contentStyle: { backgroundColor: "#17171d" }, headerShown: false, animation: "fade" }}>
+            </Stack>
+          </UserDataProvider>
+        </ModalProvider>
+      </BottomSheetProvider>
+    </GestureHandlerRootView>
   );
 }

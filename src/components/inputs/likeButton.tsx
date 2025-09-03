@@ -5,13 +5,12 @@ import { useEffect, useRef, useState } from "react";
 import { Pressable } from 'react-native';
 
 interface Prop {
-    likeCount: number;
     userId: string;
     postId: string;
 }
-export default function LikeButton({ likeCount, userId, postId }: Prop) {
+export default function LikeButton({ userId, postId }: Prop) {
     const [liked, setLiked] = useState(false);
-    const likeRef = useRef(likeCount);
+    const likeRef = useRef(0);
     const likeCooldown = useRef(false);
 
     useEffect(() => {
@@ -45,9 +44,8 @@ export default function LikeButton({ likeCount, userId, postId }: Prop) {
 
     async function setDefaultLikedState() {
         const userLiked = await checkUserLiked(postId, userId);
-        setLiked(userLiked);
-
         likeRef.current = await getLikeCount(postId);
+        setLiked(userLiked);
     }
 
     return (

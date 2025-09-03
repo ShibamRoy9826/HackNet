@@ -1,9 +1,10 @@
 //components
+import CommentBox from "@components/inputs/commentBox";
+import LikeButton from "@components/inputs/likeButton";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { Image, Pressable, StyleSheet, View } from "react-native";
 import CarouselComponent from "../display/carousel";
 import CustomText from "../display/customText";
-
 //firebase
 import { getUserData } from "@auth/firebase";
 import {
@@ -17,8 +18,8 @@ import { memo, useEffect, useState } from "react";
 
 //func
 // import { checkUserLiked, dislikePost, likePost } from "@utils/otherUtils";
-import CommentBox from "@components/inputs/commentBox";
-import LikeButton from "@components/inputs/likeButton";
+import ThreeDots from "@components/display/threeDots";
+import { deletePost } from "@utils/otherUtils";
 import { extractTime } from "@utils/stringTimeUtils";
 
 
@@ -40,6 +41,7 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
 
     const [userPfp, setUserPfp] = useState("https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg");
     const [OPName, setOPName] = useState("Your Name");
+
 
 
     const mediaMod: ImagePickerAsset[] = media.map(uri => ({
@@ -82,11 +84,24 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
                         <CustomText style={styles.timestamp}>{extractTime(timestamp)}</CustomText>
                     </Pressable>
                 </View>
-                <View>
-                    <Pressable style={{ padding: 5, marginLeft: "auto" }}>
-                        <MaterialDesignIcons name="dots-vertical" color="#5f6878" size={25} />
+                {/* <View>
+                    <Pressable onPress={() => { }}>
+                        <MaterialDesignIcons name="dots-vertical" size={25} color={"#8492a6"} />
                     </Pressable>
-                </View>
+                </View> */}
+                <ThreeDots
+                    data={[
+                        (uid == user_uid) ?
+                            { text: "Delete Post", func: () => { deletePost(id) }, icon: "delete" } :
+                            { text: "Like Post", func: () => { }, icon: "heart" }
+                        ,
+                        { text: "Share Post", func: () => { console.log("Tried to share post"); }, icon: "share-variant" },
+                        { text: "Follow User", func: () => { console.log("Tried to share post"); }, icon: "account-plus" }
+                    ]}
+                />
+                {/* <CustomBottomSheet
+                    data={[{ text: "Delete Post", func: () => { deletePost(id) } }]}
+                /> */}
             </View>
             <View style={{ paddingVertical: 10, borderColor: "#25252fff", borderTopWidth: StyleSheet.hairlineWidth, height: "auto" }}>
                 {/* Posted content */}

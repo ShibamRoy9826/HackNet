@@ -163,7 +163,7 @@ export default function CommentsScreen() {
                 ListHeaderComponent={
                     <View style={{ paddingTop: insets.top }}>
                         <OnlyIconButton icon="arrow-left" func={() => { router.back() }} style={{ position: "absolute", top: 0, left: 20, zIndex: 5 }} />
-                        <CustomText style={{ color: "white", left: 80, fontSize: 18, top: 0, fontWeight: 700 }}>Comments</CustomText>
+                        <CustomText style={{ color: "white", left: 80, fontSize: 18, top: 0, fontWeight: 700 }}>Post</CustomText>
                         {
                             postData ?
                                 <Post id={post_id} user_uid={postData.uid} media={postData.media} used_media={postData.used_media} message={postData.post_message}

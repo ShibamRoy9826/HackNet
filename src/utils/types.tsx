@@ -30,3 +30,9 @@ export type UserData = {
     displayNameLower?: string;
     createdAt?: Timestamp;
 };
+
+export type BottomSheetItem = {
+    text: string;
+    func: () => void;
+    icon: "delete" | "share-variant" | "account-plus" | "heart"
+};

@@ -24,6 +24,9 @@ module.exports = function (api) {
 
       // Optional - For using decorators
       ['@babel/plugin-proposal-decorators', { legacy: true }],
+
+      //ALways at last as per docs
+      'react-native-worklets/plugin',
     ],
   };
 };

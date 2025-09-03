@@ -177,3 +177,12 @@ export async function dislikePost(postId: string, userUid: string) {
         return 0;
     }
 }
+
+export async function deletePost(postId: string) {
+    console.log("tried to delete :  ", postId);
+    try {
+        await deleteDoc(doc(db, "posts", postId))
+    } catch (e) {
+        console.log("Couldn't delete post", e);
+    }
+}
