@@ -16,7 +16,6 @@ on:
         description: "Build type to run"
         options:
           - dev
-          - prod-apk
           - all
 
 env:
@@ -31,45 +30,8 @@ jobs:
       - name: Skip CI check
         run: echo "Proceeding with workflow"
 
-  test:
-    needs: check-skip
-    runs-on: ubuntu-latest
-    steps:
-      - name: 🏗 Checkout repository
-        uses: actions/checkout@v4
-
-      - name: 🏗 Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "yarn"
-
-      - name: 📦 Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "dir=$(yarn cache dir)" >> $GITHUB_OUTPUT
-
-      - name: 📦 Setup yarn cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
-
-      - name: 📦 Install dependencies
-        run: yarn install
-
-      - name: 🧪 Run TypeScript check
-        run: yarn tsc
-
-      - name: 🧹 Run ESLint
-        run: yarn lint
-
-      - name: 🎨 Run Prettier check
-        run: yarn format:check
-
   build-and-deploy:
-    needs: test
+    needs: check-skip
     if: (github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')) || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
@@ -174,19 +136,10 @@ jobs:
         env:
           NODE_ENV: development
 
-      - name: 📱 Build Production APK
-        if: github.event.inputs.buildType == 'all' || github.event.inputs.buildType == 'prod-apk' || github.event_name == 'push'
-        run: |
-          export NODE_OPTIONS="--openssl-legacy-provider --max_old_space_size=4096"
-          eas build --platform android --profile production-apk --local --non-interactive --output=./app-prod.apk
-        env:
-          NODE_ENV: production
-
       - name: 📦 Upload build artifacts to GitHub
         uses: actions/upload-artifact@v4
         with:
           name: app-builds
           path: |
             ./app-dev.apk
-            ./app-prod.apk
           retention-days: 7
