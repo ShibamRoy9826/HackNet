@@ -1,12 +1,12 @@
 //components
-import { ViewStyle, Pressable, StyleProp, StyleSheet } from "react-native"
-import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons"
+import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
+import { Pressable, StyleProp, StyleSheet, ViewStyle } from "react-native";
 
 
 type Props = {
     func: () => void;
     style?: StyleProp<ViewStyle>;
-    icon: "account-plus-outline" | "arrow-left" | "magnify";
+    icon: "account-plus-outline" | "arrow-left" | "magnify" | "whatsapp" | "facebook" | "reddit" | "link-variant" | "dots-horizontal";
 }
 
 export default function OnlyIconButton({ func, style, icon }: Props) {

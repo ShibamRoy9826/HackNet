@@ -56,7 +56,7 @@ export default function OtherProfileScreen() {
 
     ), [currentUser])
 
-    async function showPosts(UID) {
+    async function showPosts(UID: string) {
         const c = collection(db, "posts");
         const q = query(c,
             where("uid", "==", UID),

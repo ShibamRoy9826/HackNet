@@ -90,6 +90,7 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
                     </Pressable>
                 </View> */}
                 <ThreeDots
+                    postId={id}
                     data={[
                         (uid == user_uid) ?
                             { text: "Delete Post", func: () => { deletePost(id) }, icon: "delete" } :

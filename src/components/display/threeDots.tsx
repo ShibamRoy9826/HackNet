@@ -6,15 +6,17 @@ import { Pressable, View } from 'react-native';
 
 
 interface Props {
-    data: BottomSheetItem[]
+    data: BottomSheetItem[],
+    postId: string
 }
 
-export default function ThreeDots({ data }: Props) {
+export default function ThreeDots({ data, postId }: Props) {
     const [isVisible, setVisible] = useState(false);
-    const { setSheetData, closeSheet, expandSheet } = useBottomSheetContext();
+    const { setSheetData, setExtraData, closeSheet, expandSheet } = useBottomSheetContext();
 
     function toggleSheet() {
         setSheetData(data);
+        setExtraData({ postId: postId });
         setVisible(!isVisible);
         if (isVisible) {
             closeSheet();

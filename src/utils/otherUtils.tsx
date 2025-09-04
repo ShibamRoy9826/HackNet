@@ -1,5 +1,8 @@
 import { auth, db } from "@auth/firebase";
+import * as Clipboard from 'expo-clipboard';
+import * as Linking from 'expo-linking';
 import { addDoc, collection, deleteDoc, doc, getCountFromServer, getDoc, increment, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { Alert, Share } from "react-native";
 import { extractUrl } from "./stringTimeUtils";
 
 export async function uploadToHc(urls: string[]) {
@@ -186,3 +189,63 @@ export async function deletePost(postId: string) {
         console.log("Couldn't delete post", e);
     }
 }
+
+
+export async function sharePost(id: string) {
+    const redirectUrl = Linking.createURL(`/comments/${id}`);
+    const cleanedUrl = redirectUrl.replace("hacknet:///", "https://hacknet-web.vercel.app/")
+    try {
+        await Share.share({
+            message: `Check out this post! ${cleanedUrl}`
+        });
+    } catch (e: any) {
+        if (e) {
+            console.log(e.message)
+        }
+    }
+}
+export async function shareToClipboard(id: string) {
+    const redirectUrl = Linking.createURL(`/comments/${id}`);
+    const cleanedUrl = redirectUrl.replace("hacknet:///", "https://hacknet-web.vercel.app/")
+    Clipboard.setStringAsync(cleanedUrl);
+}
+
+export async function sharePostToWhatsapp(id: string) {
+    const redirectUrl = Linking.createURL(`/comments/${id}`);
+    const cleanedUrl = redirectUrl.replace("hacknet:///", "https://hacknet-web.vercel.app/")
+    const msg = `Check out this post! ${cleanedUrl}`;
+    const url = `whatsapp://send?text=${encodeURIComponent(msg)}`;
+
+    Linking.canOpenURL(url).then(async () => {
+        await Linking.openURL(url);
+    }).catch((e) => {
+        Alert.alert("Whatsapp is probably not installed...");
+    });
+}
+
+
+export async function sharePostToFacebook(id: string) {
+    const redirectUrl = Linking.createURL(`/comments/${id}`);
+    const cleanedUrl = redirectUrl.replace("hacknet:///", "https://hacknet-web.vercel.app/")
+    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(cleanedUrl)}`;
+
+    Linking.canOpenURL(url).then(async () => {
+        await Linking.openURL(url);
+    }).catch((e) => {
+        Alert.alert("Facebook is probably not installed...");
+    });
+}
+
+export async function sharePostToReddit(id: string) {
+    const redirectUrl = Linking.createURL(`/comments/${id}`);
+    const cleanedUrl = redirectUrl.replace("hacknet:///", "https://hacknet-web.vercel.app/")
+    const url = `reddit://submit?url=${encodeURIComponent(cleanedUrl)}&title=Check+Out+This+Post:&type=LINK`;
+    const fallBackurl = `https://www.reddit.com/submit?url=${encodeURIComponent(cleanedUrl)}&title=Check+Out+This+Post:&type=LINK`;
+
+    Linking.canOpenURL(url).then(async () => {
+        await Linking.openURL(url);
+    }).catch(async (e) => {
+        await Linking.openURL(fallBackurl);
+    });
+}
+

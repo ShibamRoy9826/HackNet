@@ -1,13 +1,15 @@
+import ShareBtns from '@components/containers/shareBtns';
 import CustomText from '@components/display/customText';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons';
-import { BottomSheetItem } from '@utils/types';
+import { BottomSheetData, BottomSheetItem } from '@utils/types';
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
 import { StyleSheet } from 'react-native';
 import { Pressable } from 'react-native-gesture-handler';
 
 type sheetContextType = {
     setSheetData: (data: BottomSheetItem[]) => void;
+    setExtraData: (data: BottomSheetData) => void;
     closeSheet: () => void;
     expandSheet: () => void;
 }
@@ -15,6 +17,7 @@ const BottomSheetContext = createContext<sheetContextType | null>(null);
 
 export function BottomSheetProvider({ children }: { children: React.ReactNode }) {
     const [data, setData] = useState<BottomSheetItem[]>([]);
+    const [extraData, setEData] = useState<BottomSheetData>();
     const bottomSheetRef = useRef<BottomSheet>(null);
     const snapPoints = useMemo(() => ["25%", "50%"], []);
 
@@ -32,6 +35,10 @@ export function BottomSheetProvider({ children }: { children: React.ReactNode })
     function setSheetData(data: BottomSheetItem[]) {
         setData(data);
     }
+
+    function setExtraData(data: BottomSheetData) {
+        setEData(data);
+    }
     function closeSheet() {
         bottomSheetRef.current?.close();
     }
@@ -44,6 +51,7 @@ export function BottomSheetProvider({ children }: { children: React.ReactNode })
         <BottomSheetContext.Provider
             value={{
                 setSheetData,
+                setExtraData,
                 closeSheet,
                 expandSheet
             }}
@@ -60,6 +68,7 @@ export function BottomSheetProvider({ children }: { children: React.ReactNode })
 
             >
                 <BottomSheetView style={styles.contentContainer}>
+                    <ShareBtns postId={extraData ? extraData.postId : ""} />
                     {
                         data.map((item: BottomSheetItem) => (
                             <Pressable onPress={item.func} key={item.text} style={styles.button}>
@@ -89,7 +98,8 @@ const styles = StyleSheet.create({
         backgroundColor: "#17171d",
         borderColor: "#25252f",
         flex: 1,
-        padding: 36,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
         alignItems: 'flex-start',
         zIndex: 1,
     },

@@ -36,3 +36,7 @@ export type BottomSheetItem = {
     func: () => void;
     icon: "delete" | "share-variant" | "account-plus" | "heart"
 };
+
+export type BottomSheetData = {
+    postId: string;
+};
