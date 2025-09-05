@@ -19,7 +19,7 @@ import { memo, useEffect, useState } from "react";
 //func
 // import { checkUserLiked, dislikePost, likePost } from "@utils/otherUtils";
 import ThreeDots from "@components/display/threeDots";
-import { deletePost } from "@utils/otherUtils";
+import { deletePost, likePost, sharePost } from "@utils/otherUtils";
 import { extractTime } from "@utils/stringTimeUtils";
 
 
@@ -68,7 +68,11 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
     }
 
     function redirectToProfile() {
-        router.push(`/(tabs)/profile/${uid}`);
+        if (uid == user_uid) {
+            router.push(`/(tabs)/profile/${uid}`);
+        } else {
+            router.push(`/(modals)/profile/${uid}`);
+        }
     }
 
     return (
@@ -93,10 +97,10 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
                     postId={id}
                     data={[
                         (uid == user_uid) ?
-                            { text: "Delete Post", func: () => { deletePost(id) }, icon: "delete" } :
-                            { text: "Like Post", func: () => { }, icon: "heart" }
+                            { text: "Delete Post", func: () => { deletePost(id); }, icon: "delete" } :
+                            { text: "Like Post", func: () => { likePost(id, user_uid) }, icon: "heart" }
                         ,
-                        { text: "Share Post", func: () => { console.log("Tried to share post"); }, icon: "share-variant" },
+                        { text: "Share Post", func: () => { sharePost(id) }, icon: "share-variant" },
                         { text: "Follow User", func: () => { console.log("Tried to share post"); }, icon: "account-plus" }
                     ]}
                 />
@@ -125,7 +129,7 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
                     <CustomText style={{ color: "#8492a6", marginLeft: 5 }}>{commentCount}</CustomText>
                 </Pressable>
 
-                <Pressable style={{ padding: 8 }}>
+                <Pressable style={{ padding: 8 }} onPress={() => { sharePost(id) }}>
                     <MaterialDesignIcons name="share" color="#5f6878" size={25} />
                 </Pressable>
             </View>

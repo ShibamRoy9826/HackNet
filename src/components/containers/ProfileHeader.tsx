@@ -43,6 +43,19 @@ export default function ProfileHeader({ sameUser, user_id, userData }: Props) {
         const isTracking = await checkFollow(user_id ? user_id : user ? user.uid : "");
         setFollow(isTracking);
     }
+
+    function returnBanner(bannerPath: string) {
+        // Ik it looks idiotic at first glance, but we can't use dynamic paths with require()
+        if (bannerPath === "1") {
+            return require("@assets/images/banners/banner01.png")
+        } else if (bannerPath === "2") {
+            return require("@assets/images/banners/banner02.png")
+        } else if (bannerPath === "3") {
+            return require("@assets/images/banners/banner03.png")
+        } else {
+            return require("@assets/images/banners/banner03.png")
+        }
+    }
     useEffect(() => {
         setTrackersCount();
     }, [])
@@ -52,14 +65,18 @@ export default function ProfileHeader({ sameUser, user_id, userData }: Props) {
                 !sameUser ?
                     <OnlyIconButton
                         icon="arrow-left"
-                        func={() => { router.back() }}
+                        func={() => { router.back(); }}
                         style={{ position: "absolute", zIndex: 2, elevation: 20, top: 30, left: 10 }}
                     /> :
                     <></>
             }
 
             <View style={{ position: "relative", height: 100 }}>
-                <Image source={require("@assets/images/banner.jpeg")} style={{ width: '100%', zIndex: 1, position: "absolute", height: "100%", borderBottomWidth: 1, borderColor: "#ec3750" }} />
+                <Image source={userData ?
+                    (userData.banner.startsWith("https") ?
+                        { uri: userData.banner } : returnBanner(userData.banner)) :
+                    require("@assets/images/banners/banner03.png")}
+                    style={{ width: '100%', zIndex: 1, position: "absolute", height: 100, borderBottomWidth: 1, borderColor: "#ec3750" }} />
                 <Image source={userData?.avatar ? { uri: userData.avatar } : require("@assets/images/pfp.jpg")} style={{ zIndex: 3, position: "absolute", bottom: -30, left: 20, width: 70, height: 70, borderRadius: 50, borderWidth: 2, borderColor: "#ec3750" }} />
             </View>
             <View style={{ position: "relative", width: "100%" }}>

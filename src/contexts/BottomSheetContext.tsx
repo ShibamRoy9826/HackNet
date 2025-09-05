@@ -44,7 +44,6 @@ export function BottomSheetProvider({ children }: { children: React.ReactNode })
     }
     function expandSheet() {
         bottomSheetRef.current?.expand();
-        console.log("expanding");
     }
 
     return (

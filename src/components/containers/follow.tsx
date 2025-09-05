@@ -1,3 +1,4 @@
+import { auth } from "@auth/firebase";
 import CustomText from "@components/display/customText";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { checkFollow, followUser, unfollowUser } from "@utils/otherUtils";
@@ -17,12 +18,13 @@ export default function FollowBox({ avatar, username, bio, user_id }: Props) {
     const router = useRouter();
     let bio_mod = bio.slice(0, bio_limit) + "...";
     const [followed, setFollowed] = useState(false);
+    const user = auth.currentUser;
 
     async function followBtnWrapper() {
-        if(followed){
+        if (followed) {
             setFollowed(false);
             await unfollowUser(user_id);
-        }else{
+        } else {
             setFollowed(true);
             await followUser(user_id);
         }
@@ -38,14 +40,22 @@ export default function FollowBox({ avatar, username, bio, user_id }: Props) {
         checkAndSetFollow();
     }, [])
 
+    function redirectToProfile() {
+        if (user_id == (user ? user.uid : "")) {
+            router.push(`/(tabs)/profile/${user_id}`)
+        } else {
+            router.push(`/(modals)/profile/${user_id}`)
+        }
+    }
+
     return (
         <View style={styles.friendBox}>
             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%", paddingHorizontal: 10 }}>
-                <Pressable onPress={() => { router.push(`/(tabs)/profile/${user_id}`) }}>
+                <Pressable onPress={redirectToProfile}>
                     <Image source={{ uri: avatar }} style={{ borderRadius: 50, width: 45, height: 45, margin: "auto" }} />
                 </Pressable>
                 <View style={styles.detailsContainer}>
-                    <Pressable onPress={() => { router.push(`/(tabs)/profile/${user_id}`) }}>
+                    <Pressable onPress={redirectToProfile}>
                         <CustomText style={styles.username}>{username}</CustomText>
                         <CustomText style={styles.lastMessage}>{bio_mod}</CustomText>
                     </Pressable>

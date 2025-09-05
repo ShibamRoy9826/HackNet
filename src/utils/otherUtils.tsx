@@ -2,7 +2,7 @@ import { auth, db } from "@auth/firebase";
 import * as Clipboard from 'expo-clipboard';
 import * as Linking from 'expo-linking';
 import { addDoc, collection, deleteDoc, doc, getCountFromServer, getDoc, increment, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
-import { Alert, Share } from "react-native";
+import { Alert, Share, ToastAndroid } from "react-native";
 import { extractUrl } from "./stringTimeUtils";
 
 export async function uploadToHc(urls: string[]) {
@@ -144,6 +144,7 @@ export async function getLikeCount(postId: string) {
     const likeCount = await getCountFromServer(col);
     return likeCount.data().count;
 }
+
 export async function checkUserLiked(postId: string, userUid: string) {
     const likeRef = doc(db, "posts", postId, "likes", userUid);
     try {
@@ -208,6 +209,7 @@ export async function shareToClipboard(id: string) {
     const redirectUrl = Linking.createURL(`/comments/${id}`);
     const cleanedUrl = redirectUrl.replace("hacknet:///", "https://hacknet-web.vercel.app/")
     Clipboard.setStringAsync(cleanedUrl);
+    ToastAndroid.show("Copied URL to clipboard", 3);
 }
 
 export async function sharePostToWhatsapp(id: string) {
@@ -248,4 +250,5 @@ export async function sharePostToReddit(id: string) {
         await Linking.openURL(fallBackurl);
     });
 }
+
 

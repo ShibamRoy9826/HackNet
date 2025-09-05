@@ -18,7 +18,7 @@ import { UserData, post } from "@utils/types";
 import { useLocalSearchParams } from 'expo-router';
 
 
-export default function ProfileScreen() {
+export default function OtherProfileModal() {
     const { user_id } = useLocalSearchParams<{ user_id: string }>()
 
     const [refreshing, setRefreshing] = useState(false);
@@ -94,7 +94,6 @@ export default function ProfileScreen() {
 
     }
 
-
     //effects
     useEffect(() => {
         if (user_id) {
@@ -109,6 +108,7 @@ export default function ProfileScreen() {
 
 
     return (
+
         <FlatList
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             data={(currTab === "Logs") ? ownPosts : likedPosts}

@@ -23,6 +23,7 @@ export type UserData = {
     uid: string;
     bio?: string;
     avatar?: string;
+    banner: string;
     email?: string;
     num_logs?: number;
     num_tracking?: number;
