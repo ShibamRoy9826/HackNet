@@ -18,9 +18,9 @@ import { memo, useEffect, useState } from "react";
 
 //func
 // import { checkUserLiked, dislikePost, likePost } from "@utils/otherUtils";
-import ThreeDots from "@components/display/threeDots";
-import { deletePost, likePost, sharePost } from "@utils/otherUtils";
+import { sharePost } from "@utils/otherUtils";
 import { extractTime } from "@utils/stringTimeUtils";
+import PostThreeDots from "./postDots";
 
 
 interface Prop {
@@ -41,7 +41,6 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
 
     const [userPfp, setUserPfp] = useState("https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg");
     const [OPName, setOPName] = useState("Your Name");
-
 
 
     const mediaMod: ImagePickerAsset[] = media.map(uri => ({
@@ -88,25 +87,11 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
                         <CustomText style={styles.timestamp}>{extractTime(timestamp)}</CustomText>
                     </Pressable>
                 </View>
-                {/* <View>
-                    <Pressable onPress={() => { }}>
-                        <MaterialDesignIcons name="dots-vertical" size={25} color={"#8492a6"} />
-                    </Pressable>
-                </View> */}
-                <ThreeDots
+                <PostThreeDots
                     postId={id}
-                    data={[
-                        (uid == user_uid) ?
-                            { text: "Delete Post", func: () => { deletePost(id); }, icon: "delete" } :
-                            { text: "Like Post", func: () => { likePost(id, user_uid) }, icon: "heart" }
-                        ,
-                        { text: "Share Post", func: () => { sharePost(id) }, icon: "share-variant" },
-                        { text: "Follow User", func: () => { console.log("Tried to share post"); }, icon: "account-plus" }
-                    ]}
+                    OpId={user_uid}
+                    currentUserId={uid}
                 />
-                {/* <CustomBottomSheet
-                    data={[{ text: "Delete Post", func: () => { deletePost(id) } }]}
-                /> */}
             </View>
             <View style={{ paddingVertical: 10, borderColor: "#25252fff", borderTopWidth: StyleSheet.hairlineWidth, height: "auto" }}>
                 {/* Posted content */}

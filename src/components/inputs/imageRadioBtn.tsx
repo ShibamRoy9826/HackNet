@@ -1,9 +1,10 @@
+import * as ImagePicker from 'expo-image-picker';
 import { Image, ImageSourcePropType } from "react-native";
 import { Pressable, ScrollView } from "react-native-gesture-handler";
 
 interface Props {
-    images: ImageSourcePropType[],
-    setImage: (img: ImageSourcePropType) => void,
+    images: ImageSourcePropType[] | ImagePicker.ImagePickerAsset[],
+    setImage: (img: ImageSourcePropType | ImagePicker.ImagePickerAsset) => void,
     currImage: ImageSourcePropType
 }
 

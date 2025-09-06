@@ -2,6 +2,8 @@
 import CustomText from "@components/display/customText";
 import CustomButton from "@components/inputs/customButton";
 import IconButton from "@components/inputs/IconButton";
+import ImageRadioBtn from "@components/inputs/imageRadioBtn";
+import OnlyIconButton from "@components/inputs/onlyIconButton";
 import { Image, ImageSourcePropType, ScrollView, StyleSheet, TextInput, View } from "react-native";
 
 //contexts
@@ -18,16 +20,14 @@ import { useEffect, useState } from "react";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 //func
-import ImageRadioBtn from "@components/inputs/imageRadioBtn";
 import { uploadFileTemp, uploadToHc } from '@utils/otherUtils';
 import { useRouter } from "expo-router";
 
-const bannerList = [
+const bannerList: ImageSourcePropType[] = [
     require('@assets/images/banners/banner01.png'),
     require('@assets/images/banners/banner02.png'),
     require('@assets/images/banners/banner03.png')
 ]
-
 
 
 export default function EditProfileScreen() {
@@ -36,11 +36,11 @@ export default function EditProfileScreen() {
     const currUser = auth.currentUser;
     const { userData } = useUserData();
 
-    const [currBanner, setCurrBanner] = useState<ImageSourcePropType>();
+    // const [currBanner, setCurrBanner] = useState<ImageSourcePropType>();
 
     const insets = useSafeAreaInsets();
     const [imgData, setImgData] = useState<ImagePicker.ImagePickerAsset | null>(null);
-    const [bannerData, setBannerData] = useState<ImagePicker.ImagePickerAsset | null | string>(null);
+    const [bannerData, setBannerData] = useState<ImagePicker.ImagePickerAsset | ImageSourcePropType | null>(null);
 
     const [username, setUserName] = useState("");
     const [avatar, setAvatar] = useState(userData?.avatar || "");
@@ -50,32 +50,7 @@ export default function EditProfileScreen() {
     const { alert, updateActivity, setActivityVisible, setActivityText } = useModalContext();
     setActivityText("Updating");
 
-    useEffect(() => {
-        if (currBanner) {
-            setBannerData(convertToNum(currBanner));
-        } else {
-            if (userData) {
-                setBannerData(userData.banner)
-            } else {
-                setBannerData(bannerList[2]);
-            }
-        }
-    }, [currBanner])
-
-
-
     //////////| Functions Start |////////////////////
-    function convertToNum(path: ImageSourcePropType | undefined) {
-        if (path == bannerList[0]) {
-            return "1"
-        } else if (path == bannerList[1]) {
-            return "2"
-        } else if (path == bannerList[2]) {
-            return "3"
-        } else {
-            return "3"
-        }
-    }
     const updateProfileInfo = async (providedAvatar?: string, providedBanner?: string) => {
         if (currUser) {
             const userRef = doc(db, "users", currUser.uid);
@@ -115,32 +90,58 @@ export default function EditProfileScreen() {
     async function uploadImg(file: any) {
         try {
             const url = await uploadFileTemp(file);
-            updateActivity(0.5, "Uploaded avatar image to temporary server");
+            updateActivity(0.5, "Uploaded image to temporary server");
             const deployedUrl = await uploadToHc([url]);
-            setAvatar(deployedUrl[0]);
-            await updateProfileInfo(deployedUrl[0]);
+            return deployedUrl[0];
         } catch (e) {
             console.log('an error occured: ', e);
             updateActivity(0.5, "Error!");
             setActivityVisible(false);
             alert("An error occured", "Please try again!")
+            return "";
         }
     }
+
 
     // basically a wrapper function to update profile
     const updateProfile = async () => {
         setActivityVisible(true);
         updateActivity(0.1, "Processing data");
 
-        if (imgData) {
+        if (imgData && bannerData) {
             updateActivity(0.3, "Uploading avatar image");
-            await uploadImg(imgData);  //updateProfileInfo is being called inside of uploadImg
-            updateActivity(0.7, "Uploaded avatar image");
-        } else if (bannerData && typeof bannerData == "string") {
-            updateActivity(0.3, "Updating info");
-            console.log("Worked!", bannerData);
-            updateProfileInfo(userData ? userData.avatar : "", bannerData);
-        } else {
+            const deployedAvatar = await uploadImg(imgData);
+            setAvatar(deployedAvatar);
+            updateActivity(0.5, "Uploaded avatar image");
+
+            let deployedBanner;
+            if (typeof bannerData !== "object") {
+                deployedBanner = (bannerList.indexOf(bannerData) + 1).toString()
+            } else {
+                updateActivity(0.7, "Uploading banner image");
+                deployedBanner = await uploadImg(bannerData);
+                updateActivity(0.9, "Uploaded banner image");
+            }
+            await updateProfileInfo(deployedAvatar, deployedBanner);
+        } else if (imgData) {
+            updateActivity(0.3, "Uploading avatar image");
+            const deployedAvatar = await uploadImg(imgData);
+            setAvatar(deployedAvatar);
+            updateActivity(0.5, "Uploaded avatar image");
+
+            await updateProfileInfo(deployedAvatar);
+        } else if (bannerData) {
+            let deployedBanner;
+            if (typeof bannerData !== "object") {
+                deployedBanner = (bannerList.indexOf(bannerData) + 1).toString()
+            } else {
+                updateActivity(0.7, "Uploading banner image");
+                deployedBanner = await uploadImg(bannerData);
+                updateActivity(0.9, "Uploaded banner image");
+            }
+            await updateProfileInfo(userData ? userData.avatar : "", deployedBanner);
+        }
+        else {
             updateActivity(0.3, "Updating info");
             updateProfileInfo();
         }
@@ -160,33 +161,47 @@ export default function EditProfileScreen() {
             setImgData(rs);
         }
     };
-    function handleBanner(path: string) {
-        if (path.startsWith("http")) {
-            return { uri: path }
-        } else {
-            if (path === "1") {
-                const a = require("@assets/images/banners/banner01.png")
-                setCurrBanner(a);
-                setBannerData("1");
-                return a;
+    const pickBanner = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ['images'],
+            allowsEditing: true,
+            aspect: [1588, 635],
+            quality: 1,
+        });
 
-            } else if (path === "2") {
-                const a = require("@assets/images/banners/banner02.png")
-                setCurrBanner(a);
-                setBannerData("2");
-                return a;
-            } else if (path === "3") {
-                const a = require("@assets/images/banners/banner03.png")
-                setCurrBanner(a);
-                setBannerData("3");
-                return a;
-            } else {
-                const a = require("@assets/images/banners/banner03.png")
-                setCurrBanner(a);
-                return a;
+        if (!result.canceled) {
+            const rs = result.assets[0];
+            setBannerData(rs);
+        }
+    };
+
+    function isImagePickerAsset(obj: any): obj is ImagePicker.ImagePickerAsset {
+        return obj && typeof obj === "object" && typeof obj.uri === "string";
+    }
+
+
+    function handleBanner(path: string | ImageSourcePropType | ImagePicker.ImagePickerAsset | number, local?: boolean) {
+        if (local && typeof path !== "string") {
+            if (typeof path === "number") {
+                return path;
+            } else if (isImagePickerAsset(path)) {
+                return { uri: path.uri };
             }
+        } else if (typeof path === "string") {
+            if (path.startsWith("http")) {
+                return { uri: path }
+            } else if (path === "1") {
+                return bannerList[0]
+            } else if (path === "2") {
+                return bannerList[1]
+            } else {
+                return bannerList[2]
+            }
+        } else {
+            return path
         }
     }
+
     //////////| Functions End |////////////////////
     useEffect(() => {
         if (userData) {
@@ -199,6 +214,10 @@ export default function EditProfileScreen() {
 
     return (
         <ScrollView contentContainerStyle={styles.fieldContainer} style={[styles.container, { paddingTop: insets.top }]}>
+            <View style={{ flexDirection: "row", alignItems: "center", width: "100%", marginBottom: 40 }}>
+                <OnlyIconButton icon="arrow-left" func={() => { router.back() }} style={{ top: 0, left: 20, zIndex: 5 }} />
+                <CustomText style={{ color: "white", left: 50, fontSize: 18, top: 0, fontWeight: 700 }}>Edit Profile</CustomText>
+            </View>
             <CustomText style={styles.label}>Avatar:</CustomText>
             <Image source={(imgData) ? { uri: imgData.uri } : { uri: avatar }} style={{ borderRadius: 50, width: 60, height: 60, marginHorizontal: 10 }} />
 
@@ -211,11 +230,12 @@ export default function EditProfileScreen() {
                 />
             </View>
             <CustomText style={styles.label}>Default Banners:</CustomText>
-            <ImageRadioBtn images={bannerList} setImage={setCurrBanner} currImage={currBanner ? currBanner : require("@assets/images/banners/banner03.png")} />
+            <ImageRadioBtn images={bannerList} setImage={setBannerData} currImage={bannerData ? bannerData : bannerList[3]} />
 
             <CustomText style={styles.label}>Banner Preview:</CustomText>
-            <Image source={(currBanner) ?
-                currBanner :
+
+            <Image source={(bannerData) ?
+                handleBanner(bannerData, true) :
                 userData
                     ? handleBanner(userData.banner) :
                     require("@assets/images/banners/banner03.png")}
@@ -223,7 +243,7 @@ export default function EditProfileScreen() {
 
             <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
                 <IconButton
-                    func={pickImage}
+                    func={pickBanner}
                     style={{ flexDirection: "row", marginRight: 40, marginTop: 20 }}
                     text={"Custom Banner"}
                     icon={"pencil-box-multiple"}
