@@ -21,6 +21,7 @@ export default function SettingsScreen() {
     const insets = useSafeAreaInsets();
 
     function logout() {
+        auth.signOut();
         signOut(auth).then(async () => {
             await AsyncStorage.clear();
             router.navigate("/auth/login");

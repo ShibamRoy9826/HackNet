@@ -7,9 +7,11 @@ import { StyleSheet, View } from "react-native";
 
 //firebase
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, updateDoc } from "firebase/firestore";
 
 //contexts
-import { auth } from '@auth/firebase';
+import { auth, db } from '@auth/firebase';
+import { useNotificationContext } from "@contexts/notificationContext";
 import { useModalContext } from "../../src/contexts/modalContext";
 
 //func
@@ -28,9 +30,12 @@ export default function LoginScreen() {
     const [password, setPassword] = useState("");
     const user = auth.currentUser;
     const { alert, updateActivity, setActivityVisible, setActivityText } = useModalContext();
+    const { expoPushToken, notification } = useNotificationContext();
 
     if (user) {
-        return <Redirect href={"/(tabs)/home"} />
+        if (user.emailVerified) {
+            return <Redirect href={"/(tabs)/home"} />
+        }
     }
 
     setActivityText("Logging in");
@@ -48,6 +53,10 @@ export default function LoginScreen() {
                 } else {
                     updateActivity(1, "Done!");
                     setActivityVisible(false);
+                    updateDoc(doc(db, "users", user.uid),
+                        {
+                            notificationToken: expoPushToken
+                        });
                     router.replace("/(tabs)/home");
                 }
             } else {

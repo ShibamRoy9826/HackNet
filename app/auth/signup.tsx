@@ -14,6 +14,7 @@ import { createUserWithEmailAndPassword, sendEmailVerification, updateProfile } 
 import { doc, setDoc } from "firebase/firestore";
 
 //contexts
+import { useNotificationContext } from "@contexts/notificationContext";
 import { useModalContext } from "../../src/contexts/modalContext";
 
 //func
@@ -33,6 +34,7 @@ export default function SignUpScreen() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmpassword, setCpassword] = useState("");
+    const { expoPushToken, notification } = useNotificationContext();
 
     const registerUser = async (email: string, password: string, name: string) => {
         setActivityVisible(true);
@@ -50,6 +52,7 @@ export default function SignUpScreen() {
         await setDoc(doc(db, "users", user.uid), {
             uid: user.uid,
             email: user.email,
+            banner: "3",
             displayName: user.displayName,
             displayNameLower: user.displayName?.toLowerCase(),
             createdAt: new Date(),
@@ -57,7 +60,8 @@ export default function SignUpScreen() {
             num_tracking: 0,
             num_logs: 0,
             friends: [],
-            bio: "This Hacker hasn't set up their bio yet :("
+            bio: "This Hacker hasn't set up their bio yet :(",
+            notificationToken: expoPushToken
 
         }).then().catch((e) => { console.log("Error occured while making db changes.", e.code, e.message) });
 
@@ -102,10 +106,12 @@ export default function SignUpScreen() {
                 (error) => {
                     if (error.code === 'auth/email-already-in-use') {
                         alert("Failed", "Email already in use, please use some other email! If you recently tried to sign up, check your email for verification")
+                        setActivityVisible(false);
                     }
 
                     if (error.code === 'auth/invalid-email') {
                         alert("Failed", 'Hey, That email address is invalid!');
+                        setActivityVisible(false);
                     }
                 }
             )

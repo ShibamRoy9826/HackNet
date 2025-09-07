@@ -9,6 +9,7 @@ export type post = {
     media: string[];
     likes: number;
     num_comments: number;
+    comments_enabled: boolean;
 }
 
 export interface comment {
@@ -30,6 +31,7 @@ export type UserData = {
     displayName?: string;
     displayNameLower?: string;
     createdAt?: Timestamp;
+    notificationToken?: string;
 };
 
 export type BottomSheetItem = {

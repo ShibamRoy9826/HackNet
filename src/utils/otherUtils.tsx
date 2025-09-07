@@ -3,7 +3,9 @@ import * as Clipboard from 'expo-clipboard';
 import * as Linking from 'expo-linking';
 import { addDoc, collection, deleteDoc, doc, getCountFromServer, getDoc, increment, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import { Alert, Share, ToastAndroid } from "react-native";
+import { sendNotifToUser } from "./notificationUtils";
 import { extractUrl } from "./stringTimeUtils";
+import { UserData } from "./types";
 
 export async function uploadToHc(urls: string[]) {
     const hc = "https://cdn.hackclub.com/api/v3/new";
@@ -105,9 +107,9 @@ export async function checkFollow(userId: string) {
 export async function followUser(userId: string) {
     const currUser = auth.currentUser;
     const follow = doc(db, "users", userId, "trackers", currUser ? currUser.uid : "");
-    console.log("Trying to follow");
+    const userToFollow = doc(db, "users", userId)
+    let userData;
     try {
-        console.log("About to created doc");
         await setDoc(follow,
             {
                 trackedAt: new Date()
@@ -117,10 +119,15 @@ export async function followUser(userId: string) {
             {
                 num_tracking: increment(1)
             })
+
+        const d = await getDoc(userToFollow);
+        userData = d.data() as UserData;
     }
     catch (e) {
         console.log(e, " there's an error...");
     }
+
+    sendNotifToUser("You've got a new tracker!", `${currUser?.displayName} started tracking your journey, track them back if you don't already!`, `https://hacknet-web.vercel.app/(modals)/profile/${currUser?.uid}`, userId)
 }
 
 export async function unfollowUser(userId: string) {

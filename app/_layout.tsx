@@ -4,6 +4,7 @@ import { Stack } from "expo-router";
 //contexts
 import { BottomSheetProvider } from "@contexts/BottomSheetContext";
 import { ModalProvider } from "@contexts/modalContext";
+import { NotificationProvider } from "@contexts/notificationContext";
 import { UserDataProvider } from "@contexts/userContext";
 
 //react
@@ -14,6 +15,20 @@ import { auth } from "@auth/firebase";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import LoadingScreen from "./loading";
+
+
+//notifications
+import * as Notifications from 'expo-notifications';
+
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+    shouldShowBanner: true,
+    shouldShowList: true,
+  }),
+});
 
 
 export default function RootLayout() {
@@ -40,14 +55,16 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView>
-      <BottomSheetProvider>
-        <ModalProvider>
-          <UserDataProvider>
-            <Stack initialRouteName={"auth/login"} screenOptions={{ contentStyle: { backgroundColor: "#17171d" }, headerShown: false, animation: "fade" }}>
-            </Stack>
-          </UserDataProvider>
-        </ModalProvider>
-      </BottomSheetProvider>
+      <NotificationProvider>
+        <BottomSheetProvider>
+          <ModalProvider>
+            <UserDataProvider>
+              <Stack initialRouteName={"auth/login"} screenOptions={{ contentStyle: { backgroundColor: "#17171d" }, headerShown: false, animation: "fade" }}>
+              </Stack>
+            </UserDataProvider>
+          </ModalProvider>
+        </BottomSheetProvider>
+      </NotificationProvider>
     </GestureHandlerRootView>
   );
 }

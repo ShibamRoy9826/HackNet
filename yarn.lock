@@ -4032,9 +4032,9 @@ expo-dev-menu@6.1.14:
   dependencies:
     expo-dev-menu-interface "1.10.0"
 
-expo-device@^7.1.4:
+expo-device@~7.1.4:
   version "7.1.4"
-  resolved "https://registry.npmjs.org/expo-device/-/expo-device-7.1.4.tgz"
+  resolved "https://registry.yarnpkg.com/expo-device/-/expo-device-7.1.4.tgz#84ae7c2520cc45f15a9cb0433ae1226c33f7a8ef"
   integrity sha512-HS04IiE1Fy0FRjBLurr9e5A6yj3kbmQB+2jCZvbSGpsjBnCLdSk/LCii4f5VFhPIBWJLyYuN5QqJyEAw6BcS4Q==
   dependencies:
     ua-parser-js "^0.7.33"
