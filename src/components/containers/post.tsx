@@ -54,6 +54,10 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
         getOP();
     }, [uid])
 
+    useEffect(() => {
+        console.log("loaded :", id)
+    }, [])
+
 
     async function getOP() {
         await getUserData("users", uid).then(

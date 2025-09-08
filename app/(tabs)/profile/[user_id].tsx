@@ -56,7 +56,7 @@ export default function ProfileScreen() {
 
     ), [currentUser])
 
-    async function showPosts(UID: string) {
+    async function loadPosts(UID: string) {
         const c = collection(db, "posts");
         const q = query(c,
             where("uid", "==", UID),
@@ -73,23 +73,34 @@ export default function ProfileScreen() {
 
     async function postWrapper() {
         if (!user_id) {
-            const posts = await showPosts(uid);
-            setOwnPosts(posts);
+            loadPosts(uid).then(
+                (posts) => {
+                    setOwnPosts(posts);
+                }
+            );
 
-            const userSnap = await getDoc(doc(db, "users", uid));
-            setUserData({
-                uid: uid,
-                ...(userSnap.data()) as Omit<UserData, "uid">
-            });
+            getDoc(doc(db, "users", uid)).then(
+                (userSnap) => {
+                    setUserData({
+                        uid: uid,
+                        ...(userSnap.data()) as Omit<UserData, "uid">
+                    });
+                }
+            );
         } else {
-            const posts = await showPosts(user_id);
-            setOwnPosts(posts);
-            const userSnap = await getDoc(doc(db, "users", user_id));
-            setUserData({
-                uid: user_id,
-                ...(userSnap.data()) as Omit<UserData, "uid">
-            });
-
+            loadPosts(user_id).then(
+                (posts) => {
+                    setOwnPosts(posts);
+                }
+            );
+            getDoc(doc(db, "users", user_id)).then(
+                (userSnap) => {
+                    setUserData({
+                        uid: uid,
+                        ...(userSnap.data()) as Omit<UserData, "uid">
+                    });
+                }
+            );
         }
 
     }

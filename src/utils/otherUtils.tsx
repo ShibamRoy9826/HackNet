@@ -190,9 +190,12 @@ export async function dislikePost(postId: string, userUid: string) {
 }
 
 export async function deletePost(postId: string) {
-    console.log("tried to delete :  ", postId);
+    const currUser = auth.currentUser?.uid;
     try {
         await deleteDoc(doc(db, "posts", postId))
+        await updateDoc(doc(db, "users", currUser ? currUser : ""), {
+            num_logs: increment(-1)
+        })
     } catch (e) {
         console.log("Couldn't delete post", e);
     }
