@@ -1,6 +1,8 @@
 import CustomText from "@components/display/customText";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { checkUserLiked, dislikePost, getLikeCount, likePost } from "@utils/otherUtils";
+import { useAudioPlayer } from 'expo-audio';
 import { useEffect, useRef, useState } from "react";
 import { Pressable } from 'react-native';
 
@@ -13,6 +15,12 @@ export default function LikeButton({ userId, postId }: Prop) {
     const likeRef = useRef(0);
     const likeCooldown = useRef(false);
 
+    const likeAudioSrc = require("@assets/sounds/like.mp3")
+    const dislikeAudioSrc = require("@assets/sounds/dislike.mp3")
+
+    const likeSound = useAudioPlayer(likeAudioSrc);
+    const dislikeSound = useAudioPlayer(dislikeAudioSrc);
+
     useEffect(() => {
         setDefaultLikedState();
     }, [])
@@ -22,6 +30,14 @@ export default function LikeButton({ userId, postId }: Prop) {
         if (liked) {
             if (!likeCooldown.current) {
                 likeRef.current -= 1;
+                AsyncStorage.getItem("dislikeSound").then(
+                    (value) => {
+                        if (value == "true") {
+                            dislikeSound.seekTo(0);
+                            dislikeSound.play();
+                        }
+                    }
+                )
                 dislikePost(postId, userId).then(
                     (val) => {
                         likeRef.current = val;
@@ -31,6 +47,14 @@ export default function LikeButton({ userId, postId }: Prop) {
         } else {
             if (!likeCooldown.current) {
                 likeRef.current += 1;
+                AsyncStorage.getItem("likeSound").then(
+                    (value) => {
+                        if (value == "true") {
+                            likeSound.seekTo(0);
+                            likeSound.play();
+                        }
+                    }
+                )
                 likePost(postId, userId).then(
                     (val) => {
                         likeRef.current = val;

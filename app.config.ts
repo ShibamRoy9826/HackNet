@@ -27,7 +27,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     "package": "com.shibamroy.hacknet"
   },
   "notification": {
-    "icon": "./assets/images/adaptive-icon/foreground.png",
+    "icon": "./assets/images/notification-icon.png",
     "color": "#ec3750"
   },
   "web": {
@@ -36,14 +36,15 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     "favicon": "./assets/images/favicon.png"
   },
   "plugins": [
+    "expo-audio",
     [
       "expo-notifications",
       {
-        "icon": "./assets/images/adaptive-icon/foreground.png",
+        "icon": "./assets/images/notification-icon.png",
         "color": "#ec3750",
         "defaultChannel": "default",
         "sounds": [
-          "./assets/sounds/notification-ping.mp3",
+          "./assets/sounds/notification_ping.mp3",
         ],
         "enableBackgroundRemoteNotifications": true
       }

@@ -23,6 +23,7 @@
     "babel-plugin-module-resolver": "^5.0.2",
     "dotenv": "^17.2.1",
     "expo": "53.0.22",
+    "expo-audio": "^0.4.8",
     "expo-auth-session": "~6.2.1",
     "expo-blur": "~14.1.5",
     "expo-clipboard": "~7.1.5",

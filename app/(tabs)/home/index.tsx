@@ -29,24 +29,25 @@ export default function HomeScreen() {
         outputRange: [0, -50 - insets.top],
     });
 
-    const [refreshing, setRefreshing] = React.useState(false);
-    const onRefresh = React.useCallback(() => {
-        setRefreshing(true);
-        setLastDoc(null);
-        setEndReached(false);
-        setPosts([]);
-        loadPosts();
-        setTimeout(() => {
-            setRefreshing(false);
-        }, 1000);
-    }, []);
-
     const user = auth.currentUser;
 
     const [loading, setLoading] = useState(false);
     const [posts, setPosts] = useState<post[]>([]);
     const [lastDoc, setLastDoc] = useState<QueryDocumentSnapshot | null>(null);
     const [endReached, setEndReached] = useState(false);
+
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        setLastDoc(null);
+        setEndReached(false);
+        loadPosts();
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 500);
+    }, []);
+
 
     const loadingRef = useRef(false);
 
@@ -66,7 +67,6 @@ export default function HomeScreen() {
     async function fetchPosts(lastDoc: QueryDocumentSnapshot | null, userId: string) {
         let q = query(
             collection(db, "posts"),
-            // orderBy("uid"),
             orderBy("timestamp", 'desc'),
             limit(postLimit),
             // where("uid","!=",userId) //TO CHANGE AFTER DEPLOYING
@@ -87,23 +87,34 @@ export default function HomeScreen() {
 
     }
     async function loadPosts() {
+        console.log("Load posts ran", !loadingRef.current, !endReached);
         if (user && !loadingRef.current && !endReached) {
             loadingRef.current = true;
             if (loading || endReached) return;
             setLoading(true);
-            const { fetchedPosts: newPosts, lastDoc: newLastDoc } = await fetchPosts(lastDoc, user?.uid);
+            console.log("set loading to true,fetching posts");
 
-            if (newPosts.length === 0) {
-                setEndReached(true);
-            } else {
-                setPosts(prev => {
-                    const ids = new Set(prev.map(p => p.id));
-                    return [...prev, ...newPosts.filter(p => !ids.has(p.id))];
-                });
-                setLastDoc(newLastDoc);
-            }
-            loadingRef.current = false;
-            setLoading(false);
+            fetchPosts(lastDoc, user.uid).then(
+                ({ fetchedPosts: newPosts, lastDoc: newLastDoc }) => {
+                    if (newPosts.length === 0) {
+                        setEndReached(true);
+                    } else {
+                        console.log("setting new posts");
+                        setPosts(prev => {
+                            const ids = new Set(prev.map(p => p.id));
+                            const onlyNew = newPosts.filter(p => !ids.has(p.id));
+                            if (onlyNew.length === 0) return prev;
+                            return [...prev, ...onlyNew];
+                        });
+                        setLastDoc(newLastDoc);
+                    }
+                }
+            ).finally(() => {
+                console.log("setting loading to false")
+                loadingRef.current = false;
+                setLoading(false);
+            }).catch((e) => { console.log("couldn't fetch posts", e) });
+
         };
     }
 
@@ -119,7 +130,7 @@ export default function HomeScreen() {
             <Animated.FlatList
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 data={posts}
-                keyExtractor={item => item.id.toString()}
+                keyExtractor={item => item.id}
                 renderItem={renderPost}
                 style={{ backgroundColor: "#17171d", flex: 1, height: "100%" }}
                 onScroll={e => {
@@ -129,7 +140,8 @@ export default function HomeScreen() {
                 onEndReachedThreshold={0.5}
                 ListHeaderComponent={<View style={{ height: 50 + insets.top }}></View>}
                 ListFooterComponent={<View style={{ padding: 100 }}>{loading ? <ActivityIndicator size="large" /> : null}</View>}
-                removeClippedSubviews={false}
+                removeClippedSubviews={true}
+                windowSize={5}
                 initialNumToRender={postLimit}
                 maxToRenderPerBatch={postLimit}
             />

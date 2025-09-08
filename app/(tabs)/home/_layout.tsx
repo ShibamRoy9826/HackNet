@@ -8,10 +8,7 @@ export default function HomeLayout() {
             <Stack.Screen name="settings" options={{
                 contentStyle: { backgroundColor: "#17171d" },
                 presentation: "modal",
-                title: "Settings",
-                headerShown: true,
-                headerTintColor: "white",
-                headerStyle: { backgroundColor: "#17171d" }
+                title: "Settings"
             }} />
 
             <Stack.Screen name="notifications" options={{

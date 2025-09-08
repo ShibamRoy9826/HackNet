@@ -26,7 +26,7 @@ export async function sendNotifToUser(
 
     const message = {
         to: expoPushToken,
-        sound: 'notification-ping.mp3',
+        sound: 'notification_ping.mp3',
         title: title,
         body: msg,
         data: { url: url }
@@ -52,7 +52,7 @@ export async function sendPushNotification(
 ) {
     const message = {
         to: expoPushToken,
-        sound: 'notification-ping.mp3',
+        sound: 'notification_ping.mp3',
         title: title,
         body: msg,
         data: { url: url }
@@ -80,7 +80,7 @@ export async function registerForPushNotificationsAsync() {
     await Notifications.setNotificationChannelAsync('default', {
         name: 'default',
         importance: Notifications.AndroidImportance.MAX,
-        sound: "notification-ping.mp3",
+        sound: "notification_ping.mp3",
         vibrationPattern: [0, 250, 250, 250],
         lightColor: '#FF231F7C',
     });
