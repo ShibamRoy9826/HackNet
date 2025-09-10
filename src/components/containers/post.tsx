@@ -1,25 +1,27 @@
 //components
 import CommentBox from "@components/inputs/commentBox";
 import LikeButton from "@components/inputs/likeButton";
-import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import CarouselComponent from "../display/carousel";
 import CustomText from "../display/customText";
+
 //firebase
 import { getUserData } from "@auth/firebase";
 import {
     Timestamp
 } from "firebase/firestore";
 
+import { sharePost } from "@utils/otherUtils";
+
 //react and expo
+import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
+import { extractTime } from "@utils/stringTimeUtils";
 import { ImagePickerAsset } from "expo-image-picker";
 import { useRouter } from 'expo-router';
 import { memo, useEffect, useState } from "react";
+import { Image } from "react-native";
 
 //func
-// import { checkUserLiked, dislikePost, likePost } from "@utils/otherUtils";
-import { sharePost } from "@utils/otherUtils";
-import { extractTime } from "@utils/stringTimeUtils";
 import PostThreeDots from "./postDots";
 
 
@@ -53,10 +55,6 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
     useEffect(() => {
         getOP();
     }, [uid])
-
-    useEffect(() => {
-        console.log("loaded :", id)
-    }, [])
 
 
     async function getOP() {

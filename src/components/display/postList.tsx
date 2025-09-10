@@ -1,6 +1,6 @@
 //components
 import Post from "@components/containers/post";
-import { FlatList, ListRenderItem, ListRenderItemInfo, RefreshControl, View } from "react-native";
+import { RefreshControl, View } from "react-native";
 
 //others
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -10,14 +10,21 @@ import React, { useCallback, useRef, useState } from "react";
 
 //firebase
 import { auth, db } from '@auth/firebase';
-import { collection, getDocs, limit, orderBy, query, QueryDocumentSnapshot, startAfter } from 'firebase/firestore';
+import { collection, getDocs, limit, orderBy, query, QueryDocumentSnapshot, startAfter, where } from 'firebase/firestore';
 
 //typecasting
+import { FlashList, ListRenderItem, ListRenderItemInfo } from "@shopify/flash-list";
 import { post } from "@utils/types";
+import NothingHere from "./nothing";
 
 const postLimit = 10;
 
-export default function PostList() {
+interface Props {
+    uidFilter?: string,
+    Header?: React.ReactNode
+}
+
+export default function PostList({ uidFilter, Header }: Props) {
     const insets = useSafeAreaInsets();
     const user = auth.currentUser;
 
@@ -52,10 +59,19 @@ export default function PostList() {
     ), [user])
 
     async function fetchPosts(lastDoc: QueryDocumentSnapshot | null) {
-        let q = query(
-            collection(db, "posts"),
-            orderBy("timestamp", 'desc'),
-            limit(postLimit));
+        let q;
+        if (uidFilter) {
+            q = query(
+                collection(db, "posts"),
+                orderBy("timestamp", 'desc'),
+                limit(postLimit),
+                where("uid", "==", uidFilter));
+        } else {
+            q = query(
+                collection(db, "posts"),
+                orderBy("timestamp", 'desc'),
+                limit(postLimit));
+        }
 
         if (lastDoc) {
             q = query(q, startAfter(lastDoc));
@@ -73,7 +89,6 @@ export default function PostList() {
     }
 
     async function loadPosts() {
-        // console.log("loading posts", !loadingRef.current);
         if (user && !loadingRef.current) {
             loadingRef.current = true;
 
@@ -88,7 +103,6 @@ export default function PostList() {
                         if (onlyNew.length === 0) return prev;
                         return [...prev, ...onlyNew];
                     });
-                    // console.log("setting new posts", newLastDoc)
                     setLastDoc(newLastDoc);
                 }
             ).finally(() => {
@@ -98,20 +112,22 @@ export default function PostList() {
 
         };
     }
-
-
-
     return (
-        <FlatList
+        <FlashList
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
             data={posts}
             renderItem={renderPost}
             keyExtractor={item => item.id}
-            ListHeaderComponent={<View style={{ height: 50 + insets.top }}></View>}
+            ListHeaderComponent={
+                <View>
+                    {Header}
+                </View>
+            }
             ListFooterComponent={<View style={{ marginBottom: 100 }}></View>}
-            onEndReached={() => { console.log("End reached!"); loadPosts(); }}
-            onEndReachedThreshold={0.9}
-            style={{ flex: 1 }}
+            ListEmptyComponent={<NothingHere text="No posts yet:(" />}
+            onEndReached={() => { loadPosts(); }}
+            onEndReachedThreshold={0.5}
+            estimatedItemSize={200}
         />
 
     );

@@ -2,7 +2,7 @@ import { db } from '@auth/firebase';
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import { doc, getDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, setDoc } from 'firebase/firestore';
 import { UserData } from './types';
 
 export async function sendNotifToUser(
@@ -32,18 +32,33 @@ export async function sendNotifToUser(
         data: { url: url }
     };
 
-    console.log(title, msg, url, expoPushToken);
+    try {
+        await setDoc(doc(db, "notifications", uid), { exists: true }, { merge: true });
 
-    await fetch('https://exp.host/--/api/v2/push/send', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Accept-encoding': 'gzip, deflate',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(message),
-    });
+        await addDoc(collection(db, "notifications", uid, "unread"), {
+            uid: uid,
+            message: msg,
+            title: title,
+            data: { url: url },
+            createdAt: Date.now()
+        });
+
+        await fetch('https://exp.host/--/api/v2/push/send', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Accept-encoding': 'gzip, deflate',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(message),
+        });
+
+    } catch (e: unknown) {
+        console.log("noooooo !! errrrrr occured... :", e)
+    }
+
 }
+
 export async function sendPushNotification(
     title: string,
     msg: string,
@@ -57,7 +72,7 @@ export async function sendPushNotification(
         body: msg,
         data: { url: url }
     };
-    console.log(title, msg, url, expoPushToken);
+    // console.log(title, msg, url, expoPushToken);
 
     await fetch('https://exp.host/--/api/v2/push/send', {
         method: 'POST',
@@ -107,7 +122,7 @@ export async function registerForPushNotificationsAsync() {
                     projectId,
                 })
             ).data;
-            console.log(pushTokenString);
+            // console.log(pushTokenString);
             return pushTokenString;
         } catch (e: unknown) {
             handleRegistrationError(`${e}`);

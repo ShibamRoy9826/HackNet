@@ -18,7 +18,7 @@ export function extractUrl(res: string) {
 }
 
 
-export async function extractTime(time: Timestamp) {
+export function extractTime(time: Timestamp) {
     const datetime = time.toDate();
     const month = datetime.getMonth();
     const date = datetime.getDate();

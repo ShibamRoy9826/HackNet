@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "flex-end",
-        elevation: 4,
+        elevation: 10,
         zIndex: 1,
     }
 });

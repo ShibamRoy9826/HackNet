@@ -6,7 +6,7 @@ import { Pressable, StyleProp, StyleSheet, ViewStyle } from "react-native";
 type Props = {
     func: () => void;
     style?: StyleProp<ViewStyle>;
-    icon: "account-plus-outline" | "arrow-left" | "magnify" | "whatsapp" | "facebook" | "reddit" | "link-variant" | "dots-horizontal";
+    icon: "account-plus-outline" | "arrow-left" | "magnify" | "whatsapp" | "facebook" | "reddit" | "link-variant" | "dots-horizontal" | "dots-vertical";
 }
 
 export default function OnlyIconButton({ func, style, icon }: Props) {

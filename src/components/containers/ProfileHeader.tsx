@@ -4,6 +4,7 @@ import CustomText from "../display/customText";
 
 //react
 import { auth, db } from "@auth/firebase";
+import ProfileDots from "@components/inputs/profileDots";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { checkFollow, followUser, unfollowUser } from "@utils/otherUtils";
 import { useRouter } from "expo-router";
@@ -63,11 +64,19 @@ export default function ProfileHeader({ sameUser, user_id, userData }: Props) {
         <View style={{ backgroundColor: "#17171d", flex: 1, paddingTop: insets.top }}>
             {
                 !sameUser ?
-                    <OnlyIconButton
-                        icon="arrow-left"
-                        func={() => { router.back(); }}
-                        style={{ position: "absolute", zIndex: 2, elevation: 20, top: 30, left: 10 }}
-                    /> :
+                    <View style={{ zIndex: 3 }}>
+                        <OnlyIconButton
+                            icon="arrow-left"
+                            func={() => { router.back(); }}
+                            style={{ position: "absolute", zIndex: 3, elevation: 20, top: 10, left: 10 }}
+                        />
+                        <ProfileDots
+                            user_id={user_id ? user_id : ""}
+                            style={{ position: "absolute", zIndex: 3, elevation: 20, top: 10, right: 10 }}
+                        />
+                    </View>
+
+                    :
                     <></>
             }
 
@@ -76,15 +85,15 @@ export default function ProfileHeader({ sameUser, user_id, userData }: Props) {
                     (userData.banner.startsWith("https") ?
                         { uri: userData.banner } : returnBanner(userData.banner)) :
                     require("@assets/images/banners/banner03.png")}
-                    style={{ width: '100%', zIndex: 1, position: "absolute", height: 100, borderBottomWidth: 1, borderColor: "#ec3750" }} />
-                <Image source={userData?.avatar ? { uri: userData.avatar } : require("@assets/images/pfp.jpg")} style={{ zIndex: 3, position: "absolute", bottom: -30, left: 20, width: 70, height: 70, borderRadius: 50, borderWidth: 2, borderColor: "#ec3750" }} />
+                    style={{ width: '100%', zIndex: 1, position: "absolute", height: 120, borderBottomWidth: 1, borderColor: "#ec3750" }} />
+                <Image source={userData?.avatar ? { uri: userData.avatar } : require("@assets/images/pfp.jpg")} style={{ zIndex: 3, position: "absolute", bottom: -50, left: 20, width: 70, height: 70, borderRadius: 50, borderWidth: 2, borderColor: "#ec3750" }} />
             </View>
             <View style={{ position: "relative", width: "100%" }}>
                 <View style={{
                     flexDirection: "row", alignItems: "center", justifyContent: "space-between"
                 }}>
                     <View>
-                        <CustomText style={{ fontSize: 25, color: "white", fontWeight: "bold", width: "100%", textAlign: "left", marginTop: 40, marginLeft: 20 }}>{userData?.displayName}</CustomText>
+                        <CustomText style={{ fontSize: 25, color: "white", fontWeight: "bold", width: "100%", textAlign: "left", marginTop: 60, marginLeft: 20 }}>{userData?.displayName}</CustomText>
                         <CustomText style={styles.subtxt}>@{userData?.displayNameLower}</CustomText>
                     </View>
                     {
@@ -108,6 +117,7 @@ export default function ProfileHeader({ sameUser, user_id, userData }: Props) {
                                 icon="pencil-box-multiple"
                             />
                     }
+
                 </View>
                 <CustomText style={[styles.subtxt, { color: "white", marginTop: 20, paddingLeft: 5, paddingRight: 30 }]}>
                     {userData?.bio}

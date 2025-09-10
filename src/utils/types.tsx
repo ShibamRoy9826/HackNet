@@ -1,4 +1,5 @@
 import { Timestamp } from "firebase/firestore";
+import React from "react";
 
 export type post = {
     id: string;
@@ -37,9 +38,10 @@ export type UserData = {
 export type BottomSheetItem = {
     text: string;
     func: () => void;
-    icon: "delete" | "share-variant" | "account-plus" | "heart"
+    icon: "delete" | "share-variant" | "account-plus" | "heart" | "exclamation" | "account-group" | "sticker-check-outline"
 };
 
 export type BottomSheetData = {
-    postId: string;
+    id: string;
+    header?: React.ReactNode
 };

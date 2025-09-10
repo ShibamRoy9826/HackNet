@@ -2,6 +2,7 @@ import ThreeDots from "@components/display/threeDots";
 import { useBottomSheetContext } from "@contexts/BottomSheetContext";
 import { deletePost, likePost, sharePost } from "@utils/otherUtils";
 import { ToastAndroid } from "react-native";
+import ShareBtns from "./shareBtns";
 
 interface Props {
     postId: string,
@@ -10,10 +11,12 @@ interface Props {
 }
 export default function PostThreeDots({ postId, OpId, currentUserId }: Props) {
 
-    const { setSheetData, setExtraData, closeSheet, expandSheet } = useBottomSheetContext();
+    const { closeSheet } = useBottomSheetContext();
     return (
         <ThreeDots
-            postId={postId}
+            sheetHeader={
+                <ShareBtns postId={postId} />
+            }
             data={[
                 (OpId == currentUserId) ?
                     { text: "Delete Post", func: () => { deletePost(postId); closeSheet(); ToastAndroid.show("Successfully deleted post, reload to see changes", 3) }, icon: "delete" } :

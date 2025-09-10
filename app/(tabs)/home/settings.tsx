@@ -4,6 +4,7 @@ import OnlyIconButton from "@components/inputs/onlyIconButton";
 import { ScrollView, StyleSheet, Switch, View } from "react-native";
 
 //others
+import Constants from "expo-constants";
 import { useEffect, useState } from "react";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -72,6 +73,8 @@ export default function SettingsScreen() {
                 <CustomText style={{ color: "white", left: 50, fontSize: 18, top: 0, fontWeight: 700 }}>Settings</CustomText>
             </View>
             <ScrollView style={styles.listContainer} contentContainerStyle={{ alignContent: "center", alignItems: "center" }}>
+
+                {/* Audio section */}
                 <CustomText style={styles.heading}>Audio</CustomText>
                 <View style={styles.section}>
 
@@ -100,6 +103,27 @@ export default function SettingsScreen() {
                     </View>
                 </View>
 
+                {/* App info section */}
+                <CustomText style={styles.heading}>App Info</CustomText>
+                <View style={styles.section}>
+                    <View style={styles.field}>
+                        <CustomText style={styles.text}>App Name</CustomText>
+                        <CustomText style={styles.textValue}>{Constants.expoConfig?.name}</CustomText>
+                    </View>
+
+                    <View style={styles.field}>
+                        <CustomText style={styles.text}>App Version</CustomText>
+                        <CustomText style={styles.textValue}>{Constants.expoConfig?.version}</CustomText>
+                    </View>
+
+                    <View style={styles.field}>
+                        <CustomText style={styles.text}>SDK Version</CustomText>
+                        <CustomText style={styles.textValue}>{Constants.expoConfig?.sdkVersion}</CustomText>
+                    </View>
+
+
+                </View>
+
 
 
                 <CustomButton
@@ -123,6 +147,10 @@ const styles = StyleSheet.create({
     },
     text: {
         color: "white",
+        fontSize: 15,
+    },
+    textValue: {
+        color: "#8492a6",
         fontSize: 15,
     },
     heading: {

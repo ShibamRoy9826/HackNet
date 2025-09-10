@@ -63,7 +63,6 @@ export const uploadFileTemp = async (file: any): Promise<string> => {
 
 export async function addComment(comment: string, post_id: string, fn?: () => void) {
     const uid = auth.currentUser ? auth.currentUser.uid : "";
-    console.log("Trying to add comment as ", uid, " comment: ", comment);
     try {
         await addDoc(collection(db, "posts", post_id, "comments"), {
             uid: uid,

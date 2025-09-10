@@ -14,7 +14,7 @@ import { useState } from "react";
 
 //firebase
 import { auth, db } from "@auth/firebase";
-import { doc, increment, setDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, increment, setDoc, updateDoc } from "firebase/firestore";
 
 //contexts
 import { useModalContext } from "@contexts/modalContext";
@@ -22,7 +22,6 @@ import { useUserData } from "@contexts/userContext";
 
 //func
 import { uploadFileTemp, uploadToHc } from "@utils/otherUtils";
-import { genPostTitle } from "@utils/stringTimeUtils";
 
 
 
@@ -96,7 +95,7 @@ export default function NewPostScreen() {
                 uploadMedia(rs).then(
                     async (PassedMedia) => {
                         updateActivity(0.6, "Uploading info");
-                        setDoc(doc(db, "posts", genPostTitle(user.email ? user.email : "randomuser@domain.com")), {
+                        setDoc(doc(collection(db, "posts")), {
                             uid: user.uid,
                             likes: 0,
                             timestamp: new Date(),
@@ -120,7 +119,7 @@ export default function NewPostScreen() {
                 )
             } else {
                 updateActivity(0.6, "Uploading info");
-                setDoc(doc(db, "posts", genPostTitle(user.email ? user.email : "randomuser@domain.com")), {
+                setDoc(doc(collection(db, "posts")), {
                     uid: user.uid,
                     likes: 0,
                     timestamp: new Date(),
@@ -176,7 +175,6 @@ export default function NewPostScreen() {
                         <View style={{ height: "auto", width: width, alignItems: "center", justifyContent: "center", paddingVertical: 20 }}>
                             <IconButton
                                 icon="close"
-                                // func={() => { setMedia([]); setUsedMedia(false); }}
                                 func={() => { setUsedMedia(false); }}
                                 text="Remove Attachment"
                             />

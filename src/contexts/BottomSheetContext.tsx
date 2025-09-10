@@ -1,23 +1,24 @@
-import ShareBtns from '@components/containers/shareBtns';
 import CustomText from '@components/display/customText';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons';
-import { BottomSheetData, BottomSheetItem } from '@utils/types';
+import { BottomSheetItem } from '@utils/types';
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
 import { StyleSheet } from 'react-native';
 import { Pressable } from 'react-native-gesture-handler';
 
 type sheetContextType = {
     setSheetData: (data: BottomSheetItem[]) => void;
-    setExtraData: (data: BottomSheetData) => void;
+    setHeader: (data: React.ReactNode | undefined) => void;
     closeSheet: () => void;
     expandSheet: () => void;
+    closedState: boolean;
 }
 const BottomSheetContext = createContext<sheetContextType | null>(null);
 
 export function BottomSheetProvider({ children }: { children: React.ReactNode }) {
     const [data, setData] = useState<BottomSheetItem[]>([]);
-    const [extraData, setEData] = useState<BottomSheetData>();
+    const [Header, setH] = useState<React.ReactNode | undefined>();
+    const [closedState, setClosedState] = useState(true);
     const bottomSheetRef = useRef<BottomSheet>(null);
     const snapPoints = useMemo(() => ["25%", "50%"], []);
 
@@ -36,8 +37,8 @@ export function BottomSheetProvider({ children }: { children: React.ReactNode })
         setData(data);
     }
 
-    function setExtraData(data: BottomSheetData) {
-        setEData(data);
+    function setHeader(data: React.ReactNode) {
+        setH(data);
     }
     function closeSheet() {
         bottomSheetRef.current?.close();
@@ -50,9 +51,10 @@ export function BottomSheetProvider({ children }: { children: React.ReactNode })
         <BottomSheetContext.Provider
             value={{
                 setSheetData,
-                setExtraData,
+                setHeader,
                 closeSheet,
-                expandSheet
+                expandSheet,
+                closedState
             }}
         >
             {children}
@@ -64,10 +66,18 @@ export function BottomSheetProvider({ children }: { children: React.ReactNode })
                 ref={bottomSheetRef}
                 backdropComponent={renderBackdrop}
                 backgroundStyle={{ backgroundColor: "#17171d" }}
+                onChange={(index) => {
+                    setClosedState(index === -1);
+                }}
 
             >
                 <BottomSheetView style={styles.contentContainer}>
-                    <ShareBtns postId={extraData ? extraData.postId : ""} />
+                    {
+                        Header ?
+                            Header
+                            :
+                            null
+                    }
                     {
                         data.map((item: BottomSheetItem) => (
                             <Pressable onPress={item.func} key={item.text} style={styles.button}>

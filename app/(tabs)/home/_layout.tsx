@@ -15,9 +15,6 @@ export default function HomeLayout() {
                 contentStyle: { backgroundColor: "#17171d" },
                 presentation: "modal",
                 title: "Notifications",
-                headerShown: true,
-                headerTintColor: "white",
-                headerStyle: { backgroundColor: "#17171d" }
             }} />
         </Stack >
     );

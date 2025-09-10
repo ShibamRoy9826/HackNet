@@ -34,6 +34,7 @@ export default function LikeButton({ userId, postId }: Prop) {
                     (value) => {
                         if (value == "true") {
                             dislikeSound.seekTo(0);
+                            dislikeSound.volume = 0.3;
                             dislikeSound.play();
                         }
                     }
@@ -51,6 +52,7 @@ export default function LikeButton({ userId, postId }: Prop) {
                     (value) => {
                         if (value == "true") {
                             likeSound.seekTo(0);
+                            likeSound.volume = 0.2;
                             likeSound.play();
                         }
                     }
