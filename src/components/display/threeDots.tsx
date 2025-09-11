@@ -13,11 +13,9 @@ interface Props {
 export default function ThreeDots({ data, sheetHeader, color }: Props) {
     const { closedState, setSheetData, closeSheet, expandSheet, setHeader } = useBottomSheetContext();
 
-
     function toggleSheet() {
         setSheetData(data);
         setHeader(sheetHeader);
-        console.log(closedState);
         if (closedState) {
             expandSheet();
         } else {

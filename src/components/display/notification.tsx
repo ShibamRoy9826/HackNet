@@ -1,3 +1,6 @@
+import { auth } from '@auth/firebase';
+import { deleteNotifObject, markAsReadUnread } from '@utils/notificationUtils';
+import { extractTime } from '@utils/stringTimeUtils';
 import * as Linking from 'expo-linking';
 import { Timestamp } from "firebase/firestore";
 import { Pressable, StyleSheet, View } from "react-native";
@@ -5,34 +8,39 @@ import CustomText from "./customText";
 import ThreeDots from './threeDots';
 
 interface Props {
+    id: string,
     message: string,
     title: string,
     data: { url: string },
-    createdAt: Timestamp
+    createdAt: Timestamp,
+    status: "read" | "unread"
 }
 
-export default function NotificationBox({ message, title, data, createdAt }: Props) {
-
+export default function NotificationBox({ id, message, title, data, createdAt, status }: Props) {
+    const user = auth.currentUser
     function redirectUser() {
         Linking.openURL(data.url);
     }
     return (
-        <Pressable style={styles.container} onPress={() => { redirectUser() }}>
+        <View style={styles.container} >
             <View style={{ position: "absolute", top: 10, right: 10, zIndex: 6, padding: 5 }}>
                 <ThreeDots
                     data={[
-                        { text: 'Mark as Read', icon: "sticker-check-outline", func: () => { } }
+                        { text: status == "read" ? 'Mark as Unread' : "Mark as Read", icon: "sticker-check-outline", func: () => { markAsReadUnread(user ? user.uid : "", id, status); } },
+                        { text: 'Delete Message', icon: "delete", func: () => { deleteNotifObject(user ? user.uid : "", id, status); } }
                     ]}
                 />
 
             </View>
-            <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%", paddingHorizontal: 5 }}>
+
+            <CustomText style={styles.time}>{extractTime(createdAt)}</CustomText>
+            <Pressable onPress={() => { status == "unread" ? markAsReadUnread(user ? user.uid : "", id, status) : null; redirectUser() }} style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%", paddingHorizontal: 5 }}>
                 <View style={styles.detailsContainer}>
                     <CustomText style={styles.title}>{title}</CustomText>
                     <CustomText style={styles.message}>{message}</CustomText>
                 </View>
-            </View>
-        </Pressable>
+            </Pressable>
+        </View>
     );
 }
 
@@ -43,7 +51,8 @@ const styles = StyleSheet.create({
         borderWidth: StyleSheet.hairlineWidth,
         borderColor: "#444456ff",
         borderRadius: 12,
-        position: "relative"
+        position: "relative",
+        marginVertical: 4
     },
     title: {
         fontSize: 18,
@@ -59,11 +68,19 @@ const styles = StyleSheet.create({
         width: "100%",
         margin: 10
     },
+    time: {
+        fontSize: 13,
+        color: "#8492a6",
+        textAlign: "left",
+        width: "100%",
+        marginHorizontal: 20,
+        marginTop: 10
+    },
     detailsContainer: {
         padding: 15,
         display: "flex",
         width: "100%",
         justifyContent: "center",
-        alignItems: "flex-start"
+        alignItems: "center"
     }
 });

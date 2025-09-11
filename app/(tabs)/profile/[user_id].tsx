@@ -31,7 +31,7 @@ export default function ProfileScreen() {
     const [uid, setUid] = useState(currentUser ? (currentUser.uid) : "");
 
 
-    async function postWrapper() {
+    async function updateUserData() {
         if (!user_id) {
 
             getDoc(doc(db, "users", uid)).then(
@@ -64,13 +64,14 @@ export default function ProfileScreen() {
                 setUid(user_id);
             }
         }
-        postWrapper();
+        updateUserData();
     }, [])
 
 
 
     return (
         <PostList
+            onReload={updateUserData}
             uidFilter={user_id ? user_id : currentUser ? currentUser.uid : ""}
             Header={
                 <View style={{ backgroundColor: "#17171d", flex: 1 }}>

@@ -11,6 +11,7 @@ import {
     doc,
     getDoc,
     getDocs,
+    onSnapshot,
     orderBy,
     query,
     where
@@ -52,6 +53,17 @@ export default function CommentsScreen() {
 
     const [refreshing, setRefreshing] = React.useState(false);
 
+    const commentSub = onSnapshot(collection(db, "notifications", user ? user.uid : "", "read"), (snap) => {
+        const data: comment[] = snap.docs.map(doc => (
+            {
+                id: doc.id,
+                ...(doc.data() as Omit<comment, 'id'>)
+            }
+        ));
+        setCommentData(data);
+        return commentSub;
+    });
+
     const onRefresh = React.useCallback(() => {
         setRefreshing(true);
         loadComments();
@@ -85,6 +97,7 @@ export default function CommentsScreen() {
         })
 
     }
+
 
 
     async function loadComments() {

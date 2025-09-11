@@ -45,3 +45,12 @@ export type BottomSheetData = {
     id: string;
     header?: React.ReactNode
 };
+
+export type notification = {
+    id: string;
+    title: string;
+    message: string;
+    data: { url: string };
+    uid: string;
+    createdAt: Timestamp;
+}

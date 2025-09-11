@@ -17,7 +17,7 @@ export default function HomeScreen() {
             <HomeHeader tY={0} h={50 + insets.top} pT={insets.top} />
             <PostList
                 Header={
-                    <View style={{ height: 50 + insets.top }}></View>
+                    <View style={{ height: 20 + insets.top }}></View>
                 }
             />
         </KeyboardAvoidingView>

@@ -2,8 +2,8 @@ import { db } from '@auth/firebase';
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
-import { addDoc, collection, doc, getDoc, setDoc } from 'firebase/firestore';
-import { UserData } from './types';
+import { addDoc, collection, deleteDoc, doc, getDoc, runTransaction } from 'firebase/firestore';
+import { notification, UserData } from './types';
 
 export async function sendNotifToUser(
     title: string,
@@ -33,15 +33,7 @@ export async function sendNotifToUser(
     };
 
     try {
-        await setDoc(doc(db, "notifications", uid), { exists: true }, { merge: true });
-
-        await addDoc(collection(db, "notifications", uid, "unread"), {
-            uid: uid,
-            message: msg,
-            title: title,
-            data: { url: url },
-            createdAt: Date.now()
-        });
+        createNotifObject(uid, msg, title, url)
 
         await fetch('https://exp.host/--/api/v2/push/send', {
             method: 'POST',
@@ -132,3 +124,74 @@ export async function registerForPushNotificationsAsync() {
     }
 }
 
+
+export async function createNotifObject(uid: string, msg: string, title: string, url: string) {
+    const notif = doc(db, "notifications", uid)
+
+    await runTransaction(db, async (transaction) => {
+        const unreadCount = await transaction.get(notif)
+        if (!unreadCount.exists()) {
+            transaction.set(notif, { unread_count: 1 })
+        }
+        else {
+            const newCount = (unreadCount.data().unread_count) + 1;
+            transaction.update(notif, { unread_count: newCount })
+        }
+    })
+
+    await addDoc(collection(db, "notifications", uid, "unread"), {
+        uid: uid,
+        message: msg,
+        title: title,
+        data: { url: url.replace("https://hacknet-web.vercel.app/", "hacknet:///") },
+        createdAt: new Date()
+    });
+}
+
+export async function deleteNotifObject(uid: string, id: string, status: "read" | "unread") {
+    const notif = doc(db, "notifications", uid)
+    await deleteDoc(doc(
+        db, "notifications", uid, status, id
+    ))
+    if (status == "unread") {
+        await runTransaction(db, async (transaction) => {
+            const unreadCount = await transaction.get(notif)
+            if (unreadCount.exists()) {
+                const newCount = (unreadCount.data().unread_count) - 1;
+                transaction.update(notif, { unread_count: newCount })
+            }
+        })
+
+    }
+}
+
+export async function markAsReadUnread(uid: string, id: string, currStatus: "read" | "unread") {
+    const notif = getDoc(doc(db, "notifications", uid, currStatus, id));
+    const notifData = (await notif).data() as notification;
+    console.log(notifData, " is the data")
+
+    // await setDoc(doc(db, "notifications", uid), { exists: true }, { merge: true });
+    await addDoc(collection(db, "notifications", uid, currStatus == "read" ? "unread" : "read"), {
+        uid: uid,
+        message: notifData.message,
+        title: notifData.title,
+        data: { url: notifData.data.url.replace("https://hacknet-web.vercel.app/", "hacknet:///") },
+        createdAt: new Date()
+    });
+
+    const notifRef = doc(db, "notifications", uid)
+    if (currStatus == "read") {
+        await runTransaction(db, async (transaction) => {
+            const unreadCount = await transaction.get(notifRef)
+            if (!unreadCount.exists()) {
+                transaction.set(notifRef, { unread_count: 1 })
+            }
+            else {
+                const newCount = (unreadCount.data().unread_count) + 1;
+                transaction.update(notifRef, { unread_count: newCount })
+            }
+        })
+    }
+
+    deleteNotifObject(uid, id, currStatus);
+}

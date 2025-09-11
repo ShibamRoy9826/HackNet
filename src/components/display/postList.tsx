@@ -21,10 +21,11 @@ const postLimit = 10;
 
 interface Props {
     uidFilter?: string,
-    Header?: React.ReactNode
+    Header?: React.ReactNode,
+    onReload?: () => {}
 }
 
-export default function PostList({ uidFilter, Header }: Props) {
+export default function PostList({ onReload, uidFilter, Header }: Props) {
     const insets = useSafeAreaInsets();
     const user = auth.currentUser;
 
@@ -38,6 +39,9 @@ export default function PostList({ uidFilter, Header }: Props) {
         setRefreshing(true);
         setLastDoc(null);
         loadPosts();
+        if (onReload) {
+            onReload();
+        }
         setTimeout(() => {
             setRefreshing(false);
         }, 500);
@@ -47,7 +51,8 @@ export default function PostList({ uidFilter, Header }: Props) {
 
     const renderPost: ListRenderItem<post> = useCallback(({ item }: ListRenderItemInfo<post>) =>
     (
-        <Post comment_count={item.num_comments}
+        <Post
+            comment_count={item.num_comments}
             user_uid={user ? user.uid : ""}
             id={item.id}
             uid={item.uid}

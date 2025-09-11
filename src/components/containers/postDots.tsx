@@ -19,7 +19,7 @@ export default function PostThreeDots({ postId, OpId, currentUserId }: Props) {
             }
             data={[
                 (OpId == currentUserId) ?
-                    { text: "Delete Post", func: () => { deletePost(postId); closeSheet(); ToastAndroid.show("Successfully deleted post, reload to see changes", 3) }, icon: "delete" } :
+                    { text: "Delete Post", func: () => { deletePost(postId); closeSheet(); ToastAndroid.show("Successfully deleted post, reopen the app to see changes", 3) }, icon: "delete" } :
                     { text: "Like Post", func: () => { likePost(postId, currentUserId) }, icon: "heart" }
                 ,
                 { text: "Share Post", func: () => { sharePost(postId) }, icon: "share-variant" },

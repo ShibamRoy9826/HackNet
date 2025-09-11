@@ -7,7 +7,10 @@ import CustomText from "../display/customText";
 import { useUserData } from "../../contexts/userContext";
 
 //navigation
+import { auth, db } from "@auth/firebase";
 import { useRouter } from "expo-router";
+import { doc, onSnapshot } from "firebase/firestore";
+import { useEffect, useState } from "react";
 
 //typecasting
 
@@ -20,8 +23,16 @@ interface Props {
 
 export default function HomeHeader({ tY, h, pT }: Props) {
     const router = useRouter();
-
     const { userData } = useUserData();
+    const user = auth.currentUser;
+    const [unreadCount, setUnreadCount] = useState(0);
+    useEffect(() => {
+        const unsub = onSnapshot(doc(db, "notifications", user ? user.uid : ""), (doc) => {
+            const data = doc.data()?.unread_count
+            setUnreadCount(data);
+        });
+    }, [])
+
 
     return (
         <Animated.View style={[styles.header, { height: h, paddingTop: pT, transform: [{ translateY: tY }] }]}>
@@ -30,8 +41,14 @@ export default function HomeHeader({ tY, h, pT }: Props) {
             </Pressable>
 
             <CustomText style={{ fontSize: 18, color: "white", marginRight: "auto" }}> Ahoy, Hacker!</CustomText>
-            <Pressable style={styles.button} onPress={() => { router.push('/(tabs)/home/notifications') }}>
-                <MaterialDesignIcons name="bell" color="white" size={25} />
+            <Pressable style={[{ position: "relative" }, styles.button]} onPress={() => { router.push('/(tabs)/home/notifications') }}>
+                <MaterialDesignIcons name={"bell"} color="white" size={25} />
+                {
+                    (unreadCount > 0) ?
+                        <MaterialDesignIcons style={{ position: "absolute", top: 4, right: 2, zIndex: 2 }} name={"circle"} color="#ec3750" size={10} />
+                        :
+                        null
+                }
             </Pressable>
             <Pressable style={styles.button} onPress={() => { router.navigate('/(tabs)/home/settings') }}>
                 <MaterialDesignIcons name="cog-outline" color="white" size={25} />

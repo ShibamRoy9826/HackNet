@@ -4,7 +4,8 @@ import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native"
 
 interface Props {
     options: string[],
-    iconList: ("earth" | "account-group" | "account" | "post" | "message" | "heart")[],
+    iconList: ("earth" | "account-group" | "account" | "post" | "message" | "heart" | "email-mark-as-unread" | "sticker-check"
+    )[],
     selected: string,
     setSelected: (a: string) => void,
     vertical?: boolean,

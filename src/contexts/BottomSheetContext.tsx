@@ -80,7 +80,7 @@ export function BottomSheetProvider({ children }: { children: React.ReactNode })
                     }
                     {
                         data.map((item: BottomSheetItem) => (
-                            <Pressable onPress={item.func} key={item.text} style={styles.button}>
+                            <Pressable onPress={() => { item.func(); closeSheet() }} key={item.text} style={styles.button}>
                                 <MaterialDesignIcons name={item.icon} color="#bec5d0ff" size={25} />
                                 <CustomText style={{ marginLeft: 10, color: "#bec5d0ff" }}>
                                     {item.text}
