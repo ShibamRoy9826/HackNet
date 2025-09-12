@@ -19,7 +19,7 @@ export default function CommentBox({ userId, postId }: Prop) {
     async function checkIfComments() {
         const post = await getDoc(doc(db, "posts", postId));
         const postData: post = post.data() as post;
-        if (postData.comments_enabled) {
+        if (postData?.comments_enabled) {
             setVisible(true);
         }
     }

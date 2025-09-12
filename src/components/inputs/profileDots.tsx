@@ -1,4 +1,6 @@
+import { auth } from "@auth/firebase";
 import ThreeDots from "@components/display/threeDots";
+import { sendFriendRequest } from "@utils/otherUtils";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
 interface Props {
@@ -7,13 +9,14 @@ interface Props {
 }
 
 export default function ProfileDots({ style, user_id }: Props) {
+    const user = auth.currentUser;
     return (
 
         <View style={[style, styles.button]} >
             <ThreeDots
                 data={[
                     { text: "Follow", icon: "account-plus", func: () => { } },
-                    { text: "Send Friend Request", icon: "account-group", func: () => { } },
+                    { text: "Send Friend Request", icon: "account-group", func: () => { sendFriendRequest(user ? user.uid : "", user_id); } },
                     { text: "Report", icon: "exclamation", func: () => { } }
                 ]}
                 color="white"

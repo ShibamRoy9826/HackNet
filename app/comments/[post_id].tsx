@@ -1,26 +1,26 @@
 //components
 import Comment from "@components/containers/comment";
-import Post from "@components/containers/post";
+import PostHeader from "@components/containers/postHeader";
 import NothingHere from "@components/display/nothing";
+import { FlashList } from "@shopify/flash-list";
 import { Stack } from "expo-router";
-import { FlatList, KeyboardAvoidingView, RefreshControl, View } from "react-native";
+import { KeyboardAvoidingView, View } from "react-native";
 
 //firebase
 import {
     collection,
     doc,
-    getDoc,
     getDocs,
     onSnapshot,
-    orderBy,
     query,
+    Timestamp,
     where
 } from "firebase/firestore";
 
 import { auth, db } from "@auth/firebase";
 
 //others
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 //react 
@@ -30,8 +30,6 @@ import React, { useEffect, useState } from 'react';
 import { chunkArray } from "@utils/arrayUtils";
 
 //typecasting
-import CustomText from "@components/display/customText";
-import OnlyIconButton from "@components/inputs/onlyIconButton";
 import { comment, post, UserData } from "@utils/types";
 
 type UserDataWithId = UserData & {
@@ -41,7 +39,6 @@ type UserDataWithId = UserData & {
 export default function CommentsScreen() {
     const [loading, setLoading] = useState(true);
     const insets = useSafeAreaInsets();
-    const router = useRouter();
 
     const { post_id } = useLocalSearchParams<{ post_id: string }>();
     const user = auth.currentUser;
@@ -51,26 +48,6 @@ export default function CommentsScreen() {
 
     const [postData, setPostData] = useState<post>();
 
-    const [refreshing, setRefreshing] = React.useState(false);
-
-    const commentSub = onSnapshot(collection(db, "notifications", user ? user.uid : "", "read"), (snap) => {
-        const data: comment[] = snap.docs.map(doc => (
-            {
-                id: doc.id,
-                ...(doc.data() as Omit<comment, 'id'>)
-            }
-        ));
-        setCommentData(data);
-        return commentSub;
-    });
-
-    const onRefresh = React.useCallback(() => {
-        setRefreshing(true);
-        loadComments();
-        setTimeout(() => {
-            setRefreshing(false);
-        }, 1000);
-    }, []);
 
     async function getUsersData(userList: string[]) {
         if (userList.length === 0) {
@@ -93,53 +70,36 @@ export default function CommentsScreen() {
                 ...prev,
                 ...userData
             }
+            // console.log(d)
             return d;
         })
 
     }
 
-
-
-    async function loadComments() {
-        const c = collection(db, "posts", post_id, "comments");
-        const q = query(c, orderBy("timestamp", "desc"));
-        try {
-            getDocs(q).then((data) => {
-                const comments: comment[] = data.docs.map(doc => (
-                    {
-                        id: doc.id,
-                        ...(doc.data() as Omit<comment, "id">)
-                    }
-                ));
-
-                setCommentData(comments);
-                let commentUids = []
-                for (let i = 0; i < comments.length; ++i) {
-                    commentUids.push(comments[i].uid);
-                }
-                const uidChunks = chunkArray(commentUids, 20);
-
-                for (let i = 0; i < uidChunks.length; ++i) {
-                    getUsersData(uidChunks[i])
-                    // .then(() => { console.log(usersData, "is the data") });
-                }
-            }
-            ).catch((e) => {
-                console.log("error: ", e)
-            });
-        } catch (e) {
-            console.log("comment error:", e);
-        }
-    }
-
-    async function getPostData() {
-        const d = doc(db, "posts", post_id);
-        const snap = await getDoc(d);
-        setPostData(snap.data() as post);
-    }
     useEffect(() => {
-        loadComments();
-        getPostData();
+        const postSub = onSnapshot(doc(db, "posts", post_id ? post_id : ""), (snap) => {
+            const postData = snap.data() as post;
+            setPostData(postData);
+        })
+        const commentSub = onSnapshot(collection(db, "posts", post_id ? post_id : "", "comments"), (snap) => {
+            const data: comment[] = snap.docs.map(doc => (
+                {
+                    id: doc.id,
+                    ...(doc.data() as Omit<comment, 'id'>)
+                }
+            ));
+            setCommentData(data);
+
+            let commentUids = []
+            for (let i = 0; i < data.length; ++i) {
+                commentUids.push(data[i].uid);
+            }
+            const uidChunks = chunkArray(commentUids, 20);
+
+            for (let i = 0; i < uidChunks.length; ++i) {
+                getUsersData(uidChunks[i])
+            }
+        });
     }, [])
 
     useEffect(() => {
@@ -148,7 +108,7 @@ export default function CommentsScreen() {
         } else {
             setLoading(false);
         }
-    })
+    }, [user, usersData, commentData, postData])
 
     if (loading) {
         return (
@@ -160,31 +120,34 @@ export default function CommentsScreen() {
 
     return (
         <KeyboardAvoidingView behavior={"height"} style={{ backgroundColor: "#17171d", flex: 1, alignItems: "center", paddingTop: insets.top }}>
-            <FlatList
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+            <FlashList
                 data={commentData}
                 keyExtractor={item => item.id}
                 renderItem={({ item }: { item: comment }) => (
                     <Comment
+                        postId={post_id}
                         uid={item.uid}
-                        imgSrc={usersData[item.uid]?.avatar ?? "https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg"}
+                        id={item.id}
+                        imgSrc={usersData[item.uid] ? (usersData[item.uid].avatar ?? "https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg") : "https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg"}
                         displayName={usersData[item.uid]?.displayName ?? "Some User..."}
                         message={item.message}
                         timestamp={item.timestamp}
                     />
                 )}
-                ListHeaderComponent={
-                    <View style={{ paddingTop: insets.top }}>
-                        <OnlyIconButton icon="arrow-left" func={() => { router.back() }} style={{ position: "absolute", top: 0, left: 20, zIndex: 5 }} />
-                        <CustomText style={{ color: "white", left: 80, fontSize: 18, top: 0, fontWeight: 700 }}>Post</CustomText>
-                        {
-                            postData ?
-                                <Post id={post_id} user_uid={postData.uid} media={postData.media} used_media={postData.used_media} message={postData.post_message}
-                                    timestamp={postData.timestamp} comment_count={postData.num_comments} uid={postData.uid} />
-                                : <View></View>
-                        }
 
-                    </View>
+                ListHeaderComponent={
+                    <PostHeader
+                        id={postData ? postData.id : ""}
+                        isVisible={postData ? true : false}
+                        postId={post_id}
+                        user_uid={user ? user.uid : ""}
+                        media={postData ? postData.media : []}
+                        used_media={postData ? postData.used_media : false}
+                        message={postData ? postData.post_message : ""}
+                        timestamp={postData ? postData.timestamp : Timestamp.now()}
+                        comment_count={postData ? postData.num_comments : 0}
+                        uid={postData ? postData.uid : ""}
+                    />
                 }
                 ListEmptyComponent={
                     <NothingHere text="No comments yet... " />
@@ -192,8 +155,8 @@ export default function CommentsScreen() {
                 ListFooterComponent={
                     <View style={{ paddingBottom: 100 }} />
                 }
-                style={{ backgroundColor: "#17171d", flex: 1, height: "100%" }}
                 removeClippedSubviews={true}
+                estimatedItemSize={100}
             />
         </KeyboardAvoidingView>
     );

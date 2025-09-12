@@ -22,10 +22,11 @@ const postLimit = 10;
 interface Props {
     uidFilter?: string,
     Header?: React.ReactNode,
-    onReload?: () => {}
+    onReload?: () => {},
+    EmptyElement?: React.ReactElement | null;
 }
 
-export default function PostList({ onReload, uidFilter, Header }: Props) {
+export default function PostList({ onReload, uidFilter, Header, EmptyElement }: Props) {
     const insets = useSafeAreaInsets();
     const user = auth.currentUser;
 
@@ -129,7 +130,10 @@ export default function PostList({ onReload, uidFilter, Header }: Props) {
                 </View>
             }
             ListFooterComponent={<View style={{ marginBottom: 100 }}></View>}
-            ListEmptyComponent={<NothingHere text="No posts yet:(" />}
+            ListEmptyComponent={
+                EmptyElement ??
+                <NothingHere text="No posts yet:(" />
+            }
             onEndReached={() => { loadPosts(); }}
             onEndReachedThreshold={0.5}
             estimatedItemSize={200}

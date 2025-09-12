@@ -4204,9 +4204,9 @@ expo-symbols@~0.4.5:
   dependencies:
     sf-symbols-typescript "^2.0.0"
 
-expo-system-ui@5.0.11:
+expo-system-ui@~5.0.11:
   version "5.0.11"
-  resolved "https://registry.npmjs.org/expo-system-ui/-/expo-system-ui-5.0.11.tgz"
+  resolved "https://registry.yarnpkg.com/expo-system-ui/-/expo-system-ui-5.0.11.tgz#2bb70b2dd9f3f5137df85e43aa5d2d557432ad49"
   integrity sha512-PG5VdaG5cwBe1Rj02mJdnsihKl9Iw/w/a6+qh2mH3f2K/IvQ+Hf7aG2kavSADtkGNCNj7CEIg7Rn4DQz/SE5rQ==
   dependencies:
     "@react-native/normalize-colors" "0.79.6"

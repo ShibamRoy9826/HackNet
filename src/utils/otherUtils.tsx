@@ -1,7 +1,7 @@
 import { auth, db } from "@auth/firebase";
 import * as Clipboard from 'expo-clipboard';
 import * as Linking from 'expo-linking';
-import { addDoc, collection, deleteDoc, doc, getCountFromServer, getDoc, increment, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getCountFromServer, getDoc, increment, runTransaction, setDoc, updateDoc } from "firebase/firestore";
 import { Alert, Share, ToastAndroid } from "react-native";
 import { sendNotifToUser } from "./notificationUtils";
 import { extractUrl } from "./stringTimeUtils";
@@ -9,7 +9,6 @@ import { UserData } from "./types";
 
 export async function uploadToHc(urls: string[]) {
     const hc = "https://cdn.hackclub.com/api/v3/new";
-    // console.log("This is the data hc upload fn got:", urls);
 
     const hcRes = await fetch(hc,
         {
@@ -24,12 +23,10 @@ export async function uploadToHc(urls: string[]) {
     const response = await hcRes.json();
 
     if (response) {
-        // console.log('response from hc: ', response);
         const deployedUrls = [];
         for (let i = 0; i < response.files.length; ++i) {
             deployedUrls.push(response.files[i].deployedUrl)
         }
-        // console.log(deployedUrls);
         return deployedUrls;
     } else {
         return [];
@@ -67,7 +64,7 @@ export async function addComment(comment: string, post_id: string, fn?: () => vo
         await addDoc(collection(db, "posts", post_id, "comments"), {
             uid: uid,
             message: comment,
-            timestamp: serverTimestamp(),
+            timestamp: new Date(),
             likes: 0
         })
         await updateDoc(doc(db, "posts", post_id),
@@ -190,16 +187,17 @@ export async function dislikePost(postId: string, userUid: string) {
 
 export async function deletePost(postId: string) {
     const currUser = auth.currentUser?.uid;
+    const postRef = doc(db, "posts", postId);
+    const userRef = doc(db, "users", currUser ? currUser : "")
     try {
-        await deleteDoc(doc(db, "posts", postId))
-        await updateDoc(doc(db, "users", currUser ? currUser : ""), {
-            num_logs: increment(-1)
+        await runTransaction(db, async (transaction) => {
+            transaction.delete(postRef);
+            transaction.update(userRef, { num_logs: increment(-1) });
         })
     } catch (e) {
         console.log("Couldn't delete post", e);
     }
 }
-
 
 export async function sharePost(id: string) {
     const redirectUrl = Linking.createURL(`/comments/${id}`);
@@ -261,3 +259,88 @@ export async function sharePostToReddit(id: string) {
 }
 
 
+export async function deleteComment(postId: string, commentId: string) {
+    const commentRef = doc(db, "posts", postId, "comments", commentId);
+    const postRef = doc(db, "posts", postId);
+
+    try {
+        await runTransaction(db, async (transaction) => {
+            const postData = await transaction.get(postRef);
+            if (!postData) {
+                console.log("Something went wrong, post not found");
+                return;
+            }
+            transaction.update(postRef, { num_comments: postData.data()?.num_comments - 1 })
+            transaction.delete(commentRef);
+            console.log(postData?.data()?.num_comments, "is the comment count")
+        })
+
+    } catch (e) {
+        console.log("Couldn't delete comment ", e);
+    }
+}
+export async function sendFriendRequest(sender: string, receiver: string) {
+    try {
+        await setDoc(
+            doc(db, "users", receiver, "friendRequests", sender),
+            {
+                createdAt: new Date()
+            }
+        )
+        console.log("Ran sucessfully!!")
+    } catch (e) {
+        console.log("Couldn't send friend request", e)
+    }
+}
+
+export async function acceptRequest(sender: string, receiver: string) {
+    const receiverRequestRef = doc(db, "users", receiver, "friendRequests", sender)
+    const receiverRef = doc(db, "users", receiver, "friends", sender);
+    const senderRef = doc(db, "users", sender, "friends", receiver);
+    try {
+        await runTransaction(db, async (transaction) => {
+            transaction.set(receiverRef, { createdAt: new Date() });
+            transaction.set(senderRef, { createdAt: new Date() });
+            transaction.delete(receiverRequestRef);
+        })
+    } catch (e) {
+        console.log("Couldn't accept friend request", e)
+    }
+
+}
+
+export async function rejectRequest(sender: string, receiver: string) {
+    try {
+        await deleteDoc(
+            doc(db, "users", receiver, "friendRequests", sender)
+        )
+    } catch (e) {
+        console.log("Couldn't reject friend request", e)
+    }
+}
+
+
+
+export async function likeComment(postId: string, commentId: string, userUid: string) {
+    try {
+        await setDoc(doc(db, "posts", postId, "comments", commentId, "likes", userUid),
+            {
+                createdAt: new Date()
+            }
+        )
+        return await getLikeCount(postId);
+    } catch (e) {
+        console.log(e);
+        return 0;
+    }
+}
+
+export async function removeLikeFromComment(postId: string, commentId: string, userUid: string) {
+    try {
+        await deleteDoc(doc(db, "posts", postId, "comments", commentId, "likes", userUid));
+        return await getLikeCount(postId);
+    } catch (e) {
+        console.log(e);
+        return 0;
+    }
+}

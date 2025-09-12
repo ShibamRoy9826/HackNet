@@ -54,3 +54,12 @@ export type notification = {
     uid: string;
     createdAt: Timestamp;
 }
+export type friendRequest = {
+    createdAt: Timestamp
+    id: string;
+}
+
+export type friend = {
+    createdAt: Timestamp
+    id: string;
+}

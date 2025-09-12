@@ -1,7 +1,7 @@
 //components
 import HomeHeader from "@components/containers/HomeHeader";
 import PostList from "@components/display/postList";
-import { KeyboardAvoidingView, View } from "react-native";
+import { ActivityIndicator, KeyboardAvoidingView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 //react
@@ -18,6 +18,13 @@ export default function HomeScreen() {
             <PostList
                 Header={
                     <View style={{ height: 20 + insets.top }}></View>
+                }
+                EmptyElement={
+                    <ActivityIndicator
+                        color={"#338eda"}
+                        style={{ marginTop: 70 }}
+                    />
+
                 }
             />
         </KeyboardAvoidingView>

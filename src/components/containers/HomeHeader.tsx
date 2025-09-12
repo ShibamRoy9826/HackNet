@@ -59,7 +59,9 @@ export default function HomeHeader({ tY, h, pT }: Props) {
 
 const styles = StyleSheet.create({
     button: {
-        marginHorizontal: 10
+        marginHorizontal: 5,
+        padding: 7,
+        borderRadius: 20
     },
     header: {
         margin: 0,
