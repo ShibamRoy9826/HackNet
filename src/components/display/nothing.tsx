@@ -1,3 +1,4 @@
+import { useTheme } from '@contexts/themeContext';
 import { Image, StyleSheet, View, } from 'react-native';
 import CustomText from './customText';
 
@@ -6,6 +7,17 @@ interface Props {
 }
 
 export default function NothingHere({ text }: Props) {
+    const { colors } = useTheme();
+    const styles = StyleSheet.create({
+        subtxt: {
+            color: colors.muted,
+            fontSize: 15,
+            width: "100%",
+            marginLeft: 20,
+            fontWeight: "normal",
+            textAlign: "center"
+        },
+    })
     return (
         <View style={{ justifyContent: "center", alignItems: "center", flex: 1 }}>
             <Image
@@ -16,14 +28,3 @@ export default function NothingHere({ text }: Props) {
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    subtxt: {
-        color: "#8492a6",
-        fontSize: 15,
-        width: "100%",
-        marginLeft: 20,
-        fontWeight: "normal",
-        textAlign: "center"
-    },
-})

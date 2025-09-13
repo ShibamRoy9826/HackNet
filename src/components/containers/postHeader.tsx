@@ -1,5 +1,6 @@
 import CustomText from "@components/display/customText";
 import OnlyIconButton from "@components/inputs/onlyIconButton";
+import { useTheme } from "@contexts/themeContext";
 import { useRouter } from "expo-router";
 import { Timestamp } from "firebase/firestore";
 import { View } from "react-native";
@@ -22,11 +23,12 @@ interface Props {
 export default function PostHeader({ isVisible, postId, user_uid, media, used_media, message, timestamp, comment_count, uid }: Props) {
     const router = useRouter();
     const insets = useSafeAreaInsets();
+    const { colors } = useTheme();
     return (
 
         <View style={{ paddingTop: insets.top }}>
             <OnlyIconButton icon="arrow-left" func={() => { router.back() }} style={{ position: "absolute", top: 0, left: 20, zIndex: 5 }} />
-            <CustomText style={{ color: "white", left: 80, fontSize: 18, top: 0, fontWeight: 700 }}>Post</CustomText>
+            <CustomText style={{ color: colors.text, left: 80, fontSize: 18, top: 0, fontWeight: 700 }}>Post</CustomText>
             {
                 isVisible ?
                     <Post id={postId} user_uid={user_uid} media={media} used_media={used_media} message={message}

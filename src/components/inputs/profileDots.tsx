@@ -1,5 +1,6 @@
 import { auth } from "@auth/firebase";
 import ThreeDots from "@components/display/threeDots";
+import { useTheme } from "@contexts/themeContext";
 import { sendFriendRequest } from "@utils/otherUtils";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
@@ -10,6 +11,24 @@ interface Props {
 
 export default function ProfileDots({ style, user_id }: Props) {
     const user = auth.currentUser;
+    const { colors } = useTheme();
+
+    const styles = StyleSheet.create({
+        button: {
+            zIndex: 5,
+            elevation: 10,
+            backgroundColor: colors.darkBackground,
+            marginVertical: 5,
+            display: "flex",
+            flexDirection: "row",
+            padding: 10,
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: 50,
+            borderColor: colors.border,
+            borderWidth: 1
+        },
+    })
     return (
 
         <View style={[style, styles.button]} >
@@ -25,20 +44,3 @@ export default function ProfileDots({ style, user_id }: Props) {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    button: {
-        zIndex: 5,
-        elevation: 10,
-        backgroundColor: "#282832ff",
-        marginVertical: 5,
-        display: "flex",
-        flexDirection: "row",
-        padding: 10,
-        alignItems: "center",
-        justifyContent: "center",
-        borderRadius: 50,
-        borderColor: "#25252fff",
-        borderWidth: 1
-    },
-})

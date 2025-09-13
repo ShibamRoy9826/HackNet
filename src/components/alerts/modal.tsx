@@ -1,4 +1,5 @@
 import CustomText from "@components/display/customText";
+import { useTheme } from "@contexts/themeContext";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { BlurView } from 'expo-blur';
 import { Modal, Pressable, SafeAreaView, StyleSheet, View } from "react-native";
@@ -14,7 +15,70 @@ interface Props {
 }
 
 export default function ModalBox({ animation, isVisible, setIsVisible, onClose, text, subtext }: Props) {
+  const { colors } = useTheme();
 
+  const styles = StyleSheet.create({
+    rootView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: "rgba(0,0,0,0.3)",
+      height: 'auto',
+      elevation: 5
+    },
+    centeredView: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: "rgba(0,0,0,0.3)",
+      position: 'absolute'
+    },
+    modalView: {
+      margin: 20,
+      backgroundColor: colors.background,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: colors.border,
+      padding: 35,
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 4,
+      elevation: 5,
+    },
+    button: {
+      borderRadius: 20,
+      padding: 5,
+      elevation: 2,
+      backgroundColor: colors.primary,
+      position: "absolute",
+      top: 0,
+      right: 0,
+      margin: 10
+    },
+    textStyle: {
+      color: colors.text,
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+    modalText: {
+      marginBottom: 15,
+      textAlign: 'center',
+      color: colors.text,
+      fontSize: 20,
+      fontWeight: "bold"
+    },
+    modalSubtext: {
+      marginBottom: 15,
+      textAlign: 'center',
+      color: colors.muted,
+      fontSize: 15
+    },
+  });
   return (
     <SafeAreaView style={styles.centeredView}>
       <Modal
@@ -40,66 +104,3 @@ export default function ModalBox({ animation, isVisible, setIsVisible, onClose, 
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  rootView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: "rgba(0,0,0,0.3)",
-    height: 'auto',
-    elevation: 5
-  },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: "rgba(0,0,0,0.3)",
-    position: 'absolute'
-  },
-  modalView: {
-    margin: 20,
-    backgroundColor: '#17171d',
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "#25252fff",
-    padding: 35,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  button: {
-    borderRadius: 20,
-    padding: 5,
-    elevation: 2,
-    backgroundColor: "#ec3750",
-    position: "absolute",
-    top: 0,
-    right: 0,
-    margin: 10
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: 'center',
-    color: "white",
-    fontSize: 20,
-    fontWeight: "bold"
-  },
-  modalSubtext: {
-    marginBottom: 15,
-    textAlign: 'center',
-    color: "#8492a6",
-    fontSize: 15
-  },
-});

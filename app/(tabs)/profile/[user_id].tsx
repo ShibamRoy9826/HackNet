@@ -13,6 +13,7 @@ import { doc, getDoc } from "firebase/firestore";
 
 //typecasting
 import PostList from "@components/display/postList";
+import { useTheme } from "@contexts/themeContext";
 import { UserData } from "@utils/types";
 import { useLocalSearchParams } from 'expo-router';
 
@@ -66,7 +67,7 @@ export default function ProfileScreen() {
         }
         updateUserData();
     }, [])
-
+    const { colors } = useTheme();
 
 
     return (
@@ -74,7 +75,7 @@ export default function ProfileScreen() {
             onReload={updateUserData}
             uidFilter={user_id ? user_id : currentUser ? currentUser.uid : ""}
             Header={
-                <View style={{ backgroundColor: "#17171d", flex: 1 }}>
+                <View style={{ backgroundColor: colors.background, flex: 1 }}>
                     <ProfileHeader sameUser={sameUser} user_id={user_id} userData={userData} />
                     <RadioBtn
                         options={["Logs"]}
@@ -84,10 +85,10 @@ export default function ProfileScreen() {
                         style={{ marginHorizontal: 10 }}
                     />
 
-                    <View style={{ backgroundColor: "#373d46ff", width: "100%", height: StyleSheet.hairlineWidth }} />
+                    <View style={{ backgroundColor: colors.background, width: "100%", height: StyleSheet.hairlineWidth }} />
                     <CustomText
                         style={{
-                            color: "white", textAlign: "left", paddingLeft: 10, fontSize: 20, fontWeight: "bold", marginVertical: 20
+                            color: colors.text, textAlign: "left", paddingLeft: 10, fontSize: 20, fontWeight: "bold", marginVertical: 20
                         }}>
                         {(currTab === "Logs") ? (sameUser ? "Your Logs" : "Logs") : "Liked Logs"}</CustomText>
                 </View>

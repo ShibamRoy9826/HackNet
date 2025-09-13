@@ -1,8 +1,9 @@
+import { useTheme } from '@contexts/themeContext';
+import { useRef, useState } from 'react';
 import { Dimensions, View } from "react-native";
-import { useSharedValue , configureReanimatedLogger, ReanimatedLogLevel, } from "react-native-reanimated";
-import Media from './media';
+import { configureReanimatedLogger, ReanimatedLogLevel, useSharedValue, } from "react-native-reanimated";
 import Carousel, { ICarouselInstance, Pagination, } from "react-native-reanimated-carousel";
-import { useRef } from 'react';
+import Media from './media';
 
 import { ImagePickerAsset } from "expo-image-picker";
 
@@ -18,8 +19,11 @@ export default function CarouselComponent({ data }: Props) {
         strict: false, // Reanimated runs in strict mode by default
     });
 
+    const { colors } = useTheme();
+
     const ref = useRef<ICarouselInstance>(null);
     const progress = useSharedValue<number>(0);
+    const [activeIndex, setActiveIndex] = useState(0);
 
     const onPressPagination = (index: number) => {
         ref.current?.scrollTo({
@@ -36,22 +40,23 @@ export default function CarouselComponent({ data }: Props) {
     return (
         <View style={{ flex: 1 }}>
             <Carousel
+                loop={false}
                 ref={ref}
                 width={width}
                 height={height * 0.3}
                 data={data}
                 onProgressChange={progress}
-                renderItem={({ item }) => (
+                onSnapToItem={(index: number) => { setActiveIndex(index) }}
+                renderItem={({ item, index }) => (
                     <View
                         style={{
                             flex: 1,
                             borderWidth: 1,
-                            borderColor: "#25252fff",
+                            borderColor: colors.border,
                             justifyContent: "center",
-                            backgroundColor: "#0d0d10ff"
+                            backgroundColor: colors.background
                         }}
                     >
-                        {/* <CustomText style={{ textAlign: "center", fontSize: 30 }}>0</CustomText> */}
                         <Media source={item.uri} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
 
                     </View>
@@ -61,8 +66,6 @@ export default function CarouselComponent({ data }: Props) {
             <Pagination.Basic
                 progress={progress}
                 data={data}
-                // dotStyle={{ backgroundColor: "rgba(132,146,166,0.2)", borderRadius: 50 }}
-                // activeDotStyle={{ backgroundColor: "#8492a6", borderRadius: 50 }}
                 dotStyle={{ backgroundColor: "rgba(132,146,166,0.2)", borderRadius: 50 }}
                 activeDotStyle={{ backgroundColor: "#8492a6", borderRadius: 50 }}
 

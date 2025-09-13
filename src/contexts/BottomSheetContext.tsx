@@ -5,6 +5,7 @@ import { BottomSheetItem } from '@utils/types';
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
 import { StyleSheet } from 'react-native';
 import { Pressable } from 'react-native-gesture-handler';
+import { useTheme } from './themeContext';
 
 type sheetContextType = {
     setSheetData: (data: BottomSheetItem[]) => void;
@@ -21,6 +22,8 @@ export function BottomSheetProvider({ children }: { children: React.ReactNode })
     const [closedState, setClosedState] = useState(true);
     const bottomSheetRef = useRef<BottomSheet>(null);
     const snapPoints = useMemo(() => ["25%", "50%"], []);
+
+    const { colors } = useTheme();
 
     const renderBackdrop = useCallback(
         (props: any) => (
@@ -47,6 +50,26 @@ export function BottomSheetProvider({ children }: { children: React.ReactNode })
         bottomSheetRef.current?.expand();
     }
 
+    const styles = StyleSheet.create({
+        button: {
+            width: "100%",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            paddingVertical: 15
+        },
+        contentContainer: {
+            backgroundColor: colors.background,
+            borderColor: colors.border,
+            flex: 1,
+            paddingVertical: 10,
+            paddingHorizontal: 20,
+            alignItems: 'flex-start',
+            zIndex: 1,
+        },
+    });
+
+
     return (
         <BottomSheetContext.Provider
             value={{
@@ -59,13 +82,13 @@ export function BottomSheetProvider({ children }: { children: React.ReactNode })
         >
             {children}
             <BottomSheet
-                handleIndicatorStyle={{ backgroundColor: "white" }}
+                handleIndicatorStyle={{ backgroundColor: colors.text }}
                 index={-1}
                 snapPoints={snapPoints}
                 enablePanDownToClose
                 ref={bottomSheetRef}
                 backdropComponent={renderBackdrop}
-                backgroundStyle={{ backgroundColor: "#17171d" }}
+                backgroundStyle={{ backgroundColor: colors.background }}
                 onChange={(index) => {
                     setClosedState(index === -1);
                 }}
@@ -81,8 +104,8 @@ export function BottomSheetProvider({ children }: { children: React.ReactNode })
                     {
                         data.map((item: BottomSheetItem) => (
                             <Pressable onPress={() => { item.func(); closeSheet() }} key={item.text} style={styles.button}>
-                                <MaterialDesignIcons name={item.icon} color="#bec5d0ff" size={25} />
-                                <CustomText style={{ marginLeft: 10, color: "#bec5d0ff" }}>
+                                <MaterialDesignIcons name={item.icon} color={colors.muted} size={25} />
+                                <CustomText style={{ marginLeft: 10, color: colors.muted }}>
                                     {item.text}
                                 </CustomText>
                             </Pressable>
@@ -94,25 +117,6 @@ export function BottomSheetProvider({ children }: { children: React.ReactNode })
         </BottomSheetContext.Provider>
     )
 }
-
-const styles = StyleSheet.create({
-    button: {
-        width: "100%",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        paddingVertical: 15
-    },
-    contentContainer: {
-        backgroundColor: "#17171d",
-        borderColor: "#25252f",
-        flex: 1,
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        alignItems: 'flex-start',
-        zIndex: 1,
-    },
-});
 
 export function useBottomSheetContext() {
     const context = useContext(BottomSheetContext);

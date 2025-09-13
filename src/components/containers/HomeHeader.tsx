@@ -8,6 +8,7 @@ import { useUserData } from "../../contexts/userContext";
 
 //navigation
 import { auth, db } from "@auth/firebase";
+import { useTheme } from "@contexts/themeContext";
 import { useRouter } from "expo-router";
 import { doc, onSnapshot } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -22,6 +23,7 @@ interface Props {
 
 
 export default function HomeHeader({ tY, h, pT }: Props) {
+    const { colors } = useTheme();
     const router = useRouter();
     const { userData } = useUserData();
     const user = auth.currentUser;
@@ -33,6 +35,30 @@ export default function HomeHeader({ tY, h, pT }: Props) {
         });
     }, [])
 
+    const styles = StyleSheet.create({
+        button: {
+            marginHorizontal: 5,
+            padding: 7,
+            borderRadius: 20
+        },
+        header: {
+            margin: 0,
+            position: "absolute",
+            backgroundColor: colors.background,
+            left: 0,
+            right: 0,
+            width: "100%",
+            borderBottomWidth: StyleSheet.hairlineWidth,
+            borderColor: colors.border,
+            paddingVertical: 10,
+            marginVertical: 5,
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            elevation: 10,
+            zIndex: 1,
+        }
+    });
 
     return (
         <Animated.View style={[styles.header, { height: h, paddingTop: pT, transform: [{ translateY: tY }] }]}>
@@ -40,44 +66,19 @@ export default function HomeHeader({ tY, h, pT }: Props) {
                 <Image source={userData?.avatar ? { uri: userData.avatar } : require("@assets/images/pfp.jpg")} style={{ borderRadius: 50, width: 30, height: 30, marginHorizontal: 10 }} />
             </Pressable>
 
-            <CustomText style={{ fontSize: 18, color: "white", marginRight: "auto" }}> Ahoy, Hacker!</CustomText>
+            <CustomText style={{ fontSize: 18, color: colors.text, marginRight: "auto" }}> Ahoy, Hacker!</CustomText>
             <Pressable style={[{ position: "relative" }, styles.button]} onPress={() => { router.push('/(tabs)/home/notifications') }}>
-                <MaterialDesignIcons name={"bell"} color="white" size={25} />
+                <MaterialDesignIcons name={"bell"} color={colors.text} size={25} />
                 {
                     (unreadCount > 0) ?
-                        <MaterialDesignIcons style={{ position: "absolute", top: 4, right: 2, zIndex: 2 }} name={"circle"} color="#ec3750" size={10} />
+                        <MaterialDesignIcons style={{ position: "absolute", top: 4, right: 2, zIndex: 2 }} name={"circle"} color={colors.primary} size={10} />
                         :
                         null
                 }
             </Pressable>
             <Pressable style={styles.button} onPress={() => { router.navigate('/(tabs)/home/settings') }}>
-                <MaterialDesignIcons name="cog-outline" color="white" size={25} />
+                <MaterialDesignIcons name="cog-outline" color={colors.text} size={25} />
             </Pressable>
         </Animated.View>
     );
 }
-
-const styles = StyleSheet.create({
-    button: {
-        marginHorizontal: 5,
-        padding: 7,
-        borderRadius: 20
-    },
-    header: {
-        margin: 0,
-        position: "absolute",
-        backgroundColor: "#17171d",
-        left: 0,
-        right: 0,
-        width: "100%",
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderColor: "#25252fff",
-        paddingVertical: 10,
-        marginVertical: 5,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-end",
-        elevation: 10,
-        zIndex: 1,
-    }
-});

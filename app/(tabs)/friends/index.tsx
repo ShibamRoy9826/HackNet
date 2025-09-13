@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 //typecasting
 import { auth, db } from "@auth/firebase";
 import NothingHere from "@components/display/nothing";
+import { useTheme } from "@contexts/themeContext";
 import { friend } from "@utils/types";
 import { useRouter } from "expo-router";
 import { collection, onSnapshot } from "firebase/firestore";
@@ -38,10 +39,23 @@ export default function FriendsScreen() {
 
         });
     }, [])
+    const { colors } = useTheme();
+
+    const styles = StyleSheet.create({
+        listContainer: {
+            width: '95%',
+            marginVertical: 25,
+            borderRadius: 12,
+            borderWidth: StyleSheet.hairlineWidth,
+            borderColor: colors.border,
+            flex: 1
+        }
+
+    });
     return (
-        <View style={{ backgroundColor: "#17171d", flex: 1, paddingTop: 50, paddingBottom: 100, alignItems: "center" }}>
+        <View style={{ backgroundColor: colors.background, flex: 1, paddingTop: 50, paddingBottom: 100, alignItems: "center" }}>
             <View style={{ flexDirection: "row", alignItems: "center", width: "100%" }}>
-                <CustomText style={{ color: "white", fontSize: 20, textAlign: "center", fontWeight: "bold", marginVertical: 10, marginLeft: "10%" }}>Your Friends</CustomText>
+                <CustomText style={{ color: colors.text, fontSize: 20, textAlign: "center", fontWeight: "bold", marginVertical: 10, marginLeft: "10%" }}>Your Friends</CustomText>
                 <OnlyIconButton
                     icon="account-plus-outline"
                     func={() => { router.push("/(tabs)/friends/friendRequests") }}
@@ -49,14 +63,13 @@ export default function FriendsScreen() {
                 />
             </View>
 
-            <InputBox secure={false} value={search} valueFn={setSearch} color="white" icon="magnify" type="none" placeholder="Search your friends here" />
+            <InputBox secure={false} value={search} valueFn={setSearch} color={colors.text} icon="magnify" type="none" placeholder="Search your friends here" />
             <View style={styles.listContainer}>
                 <FlashList
                     data={friends}
                     keyExtractor={item => item.id}
                     ListEmptyComponent={<NothingHere />}
                     renderItem={({ item }: ListRenderItemInfo<friend>) => (
-                        // <CustomText>{item.id}</CustomText>
                         <FriendBox
                             id={item.id}
                             createdAt={item.createdAt}
@@ -70,15 +83,3 @@ export default function FriendsScreen() {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    listContainer: {
-        width: '95%',
-        marginVertical: 25,
-        borderRadius: 12,
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: "#444456ff",
-        flex: 1
-    }
-
-});

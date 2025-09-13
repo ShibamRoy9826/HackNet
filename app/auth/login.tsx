@@ -12,6 +12,7 @@ import { doc, updateDoc } from "firebase/firestore";
 //contexts
 import { auth, db } from '@auth/firebase';
 import { useNotificationContext } from "@contexts/notificationContext";
+import { useTheme } from "@contexts/themeContext";
 import { useModalContext } from "../../src/contexts/modalContext";
 
 //func
@@ -25,6 +26,7 @@ import { Redirect, useRouter } from "expo-router";
 
 
 export default function LoginScreen() {
+    const { colors } = useTheme();
     const router = useRouter();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -70,6 +72,56 @@ export default function LoginScreen() {
             alert("Login Failed", "Invalid credentials! Please try again, " + e.code + e.message)
         })
     }
+    const styles = StyleSheet.create({
+        container: {
+            backgroundColor: colors.background,
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+        },
+        heading: {
+            color: colors.text,
+            fontSize: 30,
+            fontWeight: "bold",
+            textAlign: "center",
+            width: "100%"
+        },
+        subHeading: {
+            width: "100%",
+            color: colors.muted,
+            fontSize: 15,
+            fontWeight: "normal",
+            textAlign: "center",
+            margin: 10,
+            marginBottom: "5%"
+        },
+        fieldContainer: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%"
+        },
+        smallTxt: {
+            fontSize: 15,
+            marginVertical: 20,
+            color: colors.muted
+        },
+        signupBtn: {
+            color: colors.secondary,
+            textDecorationLine: "underline",
+            fontSize: 15
+        },
+        forgotPass: {
+            color: colors.secondary,
+            textDecorationLine: "underline",
+            fontSize: 15,
+            textAlign: "right",
+            width: "100%",
+            paddingRight: "10%",
+            marginBottom: 20
+        }
+    })
 
     return (
         <View style={styles.container}>
@@ -82,8 +134,8 @@ export default function LoginScreen() {
             </CustomText>
 
             <View style={styles.fieldContainer}>
-                <InputBox secure={false} value={email} valueFn={setEmail} color="#8492a6" icon="email" placeholder="Your Email" type="emailAddress" />
-                <InputBox secure={true} value={password} valueFn={setPassword} color="#8492a6" icon="key" placeholder="Your Password" type="password" />
+                <InputBox secure={false} value={email} valueFn={setEmail} color={colors.muted} icon="email" placeholder="Your Email" type="emailAddress" />
+                <InputBox secure={true} value={password} valueFn={setPassword} color={colors.muted} icon="key" placeholder="Your Password" type="password" />
 
             </View>
             <CustomText style={styles.forgotPass} onPress={() => { router.navigate("/auth/forgotPass") }}>Forgot Password?</CustomText>
@@ -98,7 +150,7 @@ export default function LoginScreen() {
 
             <View
                 style={{
-                    borderBottomColor: 'white',
+                    borderBottomColor: colors.text,
                     width: "80%",
                     borderBottomWidth: 1,
                     marginVertical: 3
@@ -116,58 +168,7 @@ export default function LoginScreen() {
                 func={handleSlackLogin}
                 disabled
             />
-            <CustomText style={{ color: "#8492a6" }}>(Coming soon)</CustomText>
+            <CustomText style={{ color: colors.muted }}>(Coming soon)</CustomText>
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        backgroundColor: "#17171d",
-        flex: 1,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-    },
-    heading: {
-        color: "white",
-        fontSize: 30,
-        fontWeight: "bold",
-        textAlign: "center",
-        width: "100%"
-    },
-    subHeading: {
-        width: "100%",
-        color: "#8492a6",
-        fontSize: 15,
-        fontWeight: "normal",
-        textAlign: "center",
-        margin: 10,
-        marginBottom: "5%"
-    },
-    fieldContainer: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "100%"
-    },
-    smallTxt: {
-        fontSize: 15,
-        marginVertical: 20,
-        color: "#8492a6"
-    },
-    signupBtn: {
-        color: "#4ea6f0",
-        textDecorationLine: "underline",
-        fontSize: 15
-    },
-    forgotPass: {
-        color: "#4ea6f0",
-        textDecorationLine: "underline",
-        fontSize: 15,
-        textAlign: "right",
-        width: "100%",
-        paddingRight: "10%",
-        marginBottom: 20
-    }
-})

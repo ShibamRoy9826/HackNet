@@ -16,10 +16,12 @@ import { useState } from "react";
 import { useModalContext } from "../../src/contexts/modalContext";
 
 //navigation
+import { useTheme } from "@contexts/themeContext";
 import { useRouter } from "expo-router";
 
 
 export default function ForgotPassScreen() {
+    const { colors } = useTheme();
     const router = useRouter();
     const [email, setEmail] = useState("");
 
@@ -41,6 +43,47 @@ export default function ForgotPassScreen() {
             alert(`(${e.code}) An error occured:(`, e.message);
         })
     }
+
+    const styles = StyleSheet.create({
+        container: {
+            position: "relative",
+            backgroundColor: colors.background,
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+        },
+        heading: {
+            color: colors.text,
+            fontSize: 30,
+            fontWeight: "bold",
+            textAlign: "center",
+        },
+        subHeading: {
+            color: colors.muted,
+            fontSize: 15,
+            fontWeight: "normal",
+            textAlign: "center",
+            margin: 10,
+            marginBottom: "5%"
+        },
+        fieldContainer: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%"
+        },
+        smallTxt: {
+            fontSize: 15,
+            marginVertical: 20,
+            color: colors.muted,
+        },
+        link: {
+            color: colors.secondary,
+            textDecorationLine: "underline",
+            fontSize: 15
+        }
+    })
     return (
         <View style={styles.container}>
             <OnlyIconButton icon="arrow-left" func={() => { router.back() }} style={{ position: "absolute", top: 50, left: 20 }} />
@@ -54,7 +97,7 @@ export default function ForgotPassScreen() {
             </CustomText>
 
             <View style={styles.fieldContainer}>
-                <InputBox secure={false} value={email} valueFn={setEmail} color="#8492a6" icon="email" placeholder="Your Email" type="emailAddress" />
+                <InputBox secure={false} value={email} valueFn={setEmail} color={colors.muted} icon="email" placeholder="Your Email" type="emailAddress" />
             </View>
 
             <CustomButton
@@ -65,44 +108,3 @@ export default function ForgotPassScreen() {
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        position: "relative",
-        backgroundColor: "#17171d",
-        flex: 1,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center"
-    },
-    heading: {
-        color: "white",
-        fontSize: 30,
-        fontWeight: "bold",
-        textAlign: "center",
-    },
-    subHeading: {
-        color: "#8492a6",
-        fontSize: 15,
-        fontWeight: "normal",
-        textAlign: "center",
-        margin: 10,
-        marginBottom: "5%"
-    },
-    fieldContainer: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        width: "100%"
-    },
-    smallTxt: {
-        fontSize: 15,
-        marginVertical: 20,
-        color: "#8492a6"
-    },
-    link: {
-        color: "#4ea6f0",
-        textDecorationLine: "underline",
-        fontSize: 15
-    }
-})

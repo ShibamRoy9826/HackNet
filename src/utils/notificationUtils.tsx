@@ -89,7 +89,7 @@ export async function registerForPushNotificationsAsync() {
         importance: Notifications.AndroidImportance.MAX,
         sound: "notification_ping.mp3",
         vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
+        lightColor: '#ec3750',
     });
 
     if (Device.isDevice) {

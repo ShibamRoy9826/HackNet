@@ -18,6 +18,7 @@ import LoadingScreen from "./loading";
 
 
 //notifications
+import { ThemeProvider } from "@contexts/themeContext";
 import * as Notifications from 'expo-notifications';
 
 
@@ -55,16 +56,18 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView>
-      <NotificationProvider>
-        <BottomSheetProvider>
-          <ModalProvider>
-            <UserDataProvider>
-              <Stack initialRouteName={"auth/login"} screenOptions={{ contentStyle: { backgroundColor: "#17171d" }, headerShown: false, animation: "fade" }}>
-              </Stack>
-            </UserDataProvider>
-          </ModalProvider>
-        </BottomSheetProvider>
-      </NotificationProvider>
-    </GestureHandlerRootView>
+      <ThemeProvider>
+        <NotificationProvider>
+          <BottomSheetProvider>
+            <ModalProvider>
+              <UserDataProvider>
+                <Stack initialRouteName={"auth/login"} screenOptions={{ contentStyle: { backgroundColor: "#17171d" }, headerShown: false, animation: "fade" }} >
+                </Stack>
+              </UserDataProvider>
+            </ModalProvider>
+          </BottomSheetProvider>
+        </NotificationProvider>
+      </ThemeProvider>
+    </GestureHandlerRootView >
   );
 }

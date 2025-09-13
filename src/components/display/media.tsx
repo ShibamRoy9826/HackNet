@@ -1,6 +1,6 @@
-import { Image, StyleProp, ImageStyle, StyleSheet, View } from "react-native";
 import { useEvent } from 'expo';
 import { useVideoPlayer, VideoView } from 'expo-video';
+import { Image, ImageStyle, StyleProp, StyleSheet, View } from "react-native";
 
 interface Props {
     source: string,
@@ -8,8 +8,6 @@ interface Props {
     resizeMode?: "cover" | "contain" | "stretch" | "repeat" | "center" | "none"
     onBuffer?: () => void,
     onError?: () => void,
-
-
 }
 
 const videoTypes = [
@@ -29,7 +27,6 @@ const videoTypes = [
 
 export default function Media({ onBuffer, onError, source, style, resizeMode }: Props) {
     let type = "image";
-
 
     for (let i = 0; i < videoTypes.length; ++i) {
         if (source.endsWith(videoTypes[i])) {
@@ -58,6 +55,12 @@ export default function Media({ onBuffer, onError, source, style, resizeMode }: 
         );
     }
     return (
+        // <VisibilitySensor
+        //     onChange={() => { setIsVisible(!visible) }}
+        //     // onPercentChange={setPercentVisible} // optional callback for % change
+        //     threshold={{ top: 50, bottom: 50 }}
+        // >
+
         <>
             <VideoView
                 style={[styles.video, style]}
@@ -68,6 +71,7 @@ export default function Media({ onBuffer, onError, source, style, resizeMode }: 
             <View style={styles.controlsContainer}>
             </View>
         </>
+        // </VisibilitySensor>
     );
 
 }

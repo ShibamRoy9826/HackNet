@@ -1,4 +1,5 @@
 import CustomText from '@components/display/customText';
+import { useTheme } from '@contexts/themeContext';
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { Image, Pressable, StyleSheet, View } from "react-native";
 
@@ -7,6 +8,37 @@ interface Props {
     lastMessage: string
 }
 export default function FriendElement({ username, lastMessage }: Props) {
+    const { colors } = useTheme();
+    const styles = StyleSheet.create({
+        friendBox: {
+            padding: 10,
+            width: "100%",
+            height: 80,
+            borderWidth: StyleSheet.hairlineWidth,
+            borderColor: colors.border,
+        },
+        username: {
+            fontSize: 15,
+            fontWeight: 600,
+            color: colors.text,
+            textAlign: "left",
+            width: "100%"
+        },
+        lastMessage: {
+            fontSize: 13,
+            color: colors.muted,
+            textAlign: "left",
+            width: "100%"
+        },
+        detailsContainer: {
+            padding: 15,
+            display: "flex",
+            width: "80%",
+            justifyContent: "center",
+            alignItems: "flex-start"
+        }
+
+    })
     return (
         <View style={styles.friendBox}>
             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%", paddingHorizontal: 10 }}>
@@ -17,41 +49,10 @@ export default function FriendElement({ username, lastMessage }: Props) {
                 </View>
                 <View>
                     <Pressable style={{ padding: 5, marginLeft: "auto" }}>
-                        <MaterialDesignIcons name="dots-vertical" color="#5f6878" size={25} />
+                        <MaterialDesignIcons name="dots-vertical" color={colors.muted} size={25} />
                     </Pressable>
                 </View>
             </View>
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    friendBox: {
-        padding: 10,
-        width: "100%",
-        height: 80,
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: "#444456ff"
-    },
-    username: {
-        fontSize: 15,
-        fontWeight: 600,
-        color: "white",
-        textAlign: "left",
-        width: "100%"
-    },
-    lastMessage: {
-        fontSize: 13,
-        color: "#8492a6",
-        textAlign: "left",
-        width: "100%"
-    },
-    detailsContainer: {
-        padding: 15,
-        display: "flex",
-        width: "80%",
-        justifyContent: "center",
-        alignItems: "flex-start"
-    }
-
-})

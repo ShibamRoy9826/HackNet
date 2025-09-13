@@ -12,6 +12,7 @@ import React, { useEffect, useState } from "react";
 
 //contexts
 // import { useUserData } from "../contexts/userContext";
+import { useTheme } from "@contexts/themeContext";
 
 //firebase
 import { auth, db } from "@auth/firebase";
@@ -36,6 +37,7 @@ type UserData = {
 };
 
 export default function SearchScreen() {
+    const { colors } = useTheme();
     const user = auth.currentUser;
     const [search, setSearch] = useState("");
     const [userResults, setUserResults] = useState<UserData[]>([]);
@@ -115,13 +117,61 @@ export default function SearchScreen() {
         sUsers();
     }, [])
 
+    const styles = StyleSheet.create({
+        fieldContainer: {
+            backgroundColor: colors.secondaryBackground,
+            borderRadius: 12,
+            margin: 10,
+            width: "75%",
+            paddingHorizontal: 12,
+            color: colors.text,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            borderColor: colors.border,
+            borderWidth: StyleSheet.hairlineWidth
+        },
+        text: {
+            color: colors.text,
+            textAlign: "left",
+            width: "100%",
+            paddingLeft: 10
+        },
+        heading: {
+            color: colors.text,
+            textAlign: "left",
+            paddingLeft: 10,
+            fontSize: 20,
+            fontWeight: "bold",
+            marginBottom: 20
+        },
+        subtext: {
+            color: colors.muted,
+            textAlign: "center",
+            paddingLeft: 10,
+            fontSize: 15,
+            fontWeight: "bold",
+            marginBottom: 20
+        },
+        listContainer: {
+            width: '95%',
+            marginVertical: 10,
+            marginBottom: 100,
+            borderRadius: 12,
+            borderWidth: StyleSheet.hairlineWidth,
+            borderColor: colors.border
+        }
+
+    });
+
     return (
-        <View style={{ backgroundColor: "#17171d", flex: 1, paddingTop: 50, alignItems: "center" }}>
+        <View style={{ backgroundColor: colors.background, flex: 1, paddingTop: 50, alignItems: "center" }}>
 
             <View style={{ flexDirection: "row", alignItems: "center" }}>
 
                 <View style={styles.fieldContainer}>
-                    <TextInput onSubmitEditing={handleSearch} value={search} onChangeText={setSearch} maxLength={50} autoCapitalize="none" textContentType={"none"} style={styles.text} placeholder={"Search HackNet"} placeholderTextColor={"#8492a6"} />
+                    <TextInput onSubmitEditing={handleSearch} value={search} onChangeText={setSearch} maxLength={50} autoCapitalize="none" textContentType={"none"} style={styles.text} placeholder={"Search HackNet"} placeholderTextColor={colors.muted} />
                 </View>
                 <OnlyIconButton
                     icon="magnify"
@@ -203,52 +253,3 @@ export default function SearchScreen() {
 
     );
 }
-
-const styles = StyleSheet.create({
-    fieldContainer: {
-        backgroundColor: "#292932ff",
-        borderRadius: 12,
-        margin: 10,
-        width: "75%",
-        paddingHorizontal: 12,
-        color: "white",
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        borderColor: "#444456ff",
-        borderWidth: StyleSheet.hairlineWidth
-    },
-    text: {
-        color: "white",
-        textAlign: "left",
-        width: "100%",
-        paddingLeft: 10
-    },
-    heading: {
-        color: "white",
-        textAlign: "left",
-        paddingLeft: 10,
-        fontSize: 20,
-        fontWeight: "bold",
-        marginBottom: 20
-    },
-    subtext: {
-        color: "#8492a6",
-        textAlign: "center",
-        paddingLeft: 10,
-        fontSize: 15,
-        fontWeight: "bold",
-        marginBottom: 20
-    },
-    listContainer: {
-        width: '95%',
-        marginVertical: 10,
-        marginBottom: 100,
-        borderRadius: 12,
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: "#444456ff",
-    }
-
-    // style={{ backgroundColor: "#17171d", flex: 1, height: "80%", marginBottom: 100, }}
-});

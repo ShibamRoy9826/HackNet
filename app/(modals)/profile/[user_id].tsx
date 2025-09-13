@@ -7,6 +7,7 @@ import RadioBtn from "@components/inputs/radioBtn";
 import { FlatList, ListRenderItem, ListRenderItemInfo, RefreshControl, StyleSheet, View } from 'react-native';
 
 //react
+import { useTheme } from "@contexts/themeContext";
 import React, { useCallback, useEffect, useState } from "react";
 
 //firestore
@@ -105,6 +106,8 @@ export default function OtherProfileModal() {
         postWrapper();
     }, [])
 
+    const { colors } = useTheme();
+
 
 
     return (
@@ -119,7 +122,7 @@ export default function OtherProfileModal() {
                 <NothingHere />
             }
             ListHeaderComponent={
-                <View style={{ backgroundColor: "#17171d", flex: 1 }}>
+                <View style={{ backgroundColor: colors.background, flex: 1 }}>
                     <ProfileHeader sameUser={sameUser} user_id={user_id} userData={userData} />
                     <RadioBtn
                         options={["Logs", "Liked Logs"]}
@@ -129,10 +132,10 @@ export default function OtherProfileModal() {
                         style={{ marginHorizontal: 10 }}
                     />
 
-                    <View style={{ backgroundColor: "#373d46ff", width: "100%", height: StyleSheet.hairlineWidth }} />
+                    <View style={{ backgroundColor: colors.background, width: "100%", height: StyleSheet.hairlineWidth }} />
                     <CustomText
                         style={{
-                            color: "white", textAlign: "left", paddingLeft: 10, fontSize: 20, fontWeight: "bold", marginVertical: 20
+                            color: colors.text, textAlign: "left", paddingLeft: 10, fontSize: 20, fontWeight: "bold", marginVertical: 20
                         }}>
                         {(currTab === "Logs") ? (sameUser ? "Your Logs" : "Logs") : "Liked Logs"}</CustomText>
                 </View>
@@ -140,7 +143,7 @@ export default function OtherProfileModal() {
             ListFooterComponent={
                 <View style={{ paddingBottom: 100 }} />
             }
-            style={{ backgroundColor: "#17171d" }}
+            style={{ backgroundColor: colors.background }}
         />
     );
 }

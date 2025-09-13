@@ -1,5 +1,5 @@
 //components
-import CommentBox from "@components/inputs/commentBox";
+import CommentBox from "@components/inputs/comment/commentBox";
 import LikeButton from "@components/inputs/likeButton";
 import { Pressable, StyleSheet, View } from "react-native";
 import CarouselComponent from "../display/carousel";
@@ -22,6 +22,7 @@ import { memo, useEffect, useState } from "react";
 import { Image } from "react-native";
 
 //func
+import { useTheme } from "@contexts/themeContext";
 import PostThreeDots from "./postDots";
 
 
@@ -76,6 +77,40 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
         }
     }
 
+    const { colors } = useTheme();
+
+    const styles = StyleSheet.create({
+        postBox: {
+            display: "flex",
+            width: "100%",
+            borderWidth: StyleSheet.hairlineWidth,
+            borderColor: colors.border,
+            paddingVertical: 10,
+            marginVertical: 10
+        },
+        username: {
+            fontSize: 15,
+            fontWeight: "bold",
+            color: colors.text,
+            textAlign: "left",
+            width: "100%"
+        },
+        timestamp: {
+            fontSize: 13,
+            color: colors.smallText,
+            textAlign: "left",
+            width: "100%"
+        },
+        detailsContainer: {
+            padding: 15,
+            display: "flex",
+            width: "80%",
+            justifyContent: "center",
+            alignItems: "flex-start"
+        }
+    })
+
+
     return (
         <View style={styles.postBox}>
             {/* OP details */}
@@ -95,9 +130,9 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
                     currentUserId={uid}
                 />
             </View>
-            <View style={{ paddingVertical: 10, borderColor: "#25252fff", borderTopWidth: StyleSheet.hairlineWidth, height: "auto" }}>
+            <View style={{ paddingVertical: 10, borderColor: colors.border, borderTopWidth: StyleSheet.hairlineWidth, height: "auto" }}>
                 {/* Posted content */}
-                <CustomText style={{ color: "white", height: "auto", fontSize: 16, paddingHorizontal: 20, paddingVertical: 20 }}>{message}</CustomText>
+                <CustomText style={{ color: colors.text, height: "auto", fontSize: 16, paddingHorizontal: 20, paddingVertical: 20 }}>{message}</CustomText>
                 {
                     used_media && (
                         <CarouselComponent
@@ -112,48 +147,17 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
                 <LikeButton userId={user_uid} postId={id} />
 
                 <Pressable style={{ padding: 8, flexDirection: "row" }} onPress={() => { router.push(`/comments/${id}`) }}>
-                    <MaterialDesignIcons name="comment" color="#5f6878" size={25} />
-                    <CustomText style={{ color: "#8492a6", marginLeft: 5 }}>{commentCount}</CustomText>
+                    <MaterialDesignIcons name="comment" color={colors.disabled} size={25} />
+                    <CustomText style={{ color: colors.muted, marginLeft: 5 }}>{commentCount}</CustomText>
                 </Pressable>
 
                 <Pressable style={{ padding: 8 }} onPress={() => { sharePost(id) }}>
-                    <MaterialDesignIcons name="share" color="#5f6878" size={25} />
+                    <MaterialDesignIcons name="share" color={colors.disabled} size={25} />
                 </Pressable>
             </View>
             <CommentBox userId={user_uid} postId={id} />
         </View>
     );
-})
-
-const styles = StyleSheet.create({
-    postBox: {
-        display: "flex",
-        width: "100%",
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: "#25252fff",
-        paddingVertical: 10,
-        marginVertical: 10
-    },
-    username: {
-        fontSize: 15,
-        fontWeight: "bold",
-        color: "white",
-        textAlign: "left",
-        width: "100%"
-    },
-    timestamp: {
-        fontSize: 13,
-        color: "#8492a6",
-        textAlign: "left",
-        width: "100%"
-    },
-    detailsContainer: {
-        padding: 15,
-        display: "flex",
-        width: "80%",
-        justifyContent: "center",
-        alignItems: "flex-start"
-    }
 })
 
 

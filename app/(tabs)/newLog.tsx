@@ -23,7 +23,7 @@ import { useUserData } from "@contexts/userContext";
 //func
 import { uploadFileTemp, uploadToHc } from "@utils/otherUtils";
 
-
+import { useTheme } from "@contexts/themeContext";
 
 
 const SELECTION_LIMIT = 5;
@@ -143,16 +143,58 @@ export default function NewPostScreen() {
         }
     }
 
+    const { colors } = useTheme();
+    const styles = StyleSheet.create({
+        fieldContainer: {
+            backgroundColor: colors.secondaryBackground,
+            borderRadius: 12,
+            marginVertical: 10,
+            width: "90%",
+            height: 0.3 * height,
+            paddingHorizontal: 12,
+            color: colors.text,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            borderColor: colors.border,
+            borderWidth: StyleSheet.hairlineWidth,
+            fontSize: 18
+        },
+        label: {
+            fontSize: 18,
+            color: "white",
+            width: "100%",
+            textAlign: "left",
+            paddingLeft: 40,
+            fontWeight: "bold",
+        },
+        subtxt: {
+            color: colors.muted,
+            fontSize: 15,
+            marginLeft: 5
+        },
+        heading: {
+            color: colors.text,
+            textAlign: "left",
+            paddingLeft: 10,
+            fontSize: 20,
+            fontWeight: "bold",
+            marginBottom: 20
+        },
+
+    });
+
 
     return (
-        <ScrollView style={{ backgroundColor: "#17171d", flex: 1, paddingTop: 50, marginBottom: 100 }} contentContainerStyle={{ alignItems: "center" }}>
+        <ScrollView style={{ backgroundColor: colors.background, flex: 1, paddingTop: 50, marginBottom: 100 }} contentContainerStyle={{ alignItems: "center" }}>
 
             <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "flex-start", width: "100%" }}>
                 <Image source={userData?.avatar ? { uri: userData.avatar } : require("@assets/images/pfp.jpg")} style={{ marginHorizontal: 10, borderRadius: 50, width: 30, height: 30 }} />
-                <CustomText style={{ color: "white", fontSize: 20, textAlign: "center", fontWeight: "bold", marginLeft: 10, marginVertical: 10 }}>Create New Log</CustomText>
-                <MaterialDesignIcons name={"plus-box"} size={20} color={"white"} style={{ marginLeft: 10 }} />
+                <CustomText style={{ color: colors.text, fontSize: 20, textAlign: "center", fontWeight: "bold", marginLeft: 10, marginVertical: 10 }}>Create New Log</CustomText>
+                <MaterialDesignIcons name={"plus-box"} size={20} color={colors.text} style={{ marginLeft: 10 }} />
             </View>
-            <TextInput value={message} onChangeText={setMessage} textAlignVertical="top" multiline={true} style={styles.fieldContainer} placeholder="Have something to share?" placeholderTextColor={"#8492a6"} />
+            <TextInput value={message} onChangeText={setMessage} textAlignVertical="top" multiline={true} style={styles.fieldContainer} placeholder="Have something to share?" placeholderTextColor={colors.muted} maxLength={1000} />
 
             {/* Media */}
 
@@ -199,8 +241,8 @@ export default function NewPostScreen() {
                 <CustomText style={styles.label}>Comments</CustomText>
                 <View style={{ width: "100%", flexDirection: "row", alignItems: "center", justifyContent: "flex-start", paddingLeft: 40 }}>
                     <Switch
-                        trackColor={{ false: '#8492a6', true: '#ec3750' }}
-                        thumbColor={'#f4f3f4'}
+                        trackColor={{ false: colors.muted, true: colors.primary }}
+                        thumbColor={colors.text}
                         onValueChange={() => { setComments(!comments_enabled); }}
                         value={comments_enabled}
                     />
@@ -218,44 +260,3 @@ export default function NewPostScreen() {
         </ScrollView>
     );
 }
-
-const styles = StyleSheet.create({
-    fieldContainer: {
-        backgroundColor: "#292932ff",
-        borderRadius: 12,
-        marginVertical: 10,
-        width: "90%",
-        height: 0.3 * height,
-        paddingHorizontal: 12,
-        color: "white",
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        borderColor: "#444456ff",
-        borderWidth: StyleSheet.hairlineWidth,
-        fontSize: 18
-    },
-    label: {
-        fontSize: 18,
-        color: "white",
-        width: "100%",
-        textAlign: "left",
-        paddingLeft: 40,
-        fontWeight: "bold",
-    },
-    subtxt: {
-        color: "#8492a6",
-        fontSize: 15,
-        marginLeft: 5
-    },
-    heading: {
-        color: "white",
-        textAlign: "left",
-        paddingLeft: 10,
-        fontSize: 20,
-        fontWeight: "bold",
-        marginBottom: 20
-    },
-
-});

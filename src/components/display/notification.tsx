@@ -1,4 +1,5 @@
 import { auth } from '@auth/firebase';
+import { useTheme } from '@contexts/themeContext';
 import { deleteNotifObject, markAsReadUnread } from '@utils/notificationUtils';
 import { extractTime } from '@utils/stringTimeUtils';
 import * as Linking from 'expo-linking';
@@ -17,10 +18,52 @@ interface Props {
 }
 
 export default function NotificationBox({ id, message, title, data, createdAt, status }: Props) {
+    const { colors } = useTheme();
     const user = auth.currentUser
     function redirectUser() {
         Linking.openURL(data.url);
     }
+
+    const styles = StyleSheet.create({
+        container: {
+            padding: 10,
+            width: "100%",
+            borderWidth: StyleSheet.hairlineWidth,
+            borderColor: colors.border,
+            borderRadius: 12,
+            position: "relative",
+            marginVertical: 4
+        },
+        title: {
+            fontSize: 18,
+            fontWeight: 600,
+            color: colors.text,
+            textAlign: "left",
+            width: "100%"
+        },
+        message: {
+            fontSize: 13,
+            color: colors.muted,
+            textAlign: "left",
+            width: "100%",
+            margin: 10
+        },
+        time: {
+            fontSize: 13,
+            color: colors.muted,
+            textAlign: "left",
+            width: "100%",
+            marginHorizontal: 20,
+            marginTop: 10
+        },
+        detailsContainer: {
+            padding: 15,
+            display: "flex",
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center"
+        }
+    });
     return (
         <View style={styles.container} >
             <View style={{ position: "absolute", top: 10, right: 10, zIndex: 6, padding: 5 }}>
@@ -43,44 +86,3 @@ export default function NotificationBox({ id, message, title, data, createdAt, s
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        padding: 10,
-        width: "100%",
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: "#444456ff",
-        borderRadius: 12,
-        position: "relative",
-        marginVertical: 4
-    },
-    title: {
-        fontSize: 18,
-        fontWeight: 600,
-        color: "white",
-        textAlign: "left",
-        width: "100%"
-    },
-    message: {
-        fontSize: 13,
-        color: "#8492a6",
-        textAlign: "left",
-        width: "100%",
-        margin: 10
-    },
-    time: {
-        fontSize: 13,
-        color: "#8492a6",
-        textAlign: "left",
-        width: "100%",
-        marginHorizontal: 20,
-        marginTop: 10
-    },
-    detailsContainer: {
-        padding: 15,
-        display: "flex",
-        width: "100%",
-        justifyContent: "center",
-        alignItems: "center"
-    }
-});

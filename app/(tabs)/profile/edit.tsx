@@ -8,6 +8,7 @@ import { Image, ImageSourcePropType, ScrollView, StyleSheet, TextInput, View } f
 
 //contexts
 import { useModalContext } from "@contexts/modalContext";
+import { useTheme } from "@contexts/themeContext";
 import { useUserData } from "@contexts/userContext";
 
 //firebase
@@ -37,6 +38,7 @@ export default function EditProfileScreen() {
     const { userData } = useUserData();
 
     // const [currBanner, setCurrBanner] = useState<ImageSourcePropType>();
+    const { colors } = useTheme();
 
     const insets = useSafeAreaInsets();
     const [imgData, setImgData] = useState<ImagePicker.ImagePickerAsset | null>(null);
@@ -211,12 +213,56 @@ export default function EditProfileScreen() {
             setAvatar(userData.avatar ?? '');
         }
     }, [userData])
+    const styles = StyleSheet.create({
+        label: {
+            color: "white",
+            textAlign: "left",
+            width: "100%",
+            paddingHorizontal: 30
+        },
+        container: {
+            backgroundColor: colors.background,
+            flex: 1
+        },
+        fieldContainer: {
+            display: "flex",
+            alignItems: "center",
+        },
+        inputBox: {
+            backgroundColor: colors.secondaryBackground,
+            borderRadius: 12,
+            margin: 10,
+            width: "80%",
+            paddingHorizontal: 12,
+            color: colors.text,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            borderColor: colors.border,
+            borderWidth: StyleSheet.hairlineWidth
+        },
+        inputBoxDisabled: {
+            backgroundColor: colors.disabled,
+            borderRadius: 12,
+            margin: 10,
+            width: "80%",
+            paddingHorizontal: 12,
+            color: colors.text,
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "flex-start",
+            borderColor: colors.border,
+            borderWidth: StyleSheet.hairlineWidth
+        }
+    })
 
     return (
         <ScrollView contentContainerStyle={styles.fieldContainer} style={[styles.container, { paddingTop: insets.top }]}>
             <View style={{ flexDirection: "row", alignItems: "center", width: "100%", marginBottom: 40 }}>
                 <OnlyIconButton icon="arrow-left" func={() => { router.back() }} style={{ top: 0, left: 20, zIndex: 5 }} />
-                <CustomText style={{ color: "white", left: 50, fontSize: 18, top: 0, fontWeight: 700 }}>Edit Profile</CustomText>
+                <CustomText style={{ color: colors.text, left: 50, fontSize: 18, top: 0, fontWeight: 700 }}>Edit Profile</CustomText>
             </View>
             <CustomText style={styles.label}>Avatar:</CustomText>
             <Image source={(imgData) ? { uri: imgData.uri } : { uri: avatar }} style={{ borderRadius: 50, width: 60, height: 60, marginHorizontal: 10 }} />
@@ -268,48 +314,3 @@ export default function EditProfileScreen() {
     );
 }
 
-
-const styles = StyleSheet.create({
-    label: {
-        color: "white",
-        textAlign: "left",
-        width: "100%",
-        paddingHorizontal: 30
-    },
-    container: {
-        backgroundColor: "#17171d",
-        flex: 1
-    },
-    fieldContainer: {
-        display: "flex",
-        alignItems: "center",
-    },
-    inputBox: {
-        backgroundColor: "#292932ff",
-        borderRadius: 12,
-        margin: 10,
-        width: "80%",
-        paddingHorizontal: 12,
-        color: "white",
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        borderColor: "#444456ff",
-        borderWidth: StyleSheet.hairlineWidth
-    },
-    inputBoxDisabled: {
-        backgroundColor: "#3b3b47ff",
-        borderRadius: 12,
-        margin: 10,
-        width: "80%",
-        paddingHorizontal: 12,
-        color: "white",
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        borderColor: "#444456ff",
-        borderWidth: StyleSheet.hairlineWidth
-    }
-})

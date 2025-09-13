@@ -5,6 +5,7 @@ import CustomText from "../display/customText";
 //react
 import { auth, db } from "@auth/firebase";
 import ProfileDots from "@components/inputs/profileDots";
+import { useTheme } from "@contexts/themeContext";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { checkFollow, followUser, unfollowUser } from "@utils/otherUtils";
 import { useRouter } from "expo-router";
@@ -22,6 +23,7 @@ interface Props {
 }
 
 export default function ProfileHeader({ sameUser, user_id, userData }: Props) {
+    const { colors } = useTheme();
     const router = useRouter();
     const insets = useSafeAreaInsets();
     const [num_trackers, setNumTrackers] = useState(0);
@@ -60,8 +62,52 @@ export default function ProfileHeader({ sameUser, user_id, userData }: Props) {
     useEffect(() => {
         setTrackersCount();
     }, [])
+
+    const styles = StyleSheet.create({
+        followActivatedBtn: {
+            backgroundColor: colors.activated,
+            padding: 10,
+            borderRadius: 12,
+            flexDirection: "row",
+            marginRight: 30
+        },
+        followBtn: {
+            backgroundColor: colors.primary,
+            padding: 10,
+            borderRadius: 12,
+            flexDirection: "row",
+            marginRight: 30
+        },
+        flexBox: {
+            fontSize: 15,
+            color: colors.text,
+            fontWeight: "bold",
+            alignContent: "center",
+            justifyContent: "center"
+        },
+        subtxt: {
+            color: colors.smallText,
+            fontSize: 15,
+            width: "100%",
+            marginLeft: 20,
+            fontWeight: "normal"
+        },
+        text: {
+            color: colors.text,
+            textAlign: "left",
+            paddingLeft: 10
+        },
+        heading: {
+            color: colors.text,
+            textAlign: "left",
+            paddingLeft: 10,
+            fontSize: 20,
+            fontWeight: "bold",
+            marginBottom: 20
+        },
+    })
     return (
-        <View style={{ backgroundColor: "#17171d", flex: 1, paddingTop: insets.top }}>
+        <View style={{ backgroundColor: colors.background, flex: 1, paddingTop: insets.top }}>
             {
                 !sameUser ?
                     <View style={{ zIndex: 3 }}>
@@ -81,32 +127,35 @@ export default function ProfileHeader({ sameUser, user_id, userData }: Props) {
             }
 
             <View style={{ position: "relative", height: 100 }}>
-                <Image source={userData ?
-                    (userData.banner.startsWith("https") ?
-                        { uri: userData.banner } : returnBanner(userData.banner)) :
-                    require("@assets/images/banners/banner03.png")}
-                    style={{ width: '100%', zIndex: 1, position: "absolute", height: 120, borderBottomWidth: 1, borderColor: "#ec3750" }} />
-                <Image source={userData?.avatar ? { uri: userData.avatar } : require("@assets/images/pfp.jpg")} style={{ zIndex: 3, position: "absolute", bottom: -50, left: 20, width: 70, height: 70, borderRadius: 50, borderWidth: 2, borderColor: "#ec3750" }} />
+                <View
+                    style={{ width: '100%', zIndex: 1, position: "absolute", height: 122, borderBottomColor: colors.primary, borderBottomWidth: 2 }} >
+                    <Image source={userData ?
+                        (userData.banner.startsWith("https") ?
+                            { uri: userData.banner } : returnBanner(userData.banner)) :
+                        require("@assets/images/banners/banner03.png")}
+                        style={{ width: '100%', zIndex: 1, position: "absolute", height: 120 }} />
+                </View>
+                <Image source={userData?.avatar ? { uri: userData.avatar } : require("@assets/images/pfp.jpg")} style={{ zIndex: 3, position: "absolute", bottom: -50, left: 20, width: 70, height: 70, borderRadius: 50, borderWidth: 2, borderColor: colors.primary }} />
             </View>
             <View style={{ position: "relative", width: "100%" }}>
                 <View style={{
                     flexDirection: "row", alignItems: "center", justifyContent: "space-between"
                 }}>
                     <View>
-                        <CustomText style={{ fontSize: 25, color: "white", fontWeight: "bold", width: "100%", textAlign: "left", marginTop: 60, marginLeft: 20 }}>{userData?.displayName}</CustomText>
+                        <CustomText style={{ fontSize: 25, color: colors.text, fontWeight: "bold", width: "100%", textAlign: "left", marginTop: 60, marginLeft: 20 }}>{userData?.displayName}</CustomText>
                         <CustomText style={styles.subtxt}>@{userData?.displayNameLower}</CustomText>
                     </View>
                     {
                         !sameUser ?
                             followed ?
                                 <Pressable style={styles.followActivatedBtn} onPress={followBtnWrapper}>
-                                    <CustomText style={{ color: "white", fontWeight: "bold" }}>Untrack</CustomText>
-                                    <MaterialDesignIcons name="account-minus" color="white" size={18} style={{ marginLeft: 5 }} />
+                                    <CustomText style={{ color: colors.text, fontWeight: "bold" }}>Untrack</CustomText>
+                                    <MaterialDesignIcons name="account-minus" color={colors.text} size={18} style={{ marginLeft: 5 }} />
                                 </Pressable>
                                 :
                                 <Pressable style={styles.followBtn} onPress={followBtnWrapper}>
-                                    <CustomText style={{ color: "white", fontWeight: "bold" }}>Track</CustomText>
-                                    <MaterialDesignIcons name="plus-box" color="white" size={18} style={{ marginLeft: 5 }} />
+                                    <CustomText style={{ color: colors.text, fontWeight: "bold" }}>Track</CustomText>
+                                    <MaterialDesignIcons name="plus-box" color={colors.text} size={18} style={{ marginLeft: 5 }} />
                                 </Pressable>
 
                             :
@@ -119,20 +168,20 @@ export default function ProfileHeader({ sameUser, user_id, userData }: Props) {
                     }
 
                 </View>
-                <CustomText style={[styles.subtxt, { color: "white", marginTop: 20, paddingLeft: 5, paddingRight: 30 }]}>
+                <CustomText style={[styles.subtxt, { color: colors.text, marginTop: 20, paddingLeft: 5, paddingRight: 30 }]}>
                     {userData?.bio}
                 </CustomText>
                 <View style={{ flexDirection: "row", width: "100%", alignItems: "center", justifyContent: "center", marginVertical: 10 }}>
                     <CustomText style={styles.flexBox}>
-                        {userData?.num_logs} <CustomText style={[styles.subtxt, { color: "#8492a6", marginLeft: 5 }]}>Logs</CustomText>
+                        {userData?.num_logs} <CustomText style={[styles.subtxt, { color: colors.muted, marginLeft: 5 }]}>Logs</CustomText>
                     </CustomText>
 
                     <CustomText style={[{ marginLeft: 20 }, styles.flexBox]}>
-                        {num_trackers} <CustomText style={[styles.subtxt, { color: "#8492a6", marginLeft: 5 }]}>Trackers</CustomText>
+                        {num_trackers} <CustomText style={[styles.subtxt, { color: colors.muted, marginLeft: 5 }]}>Trackers</CustomText>
                     </CustomText>
 
                     <CustomText style={[{ marginLeft: 20 }, styles.flexBox]}>
-                        {userData?.num_tracking} <CustomText style={[styles.subtxt, { color: "#8492a6", marginLeft: 5 }]}>Tracking</CustomText>
+                        {userData?.num_tracking} <CustomText style={[styles.subtxt, { color: colors.muted, marginLeft: 5 }]}>Tracking</CustomText>
                     </CustomText>
                 </View>
             </View>
@@ -141,47 +190,3 @@ export default function ProfileHeader({ sameUser, user_id, userData }: Props) {
     );
 }
 
-
-const styles = StyleSheet.create({
-    followActivatedBtn: {
-        backgroundColor: '#b42c3eff',
-        padding: 10,
-        borderRadius: 12,
-        flexDirection: "row",
-        marginRight: 30
-    },
-    followBtn: {
-        backgroundColor: '#ec3750',
-        padding: 10,
-        borderRadius: 12,
-        flexDirection: "row",
-        marginRight: 30
-    },
-    flexBox: {
-        fontSize: 15,
-        color: "white",
-        fontWeight: "bold",
-        alignContent: "center",
-        justifyContent: "center"
-    },
-    subtxt: {
-        color: "#8492a6",
-        fontSize: 15,
-        width: "100%",
-        marginLeft: 20,
-        fontWeight: "normal"
-    },
-    text: {
-        color: "white",
-        textAlign: "left",
-        paddingLeft: 10
-    },
-    heading: {
-        color: "white",
-        textAlign: "left",
-        paddingLeft: 10,
-        fontSize: 20,
-        fontWeight: "bold",
-        marginBottom: 20
-    },
-})

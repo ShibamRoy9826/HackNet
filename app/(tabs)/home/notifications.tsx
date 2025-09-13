@@ -5,6 +5,7 @@ import NothingHere from "@components/display/nothing";
 import NotificationBox from "@components/display/notification";
 import OnlyIconButton from "@components/inputs/onlyIconButton";
 import RadioBtn from "@components/inputs/radioBtn";
+import { useTheme } from "@contexts/themeContext";
 import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
 import { notification } from "@utils/types";
 import { useRouter } from "expo-router";
@@ -51,12 +52,24 @@ export default function NotificationScreen() {
         }, []
     )
 
+    const { colors } = useTheme();
+
+    const styles = StyleSheet.create({
+        listContainer: {
+            flex: 1,
+            width: "95%",
+            borderTopWidth: 1,
+            borderTopColor: colors.border,
+            paddingTop: 10
+        }
+
+    });
 
     return (
-        <View style={{ backgroundColor: "#17171d", flex: 1, paddingTop: insets.top, paddingBottom: 100, alignItems: "center" }}>
+        <View style={{ backgroundColor: colors.background, flex: 1, paddingTop: insets.top, paddingBottom: 100, alignItems: "center" }}>
             <View style={{ flexDirection: "row", alignItems: "center", width: "100%", marginBottom: 10 }}>
                 <OnlyIconButton icon="arrow-left" func={() => { router.back() }} style={{ top: 0, left: 20, zIndex: 5 }} />
-                <CustomText style={{ color: "white", left: 50, fontSize: 18, top: 0, fontWeight: 700 }}>Notifications</CustomText>
+                <CustomText style={{ color: colors.text, left: 50, fontSize: 18, top: 0, fontWeight: 700 }}>Notifications</CustomText>
             </View>
             <RadioBtn
                 options={["Unread", "Read"]}
@@ -88,14 +101,3 @@ export default function NotificationScreen() {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    listContainer: {
-        flex: 1,
-        width: "95%",
-        borderTopWidth: 1,
-        borderTopColor: "#5f6977ff",
-        paddingTop: 10
-    }
-
-});

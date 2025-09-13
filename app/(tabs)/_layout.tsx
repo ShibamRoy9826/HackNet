@@ -2,21 +2,36 @@
 import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons';
 import { StyleSheet } from "react-native";
 
+import { useTheme } from '@contexts/themeContext';
 import { Tabs } from 'expo-router';
 
 export default function TabsContainer() {
+  const { colors } = useTheme();
+  const styles = StyleSheet.create({
+    focusedIcon: {
+      shadowColor: colors.primary,
+      shadowOpacity: 0.8,
+      shadowOffset: {
+        width: 0,
+        height: 0
+      }
+    },
+    unfocusedIcon: {
+
+    }
+  })
   return (
     <Tabs screenOptions={
       {
         tabBarStyle: {
           position: "absolute",
-          borderColor: "#ffffff22",
+          borderColor: colors.border,
           borderTopWidth: StyleSheet.hairlineWidth,
-          backgroundColor: '#17171d',
+          backgroundColor: colors.background,
           height: 100,
           elevation: 0,
         },
-        tabBarActiveTintColor: "#ec3750"
+        tabBarActiveTintColor: colors.primary
       }}>
       <Tabs.Screen
         name="home"
@@ -26,7 +41,7 @@ export default function TabsContainer() {
             headerShown: false,
             tabBarIcon: (tabInfo) => {
               return (
-                <MaterialDesignIcons name='home' style={tabInfo.focused ? styles.focusedIcon : styles.unfocusedIcon} color={tabInfo.focused ? "#ec3750" : "#ffffff"} size={20} />
+                <MaterialDesignIcons name='home' style={tabInfo.focused ? styles.focusedIcon : styles.unfocusedIcon} color={tabInfo.focused ? colors.primary : colors.text} size={20} />
               );
             }
           }
@@ -39,7 +54,7 @@ export default function TabsContainer() {
             headerShown: false,
             tabBarIcon: (tabInfo) => {
               return (
-                <MaterialDesignIcons name='account-group' color={tabInfo.focused ? "#ec3750" : "#ffffff"} size={20} />
+                <MaterialDesignIcons name='account-group' color={tabInfo.focused ? colors.primary : colors.text} size={20} />
               );
             }
           }
@@ -52,7 +67,7 @@ export default function TabsContainer() {
             headerShown: false,
             tabBarIcon: (tabInfo) => {
               return (
-                <MaterialDesignIcons name='plus-box-multiple' color={tabInfo.focused ? "#ec3750" : "#ffffff"} size={20} />
+                <MaterialDesignIcons name='plus-box-multiple' color={tabInfo.focused ? colors.primary : colors.text} size={20} />
               );
             }
           }
@@ -65,7 +80,7 @@ export default function TabsContainer() {
             headerShown: false,
             tabBarIcon: (tabInfo) => {
               return (
-                <MaterialDesignIcons name='magnify' color={tabInfo.focused ? "#ec3750" : "#ffffff"} size={20} />
+                <MaterialDesignIcons name='magnify' color={tabInfo.focused ? colors.primary : colors.text} size={20} />
               );
             }
           }
@@ -78,7 +93,7 @@ export default function TabsContainer() {
             headerShown: false,
             tabBarIcon: (tabInfo) => {
               return (
-                <MaterialDesignIcons name='account-circle' color={tabInfo.focused ? "#ec3750" : "#ffffff"} size={20} />
+                <MaterialDesignIcons name='account-circle' color={tabInfo.focused ? colors.primary : colors.text} size={20} />
               );
             }
           }
@@ -86,17 +101,3 @@ export default function TabsContainer() {
     </Tabs>
   );
 }
-
-const styles = StyleSheet.create({
-  focusedIcon: {
-    shadowColor: "#ec3750",
-    shadowOpacity: 0.8,
-    shadowOffset: {
-      width: 0,
-      height: 0
-    }
-  },
-  unfocusedIcon: {
-
-  }
-})

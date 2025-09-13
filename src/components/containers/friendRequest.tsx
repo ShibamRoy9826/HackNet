@@ -1,5 +1,6 @@
 import { auth, getUserData } from "@auth/firebase";
 import CustomText from "@components/display/customText";
+import { useTheme } from "@contexts/themeContext";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { acceptRequest, rejectRequest } from "@utils/otherUtils";
 import { UserData } from "@utils/types";
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export default function FriendRequest({ id, createdAt }: Props) {
+    const { colors } = useTheme();
     const router = useRouter();
     const user = auth.currentUser;
     const [senderData, setSenderData] = useState<UserData>();
@@ -28,13 +30,62 @@ export default function FriendRequest({ id, createdAt }: Props) {
 
     async function setSender() {
         const data = await getUserData("users", id) as UserData;
-        console.log("Current data: ", data);
         setSenderData(data);
     }
 
     useEffect(() => {
         setSender();
     }, [])
+
+    const styles = StyleSheet.create({
+        followActivatedBtn: {
+            backgroundColor: colors.activated,
+            padding: 10,
+            borderRadius: 12,
+            flexDirection: "row"
+        },
+        acceptBtn: {
+            backgroundColor: colors.secondary,
+            padding: 10,
+            borderRadius: 12,
+            flexDirection: "row"
+        },
+        rejectBtn: {
+            backgroundColor: colors.primary,
+            padding: 10,
+            borderRadius: 12,
+            flexDirection: "row"
+        },
+        friendBox: {
+            padding: 10,
+            width: "100%",
+            height: 80,
+            borderWidth: StyleSheet.hairlineWidth,
+            borderColor: colors.background,
+            borderRadius: 12
+        },
+        username: {
+            fontSize: 15,
+            fontWeight: 600,
+            color: colors.text,
+            textAlign: "left",
+            width: "100%"
+        },
+        lastMessage: {
+            fontSize: 13,
+            color: colors.muted,
+            textAlign: "left",
+            width: "100%"
+        },
+        detailsContainer: {
+            padding: 15,
+            display: "flex",
+            width: "60%",
+            justifyContent: "center",
+            alignItems: "flex-start"
+        }
+
+    })
 
     return (
         <View style={styles.friendBox}>
@@ -51,64 +102,14 @@ export default function FriendRequest({ id, createdAt }: Props) {
                 <View style={{ flexDirection: "row", gap: 10 }}>
                     <Pressable style={styles.acceptBtn} onPress={() => { acceptRequest(id, user ? user.uid : "") }}>
                         {/* <CustomText style={{ color: "white", fontWeight: "bold" }}>Track</CustomText> */}
-                        <MaterialDesignIcons name="checkbox-marked-circle-outline" color="white" size={20} />
+                        <MaterialDesignIcons name="checkbox-marked-circle-outline" color={colors.text} size={20} />
                     </Pressable>
                     <Pressable style={styles.rejectBtn} onPress={() => { rejectRequest(id, user ? user.uid : "") }}>
                         {/* <CustomText style={{ color: "white", fontWeight: "bold" }}>Track</CustomText> */}
-                        <MaterialDesignIcons name="close-circle" color="white" size={20} />
+                        <MaterialDesignIcons name="close-circle" color={colors.text} size={20} />
                     </Pressable>
                 </View>
             </View>
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    followActivatedBtn: {
-        backgroundColor: '#b42c3eff',
-        padding: 10,
-        borderRadius: 12,
-        flexDirection: "row"
-    },
-    acceptBtn: {
-        backgroundColor: '#338eda',
-        padding: 10,
-        borderRadius: 12,
-        flexDirection: "row"
-    },
-    rejectBtn: {
-        backgroundColor: '#ec3750',
-        padding: 10,
-        borderRadius: 12,
-        flexDirection: "row"
-    },
-    friendBox: {
-        padding: 10,
-        width: "100%",
-        height: 80,
-        borderWidth: StyleSheet.hairlineWidth,
-        borderColor: "#444456ff",
-        borderRadius: 12
-    },
-    username: {
-        fontSize: 15,
-        fontWeight: 600,
-        color: "white",
-        textAlign: "left",
-        width: "100%"
-    },
-    lastMessage: {
-        fontSize: 13,
-        color: "#8492a6",
-        textAlign: "left",
-        width: "100%"
-    },
-    detailsContainer: {
-        padding: 15,
-        display: "flex",
-        width: "60%",
-        justifyContent: "center",
-        alignItems: "flex-start"
-    }
-
-})

@@ -1,7 +1,7 @@
 import { auth, db } from "@auth/firebase";
 import * as Clipboard from 'expo-clipboard';
 import * as Linking from 'expo-linking';
-import { addDoc, collection, deleteDoc, doc, getCountFromServer, getDoc, increment, runTransaction, setDoc, updateDoc } from "firebase/firestore";
+import { collection, deleteDoc, doc, getCountFromServer, getDoc, increment, runTransaction, setDoc, updateDoc } from "firebase/firestore";
 import { Alert, Share, ToastAndroid } from "react-native";
 import { sendNotifToUser } from "./notificationUtils";
 import { extractUrl } from "./stringTimeUtils";
@@ -57,27 +57,6 @@ export const uploadFileTemp = async (file: any): Promise<string> => {
     })
 }
 
-
-export async function addComment(comment: string, post_id: string, fn?: () => void) {
-    const uid = auth.currentUser ? auth.currentUser.uid : "";
-    try {
-        await addDoc(collection(db, "posts", post_id, "comments"), {
-            uid: uid,
-            message: comment,
-            timestamp: new Date(),
-            likes: 0
-        })
-        await updateDoc(doc(db, "posts", post_id),
-            {
-                num_comments: increment(1)
-            })
-        if (fn) {
-            fn();
-        }
-    } catch (e) {
-        console.log("Couldn't comment: ", e);
-    }
-}
 
 
 export function handleSlackLogin() {
@@ -259,26 +238,6 @@ export async function sharePostToReddit(id: string) {
 }
 
 
-export async function deleteComment(postId: string, commentId: string) {
-    const commentRef = doc(db, "posts", postId, "comments", commentId);
-    const postRef = doc(db, "posts", postId);
-
-    try {
-        await runTransaction(db, async (transaction) => {
-            const postData = await transaction.get(postRef);
-            if (!postData) {
-                console.log("Something went wrong, post not found");
-                return;
-            }
-            transaction.update(postRef, { num_comments: postData.data()?.num_comments - 1 })
-            transaction.delete(commentRef);
-            console.log(postData?.data()?.num_comments, "is the comment count")
-        })
-
-    } catch (e) {
-        console.log("Couldn't delete comment ", e);
-    }
-}
 export async function sendFriendRequest(sender: string, receiver: string) {
     try {
         await setDoc(
@@ -316,31 +275,5 @@ export async function rejectRequest(sender: string, receiver: string) {
         )
     } catch (e) {
         console.log("Couldn't reject friend request", e)
-    }
-}
-
-
-
-export async function likeComment(postId: string, commentId: string, userUid: string) {
-    try {
-        await setDoc(doc(db, "posts", postId, "comments", commentId, "likes", userUid),
-            {
-                createdAt: new Date()
-            }
-        )
-        return await getLikeCount(postId);
-    } catch (e) {
-        console.log(e);
-        return 0;
-    }
-}
-
-export async function removeLikeFromComment(postId: string, commentId: string, userUid: string) {
-    try {
-        await deleteDoc(doc(db, "posts", postId, "comments", commentId, "likes", userUid));
-        return await getLikeCount(postId);
-    } catch (e) {
-        console.log(e);
-        return 0;
     }
 }

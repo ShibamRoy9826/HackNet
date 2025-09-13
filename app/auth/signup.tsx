@@ -15,6 +15,7 @@ import { doc, setDoc } from "firebase/firestore";
 
 //contexts
 import { useNotificationContext } from "@contexts/notificationContext";
+import { useTheme } from "@contexts/themeContext";
 import { useModalContext } from "../../src/contexts/modalContext";
 
 //func
@@ -27,6 +28,7 @@ function isValidEmail(email: string) {
     return pattern.test(email);
 }
 export default function SignUpScreen() {
+    const { colors } = useTheme();
     const router = useRouter();
     const { alert, updateActivity, setActivityVisible, setActivityText } = useModalContext();
     setActivityText("Signing Up");
@@ -127,6 +129,55 @@ export default function SignUpScreen() {
         }, 2000);
     }, []);
 
+    const styles = StyleSheet.create(
+        {
+            container: {
+                backgroundColor: colors.background,
+                flex: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center"
+            },
+            heading: {
+                color: colors.text,
+                fontSize: 30,
+                fontWeight: "bold",
+                textAlign: "center",
+            },
+            subHeading: {
+                color: colors.muted,
+                fontSize: 15,
+                fontWeight: "normal",
+                textAlign: "center",
+                margin: 10,
+                marginBottom: "5%"
+            },
+            fieldContainer: {
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%"
+            },
+            inputBox: {
+                backgroundColor: colors.secondaryBackground,
+                borderRadius: 12,
+                margin: 10,
+                width: "80%",
+                paddingHorizontal: 12,
+                color: colors.text
+            },
+            smallTxt: {
+                fontSize: 15,
+                marginVertical: 20,
+                color: colors.muted,
+            },
+            link: {
+                color: colors.secondary,
+                textDecorationLine: "underline",
+                fontSize: 15
+            }
+        }
+    );
     return (
 
         <ScrollView contentContainerStyle={styles.container} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
@@ -138,10 +189,10 @@ export default function SignUpScreen() {
             </CustomText>
 
             <View style={styles.fieldContainer}>
-                <InputBox secure={false} value={username} valueFn={setUserName} color="#8492a6" icon="account-circle" placeholder="Your Name" type="emailAddress" />
-                <InputBox secure={false} value={email} valueFn={setEmail} color="#8492a6" icon="email" placeholder="Your Email" type="emailAddress" />
-                <InputBox secure={true} value={password} valueFn={setPassword} color="#8492a6" icon="key" placeholder="Your Password" type="password" />
-                <InputBox secure={true} value={confirmpassword} valueFn={setCpassword} color="#8492a6" icon="key" placeholder="Confirm Password" type="password" />
+                <InputBox secure={false} value={username} valueFn={setUserName} color={colors.muted} icon="account-circle" placeholder="Your Name" type="emailAddress" />
+                <InputBox secure={false} value={email} valueFn={setEmail} color={colors.muted} icon="email" placeholder="Your Email" type="emailAddress" />
+                <InputBox secure={true} value={password} valueFn={setPassword} color={colors.muted} icon="key" placeholder="Your Password" type="password" />
+                <InputBox secure={true} value={confirmpassword} valueFn={setCpassword} color={colors.muted} icon="key" placeholder="Confirm Password" type="password" />
             </View>
 
             <CustomButton
@@ -153,7 +204,7 @@ export default function SignUpScreen() {
 
             <View
                 style={{
-                    borderBottomColor: 'white',
+                    borderBottomColor: colors.text,
                     width: "80%",
                     borderBottomWidth: 1,
                     marginVertical: 3
@@ -173,57 +224,7 @@ export default function SignUpScreen() {
                 disabled
             />
 
-            <CustomText style={{ color: "#8492a6" }}>(Coming soon)</CustomText>
+            <CustomText style={{ color: colors.muted }}>(Coming soon)</CustomText>
         </ScrollView>
     );
 };
-
-const styles = StyleSheet.create(
-    {
-        container: {
-            backgroundColor: "#17171d",
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center"
-        },
-        heading: {
-            color: "white",
-            fontSize: 30,
-            fontWeight: "bold",
-            textAlign: "center",
-        },
-        subHeading: {
-            color: "#8492a6",
-            fontSize: 15,
-            fontWeight: "normal",
-            textAlign: "center",
-            margin: 10,
-            marginBottom: "5%"
-        },
-        fieldContainer: {
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: "100%"
-        },
-        inputBox: {
-            backgroundColor: "#233345ff",
-            borderRadius: 12,
-            margin: 10,
-            width: "80%",
-            paddingHorizontal: 12,
-            color: "white",
-        },
-        smallTxt: {
-            fontSize: 15,
-            marginVertical: 20,
-            color: "#8492a6"
-        },
-        link: {
-            color: "#338eda",
-            textDecorationLine: "underline",
-            fontSize: 15
-        }
-    }
-);

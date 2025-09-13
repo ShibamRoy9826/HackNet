@@ -2,9 +2,8 @@
 import Comment from "@components/containers/comment";
 import PostHeader from "@components/containers/postHeader";
 import NothingHere from "@components/display/nothing";
-import { FlashList } from "@shopify/flash-list";
 import { Stack } from "expo-router";
-import { KeyboardAvoidingView, View } from "react-native";
+import { FlatList, KeyboardAvoidingView, View } from "react-native";
 
 //firebase
 import {
@@ -12,6 +11,7 @@ import {
     doc,
     getDocs,
     onSnapshot,
+    orderBy,
     query,
     Timestamp,
     where
@@ -20,6 +20,7 @@ import {
 import { auth, db } from "@auth/firebase";
 
 //others
+import { useTheme } from "@contexts/themeContext";
 import { useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -37,6 +38,7 @@ type UserDataWithId = UserData & {
 }
 
 export default function CommentsScreen() {
+    const { colors } = useTheme();
     const [loading, setLoading] = useState(true);
     const insets = useSafeAreaInsets();
 
@@ -70,7 +72,7 @@ export default function CommentsScreen() {
                 ...prev,
                 ...userData
             }
-            // console.log(d)
+            console.log(d)
             return d;
         })
 
@@ -81,7 +83,11 @@ export default function CommentsScreen() {
             const postData = snap.data() as post;
             setPostData(postData);
         })
-        const commentSub = onSnapshot(collection(db, "posts", post_id ? post_id : "", "comments"), (snap) => {
+        const q = query(
+            collection(db, "posts", post_id ? post_id : "", "comments"),
+            orderBy("timestamp", "desc")
+        )
+        const commentSub = onSnapshot(q, (snap) => {
             const data: comment[] = snap.docs.map(doc => (
                 {
                     id: doc.id,
@@ -119,8 +125,8 @@ export default function CommentsScreen() {
     }
 
     return (
-        <KeyboardAvoidingView behavior={"height"} style={{ backgroundColor: "#17171d", flex: 1, alignItems: "center", paddingTop: insets.top }}>
-            <FlashList
+        <KeyboardAvoidingView behavior={"height"} style={{ backgroundColor: colors.background, flex: 1, alignItems: "center", paddingTop: insets.top }}>
+            <FlatList
                 data={commentData}
                 keyExtractor={item => item.id}
                 renderItem={({ item }: { item: comment }) => (
@@ -156,7 +162,6 @@ export default function CommentsScreen() {
                     <View style={{ paddingBottom: 100 }} />
                 }
                 removeClippedSubviews={true}
-                estimatedItemSize={100}
             />
         </KeyboardAvoidingView>
     );
