@@ -13,9 +13,9 @@ import { useEffect, useState } from "react";
 import { auth, db } from "@auth/firebase";
 import NothingHere from "@components/display/nothing";
 import { useTheme } from "@contexts/themeContext";
-import { friend } from "@utils/types";
+import { chat } from "@utils/types";
 import { useRouter } from "expo-router";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
 
 
 
@@ -24,20 +24,20 @@ export default function FriendsScreen() {
 
     const router = useRouter()
     const currUser = auth.currentUser;
-    const [friends, setFriends] = useState<friend[]>();
+    const [chats, setChats] = useState<chat[]>();
 
     useEffect(() => {
-        const friendSub = onSnapshot(collection(db, "users", currUser ? currUser.uid : "", "friends"), (snap) => {
-            const data: friend[] = snap.docs.map(doc => (
-                {
-                    id: doc.id,
-                    ...(doc.data() as Omit<friend, 'id'>)
-                }
-            ));
-            console.log(data, "contains all friends")
-            setFriends(data);
-
-        });
+        const chatSub = onSnapshot(query(
+            collection(db, "chats"),
+            where("uids", "array-contains", currUser ? currUser.uid : "")), (snap) => {
+                const data: chat[] = snap.docs.map(doc => (
+                    {
+                        id: doc.id,
+                        ...(doc.data() as Omit<chat, 'id'>)
+                    }
+                ));
+                setChats(data);
+            });
     }, [])
     const { colors } = useTheme();
 
@@ -52,6 +52,16 @@ export default function FriendsScreen() {
         }
 
     });
+
+    function extractSender(uids: string[]) {
+        let sender = "";
+        for (let i = 0; i < uids.length; ++i) {
+            if (uids[i] != (currUser ? currUser.uid : "")) {
+                sender = uids[i];
+            }
+        }
+        return sender;
+    }
     return (
         <View style={{ backgroundColor: colors.background, flex: 1, paddingTop: 50, paddingBottom: 100, alignItems: "center" }}>
             <View style={{ flexDirection: "row", alignItems: "center", width: "100%" }}>
@@ -66,13 +76,15 @@ export default function FriendsScreen() {
             <InputBox secure={false} value={search} valueFn={setSearch} color={colors.text} icon="magnify" type="none" placeholder="Search your friends here" />
             <View style={styles.listContainer}>
                 <FlashList
-                    data={friends}
+                    data={chats}
                     keyExtractor={item => item.id}
                     ListEmptyComponent={<NothingHere />}
-                    renderItem={({ item }: ListRenderItemInfo<friend>) => (
+                    renderItem={({ item }: ListRenderItemInfo<chat>) => (
                         <FriendBox
-                            id={item.id}
-                            createdAt={item.createdAt}
+                            chatId={item.id}
+                            uid={extractSender(item.uids)}
+                            updatedAt={item.updatedAt}
+                            lastMessage={item.lastMessage}
                         />
                     )
                     }

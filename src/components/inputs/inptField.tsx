@@ -8,7 +8,7 @@ interface Props {
     valueFn: Dispatch<SetStateAction<string>>,
     placeholder: string,
     type: "password" | "emailAddress" | "none" | undefined,
-    icon: "email" | "key" | "account-circle" | "comment" | "magnify" | "format-title",
+    icon: "email" | "key" | "account-circle" | "comment" | "magnify" | "format-title" | "message",
     color: string,
     secure: boolean,
     maxLen?: number

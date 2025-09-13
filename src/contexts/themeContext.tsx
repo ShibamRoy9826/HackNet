@@ -1,5 +1,6 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { catppuccinMocha, defaultTheme, lightTheme } from "@utils/themes";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 type themeContextType = {
     colors: {
@@ -18,6 +19,9 @@ type themeContextType = {
     setTheme: (a: "default" | "light" | "catppuccin") => void
 }
 const ThemeContext = createContext<themeContextType | null>(null);
+const themesL = ["default", "light", "catppuccin"] as const;
+
+type themeList = typeof themesL[number];
 
 const themes = {
     "default": defaultTheme.colors,
@@ -27,6 +31,14 @@ const themes = {
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const [currTheme, setCurrTheme] = useState<"default" | "light" | "catppuccin">("default")
+
+    useEffect(() => {
+        AsyncStorage.getItem("theme").then((val) => {
+            if (val == "default" || val == "light" || val == "catppuccin") {
+                setCurrTheme(val);
+            }
+        })
+    }, [])
 
 
     return (

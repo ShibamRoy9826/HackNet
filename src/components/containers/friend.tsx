@@ -1,33 +1,43 @@
 import { auth, getUserData } from "@auth/firebase";
 import CustomText from "@components/display/customText";
+import ThreeDots from "@components/display/threeDots";
+import { useDataContext } from "@contexts/dataContext";
 import { useTheme } from "@contexts/themeContext";
 import { UserData } from "@utils/types";
+import { unfriend } from "@utils/userUtils";
 import { useRouter } from "expo-router";
 import { Timestamp } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { Image, Pressable, StyleSheet, View } from "react-native";
 
 interface Props {
-    id: string,
-    createdAt: Timestamp;
+    chatId: string,
+    uid: string,
+    updatedAt: Timestamp;
+    lastMessage: string;
 }
 
-export default function FriendBox({ id, createdAt }: Props) {
+export default function FriendBox({ chatId, uid, updatedAt, lastMessage }: Props) {
     const router = useRouter();
     const user = auth.currentUser;
     const [senderData, setSenderData] = useState<UserData>();
     const { colors } = useTheme();
+    const { setUserProfileData } = useDataContext();
 
     function redirectToProfile() {
-        if (id == (user ? user.uid : "")) {
-            router.push(`/(tabs)/profile/${id}`)
+        if (uid == (user ? user.uid : "")) {
+            router.push(`/(tabs)/profile/${uid}`)
         } else {
-            router.push(`/(modals)/profile/${id}`)
+            router.push(`/(modals)/profile/${uid}`)
         }
+    }
+    function redirectToChat() {
+        router.push(`/(tabs)/friends/${chatId}`);
+        setUserProfileData(senderData);
     }
 
     async function setSender() {
-        const data = await getUserData("users", id) as UserData;
+        const data = await getUserData("users", uid) as UserData;
         setSenderData(data);
     }
 
@@ -37,38 +47,20 @@ export default function FriendBox({ id, createdAt }: Props) {
 
 
     const styles = StyleSheet.create({
-        followActivatedBtn: {
-            backgroundColor: colors.activated,
-            padding: 10,
-            borderRadius: 12,
-            flexDirection: "row"
-        },
-        acceptBtn: {
-            backgroundColor: colors.secondary,
-            padding: 10,
-            borderRadius: 12,
-            flexDirection: "row"
-        },
-        rejectBtn: {
-            backgroundColor: colors.primary,
-            padding: 10,
-            borderRadius: 12,
-            flexDirection: "row"
-        },
         friendBox: {
             padding: 10,
             width: "100%",
             height: 80,
             borderWidth: StyleSheet.hairlineWidth,
-            borderColor: colors.background,
-            borderRadius: 12
+            borderColor: colors.border
         },
         username: {
             fontSize: 15,
             fontWeight: 600,
             color: colors.text,
             textAlign: "left",
-            width: "100%"
+            width: "100%",
+            marginBottom: 3
         },
         lastMessage: {
             fontSize: 13,
@@ -79,7 +71,7 @@ export default function FriendBox({ id, createdAt }: Props) {
         detailsContainer: {
             padding: 15,
             display: "flex",
-            width: "60%",
+            width: "100%",
             justifyContent: "center",
             alignItems: "flex-start"
         }
@@ -87,16 +79,27 @@ export default function FriendBox({ id, createdAt }: Props) {
     })
     return (
         <View style={styles.friendBox}>
-            <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%", paddingHorizontal: 10 }}>
-                <Pressable onPress={redirectToProfile}>
-                    <Image source={{ uri: senderData ? senderData.avatar : "" }} style={{ borderRadius: 50, width: 45, height: 45, margin: "auto" }} />
-                </Pressable>
-                <View style={styles.detailsContainer}>
+            <View style={{ flexDirection: "row", justifyContent: "space-around", width: "100%", alignItems: "center" }}>
+                <View style={{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center", width: "85%", paddingHorizontal: 10 }}>
                     <Pressable onPress={redirectToProfile}>
+                        <Image source={{ uri: senderData ? senderData.avatar : "" }} style={{ borderRadius: 50, width: 45, height: 45, margin: "auto" }} />
+                    </Pressable>
+                    <Pressable onPress={redirectToChat} style={styles.detailsContainer}>
                         <CustomText style={styles.username}>{senderData ? senderData.displayName : ""}</CustomText>
-                        <CustomText style={styles.lastMessage}>{senderData ? senderData.displayName : ""}</CustomText>
+                        <CustomText style={styles.lastMessage}>{lastMessage}</CustomText>
                     </Pressable>
                 </View>
+                <View style={{ padding: 12 }}>
+                    <ThreeDots
+                        data={[
+                            { text: "Clear all chats", icon: "delete", func: () => { } },
+                            { text: "Unfriend", icon: "account-minus", func: () => { unfriend(uid, user ? user.uid : "", chatId) } },
+                            { text: "Report", icon: "exclamation", func: () => { } }
+                        ]}
+                    />
+
+                </View>
+
             </View>
         </View>
     );

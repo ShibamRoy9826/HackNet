@@ -38,7 +38,7 @@ export type UserData = {
 export type BottomSheetItem = {
     text: string;
     func: () => void;
-    icon: "delete" | "share-variant" | "account-plus" | "heart" | "exclamation" | "account-group" | "sticker-check-outline"
+    icon: "delete" | "share-variant" | "account-plus" | "heart" | "exclamation" | "account-group" | "sticker-check-outline" | "account-minus"
 };
 
 export type BottomSheetData = {
@@ -62,4 +62,18 @@ export type friendRequest = {
 export type friend = {
     createdAt: Timestamp
     id: string;
+}
+
+export type chat = {
+    id: string,
+    uids: string[],
+    lastMessage: string,
+    updatedAt: Timestamp
+}
+export type message = {
+    id: string,
+    text: string,
+    sender: string,
+    receiver: string,
+    createdAt: Timestamp
 }

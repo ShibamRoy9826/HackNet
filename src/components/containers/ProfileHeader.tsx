@@ -7,7 +7,7 @@ import { auth, db } from "@auth/firebase";
 import ProfileDots from "@components/inputs/profileDots";
 import { useTheme } from "@contexts/themeContext";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { checkFollow, followUser, unfollowUser } from "@utils/otherUtils";
+import { checkFollow, followUser, unfollowUser } from "@utils/userUtils";
 import { useRouter } from "expo-router";
 import { collection, getCountFromServer } from "firebase/firestore";
 import React, { useEffect, useState } from 'react';

@@ -32,8 +32,9 @@ export default function SettingsScreen() {
     const router = useRouter();
     const insets = useSafeAreaInsets();
 
-    const [likeSoundEnabled, setLikeSoundEnabled] = useState(false);
-    const [dislikeSoundEnabled, setDislikeSoundEnabled] = useState(false);
+    const [likeSoundEnabled, setLikeSoundEnabled] = useState(true);
+    const [dislikeSoundEnabled, setDislikeSoundEnabled] = useState(true);
+    const [messageSoundEnabled, setMessageSoundEnabled] = useState(true);
 
     useEffect(() => {
         AsyncStorage.getItem("likeSound").then(
@@ -45,6 +46,12 @@ export default function SettingsScreen() {
         AsyncStorage.getItem("dislikeSound").then(
             (value) => {
                 setDislikeSoundEnabled(value === "true")
+            }
+        )
+
+        AsyncStorage.getItem("messageSound").then(
+            (value) => {
+                setMessageSoundEnabled(value === "true")
             }
         )
     }, [])
@@ -62,7 +69,13 @@ export default function SettingsScreen() {
             AsyncStorage.setItem("dislikeSound", "false");
         }
 
-    }, [likeSoundEnabled, dislikeSoundEnabled])
+        if (messageSoundEnabled) {
+            AsyncStorage.setItem("messageSound", "true");
+        } else {
+            AsyncStorage.setItem("messageSound", "false");
+        }
+
+    }, [likeSoundEnabled, dislikeSoundEnabled, messageSoundEnabled])
 
 
     function logout() {
@@ -147,10 +160,7 @@ export default function SettingsScreen() {
                             setSelected={(a) => { setNewTheme(a as themeList) }}
                         />
                     </View>
-
                 </View>
-
-
 
                 {/* Audio section */}
                 <CustomText style={styles.heading}>Audio</CustomText>
@@ -177,6 +187,19 @@ export default function SettingsScreen() {
                             thumbColor={colors.text}
                             onValueChange={() => { setDislikeSoundEnabled(!dislikeSoundEnabled); }}
                             value={dislikeSoundEnabled}
+                        />
+                    </View>
+
+
+                    <View style={styles.field}>
+
+                        <CustomText style={styles.text}>Play sound on message</CustomText>
+
+                        <Switch
+                            trackColor={{ false: colors.muted, true: colors.primary }}
+                            thumbColor={colors.text}
+                            onValueChange={() => { setMessageSoundEnabled(!messageSoundEnabled); }}
+                            value={messageSoundEnabled}
                         />
                     </View>
                 </View>

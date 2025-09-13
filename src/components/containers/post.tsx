@@ -11,7 +11,7 @@ import {
     Timestamp
 } from "firebase/firestore";
 
-import { sharePost } from "@utils/otherUtils";
+import { sharePost } from "@utils/postUtils";
 
 //react and expo
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";

@@ -1,5 +1,5 @@
 import OnlyIconButton from "@components/inputs/onlyIconButton"
-import { sharePost, sharePostToFacebook, sharePostToReddit, sharePostToWhatsapp, shareToClipboard } from "@utils/otherUtils"
+import { sharePost, sharePostToFacebook, sharePostToReddit, sharePostToWhatsapp, shareToClipboard } from "@utils/postUtils"
 import { View } from "react-native"
 
 interface Props {

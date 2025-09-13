@@ -2,7 +2,7 @@ import CustomText from "@components/display/customText";
 import { useTheme } from "@contexts/themeContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { checkUserLiked, dislikePost, getLikeCount, likePost } from "@utils/otherUtils";
+import { checkUserLiked, dislikePost, getLikeCount, likePost } from "@utils/postUtils";
 import { useAudioPlayer } from 'expo-audio';
 import { useEffect, useRef, useState } from "react";
 import { Pressable } from 'react-native';

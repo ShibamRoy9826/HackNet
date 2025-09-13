@@ -2,8 +2,8 @@ import { auth, getUserData } from "@auth/firebase";
 import CustomText from "@components/display/customText";
 import { useTheme } from "@contexts/themeContext";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { acceptRequest, rejectRequest } from "@utils/otherUtils";
 import { UserData } from "@utils/types";
+import { acceptRequest, rejectRequest } from "@utils/userUtils";
 import { useRouter } from "expo-router";
 import { Timestamp } from "firebase/firestore";
 import { useEffect, useState } from "react";
@@ -61,8 +61,7 @@ export default function FriendRequest({ id, createdAt }: Props) {
             width: "100%",
             height: 80,
             borderWidth: StyleSheet.hairlineWidth,
-            borderColor: colors.background,
-            borderRadius: 12
+            borderColor: colors.border
         },
         username: {
             fontSize: 15,

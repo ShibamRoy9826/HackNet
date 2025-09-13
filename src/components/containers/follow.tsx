@@ -2,7 +2,7 @@ import { auth } from "@auth/firebase";
 import CustomText from "@components/display/customText";
 import { useTheme } from "@contexts/themeContext";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { checkFollow, followUser, unfollowUser } from "@utils/otherUtils";
+import { checkFollow, followUser, unfollowUser } from "@utils/userUtils";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Image, Pressable, StyleSheet, View } from "react-native";

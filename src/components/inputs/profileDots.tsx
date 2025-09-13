@@ -1,7 +1,7 @@
 import { auth } from "@auth/firebase";
 import ThreeDots from "@components/display/threeDots";
 import { useTheme } from "@contexts/themeContext";
-import { sendFriendRequest } from "@utils/otherUtils";
+import { sendFriendRequest } from "@utils/userUtils";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
 interface Props {

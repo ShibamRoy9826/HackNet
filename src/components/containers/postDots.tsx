@@ -1,6 +1,6 @@
 import ThreeDots from "@components/display/threeDots";
 import { useBottomSheetContext } from "@contexts/BottomSheetContext";
-import { deletePost, likePost, sharePost } from "@utils/otherUtils";
+import { deletePost, likePost, sharePost } from "@utils/postUtils";
 import { ToastAndroid } from "react-native";
 import ShareBtns from "./shareBtns";
 

@@ -7,7 +7,7 @@ export const defaultTheme = {
         background: "#17171d",
         secondaryBackground: "#292932ff",
         darkBackground: "#282832ff",
-        border: "#25252fff",
+        border: "#414149ff",
         muted: "#8492a6",
         disabled: "#5f6878",
         text: "white",

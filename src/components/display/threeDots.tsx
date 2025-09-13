@@ -1,4 +1,5 @@
 import { useBottomSheetContext } from '@contexts/BottomSheetContext';
+import { useTheme } from '@contexts/themeContext';
 import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons';
 import { BottomSheetItem } from '@utils/types';
 import { Pressable, View } from 'react-native';
@@ -12,6 +13,7 @@ interface Props {
 
 export default function ThreeDots({ data, sheetHeader, color }: Props) {
     const { closedState, setSheetData, closeSheet, expandSheet, setHeader } = useBottomSheetContext();
+    const { colors } = useTheme()
 
     function toggleSheet() {
         setSheetData(data);
@@ -26,7 +28,7 @@ export default function ThreeDots({ data, sheetHeader, color }: Props) {
     return (
         <View>
             <Pressable onPress={toggleSheet}>
-                <MaterialDesignIcons name="dots-vertical" size={25} color={color ? color : "#8492a6"} />
+                <MaterialDesignIcons name="dots-vertical" size={25} color={color ? color : colors.muted} />
             </Pressable>
         </View>
     );

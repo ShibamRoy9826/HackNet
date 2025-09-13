@@ -168,7 +168,6 @@ export async function deleteNotifObject(uid: string, id: string, status: "read" 
 export async function markAsReadUnread(uid: string, id: string, currStatus: "read" | "unread") {
     const notif = getDoc(doc(db, "notifications", uid, currStatus, id));
     const notifData = (await notif).data() as notification;
-    console.log(notifData, " is the data")
 
     // await setDoc(doc(db, "notifications", uid), { exists: true }, { merge: true });
     await addDoc(collection(db, "notifications", uid, currStatus == "read" ? "unread" : "read"), {
