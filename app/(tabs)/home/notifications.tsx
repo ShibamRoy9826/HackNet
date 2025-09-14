@@ -81,12 +81,12 @@ export default function NotificationScreen() {
             <View style={styles.listContainer}>
 
                 <FlashList
-                    data={(currTab == "Unread") ? unreadNotif : readNotif}
+                    data={(currTab === "Unread") ? unreadNotif : readNotif}
                     keyExtractor={item => item.id}
                     ListEmptyComponent={<NothingHere />}
                     renderItem={({ item }: ListRenderItemInfo<notification>) => (
                         <NotificationBox
-                            status={currTab == "Unread" ? "unread" : "read"}
+                            status={currTab === "Unread" ? "unread" : "read"}
                             id={item.id}
                             title={item.title}
                             message={item.message}

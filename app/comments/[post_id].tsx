@@ -2,7 +2,7 @@
 import Comment from "@components/containers/comment";
 import PostHeader from "@components/containers/postHeader";
 import NothingHere from "@components/display/nothing";
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import { FlatList, KeyboardAvoidingView, View } from "react-native";
 
 //firebase
@@ -21,7 +21,6 @@ import { auth, db } from "@auth/firebase";
 
 //others
 import { useTheme } from "@contexts/themeContext";
-import { useLocalSearchParams } from "expo-router";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 //react 

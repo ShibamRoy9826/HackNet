@@ -18,40 +18,54 @@ export function extractUrl(res: string) {
 }
 
 
-export function extractTime(time: Timestamp) {
-    const datetime = time.toDate();
-    const month = datetime.getMonth();
-    const date = datetime.getDate();
-    const year = datetime.getFullYear();
-    const hr = datetime.getHours();
-    const mins = datetime.getMinutes();
+export function extractTime(time: Timestamp, short = true) {
+    if (short) {
+        const datetime = time.toDate();
+        const hr = datetime.getHours();
+        const mins = datetime.getMinutes();
 
-    const hr12 = hr % 12 === 0 ? 12 : hr % 12;
-    const ampm = hr >= 12 ? "pm" : "am";
-    const minuteStr = mins < 10 ? `0${mins}` : mins;
+        const hr12 = hr % 12 === 0 ? 12 : hr % 12;
+        const ampm = hr >= 12 ? "pm" : "am";
+        const minuteStr = mins < 10 ? `0${mins}` : mins;
 
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
-    const dateOnly = new Date(year, month, date);
+        return `${hr12}:${minuteStr} ${ampm}`
 
-    if (dateOnly.getTime() === today.getTime()) {
-        return `Today at ${hr12}:${minuteStr} ${ampm}`;
-    } else if (dateOnly.getTime() === yesterday.getTime()) {
-        return `Yesterday at ${hr12}:${minuteStr}${ampm}`;
     } else {
-        function ordinal(d: number) {
-            if (d > 3 && d < 21) return 'th';
-            switch (d % 10) {
-                case 1: return 'st';
-                case 2: return 'nd';
-                case 3: return 'rd';
-                default: return 'th';
-            }
-        };
-        const monthName = monthNames[month];
-        return `${monthName} ${date}${ordinal(date)} ${year}, at ${hr12}:${minuteStr} ${ampm}`
+        const datetime = time.toDate();
+        const month = datetime.getMonth();
+        const date = datetime.getDate();
+        const year = datetime.getFullYear();
+        const hr = datetime.getHours();
+        const mins = datetime.getMinutes();
+
+        const hr12 = hr % 12 === 0 ? 12 : hr % 12;
+        const ampm = hr >= 12 ? "pm" : "am";
+        const minuteStr = mins < 10 ? `0${mins}` : mins;
+
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+        const dateOnly = new Date(year, month, date);
+
+        if (dateOnly.getTime() === today.getTime()) {
+            return `Today at ${hr12}:${minuteStr} ${ampm}`;
+        } else if (dateOnly.getTime() === yesterday.getTime()) {
+            return `Yesterday at ${hr12}:${minuteStr}${ampm}`;
+        } else {
+            function ordinal(d: number) {
+                if (d > 3 && d < 21) return 'th';
+                switch (d % 10) {
+                    case 1: return 'st';
+                    case 2: return 'nd';
+                    case 3: return 'rd';
+                    default: return 'th';
+                }
+            };
+            const monthName = monthNames[month];
+            return `${monthName} ${date}${ordinal(date)} ${year}, at ${hr12}:${minuteStr} ${ampm}`
+        }
+
     }
 }
 

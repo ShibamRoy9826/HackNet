@@ -26,7 +26,6 @@ export default function OtherProfileModal() {
     const [currTab, setCurrTab] = useState("Logs");
 
     const [ownPosts, setOwnPosts] = useState<post[]>([]);
-    const [likedPosts, setUserOwnPosts] = useState<post[]>([]);
     const [userData, setUserData] = useState<UserData>();
     const [sameUser, setSameUser] = useState(true);
 
@@ -114,7 +113,7 @@ export default function OtherProfileModal() {
 
         <FlatList
             refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-            data={(currTab === "Logs") ? ownPosts : likedPosts}
+            data={ownPosts}
             keyExtractor={item => item.id}
             renderItem={renderPost}
             removeClippedSubviews={true}

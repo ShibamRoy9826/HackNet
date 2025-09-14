@@ -32,7 +32,7 @@ export default function LoginScreen() {
     const [password, setPassword] = useState("");
     const user = auth.currentUser;
     const { alert, updateActivity, setActivityVisible, setActivityText } = useModalContext();
-    const { expoPushToken, notification } = useNotificationContext();
+    const { expoPushToken } = useNotificationContext();
 
     if (user) {
         if (user.emailVerified) {

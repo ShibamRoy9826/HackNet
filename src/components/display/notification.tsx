@@ -69,7 +69,7 @@ export default function NotificationBox({ id, message, title, data, createdAt, s
             <View style={{ position: "absolute", top: 10, right: 10, zIndex: 6, padding: 5 }}>
                 <ThreeDots
                     data={[
-                        { text: status == "read" ? 'Mark as Unread' : "Mark as Read", icon: "sticker-check-outline", func: () => { markAsReadUnread(user ? user.uid : "", id, status); } },
+                        { text: status === "read" ? 'Mark as Unread' : "Mark as Read", icon: "sticker-check-outline", func: () => { markAsReadUnread(user ? user.uid : "", id, status); } },
                         { text: 'Delete Message', icon: "delete", func: () => { deleteNotifObject(user ? user.uid : "", id, status); } }
                     ]}
                 />
@@ -77,7 +77,7 @@ export default function NotificationBox({ id, message, title, data, createdAt, s
             </View>
 
             <CustomText style={styles.time}>{extractTime(createdAt)}</CustomText>
-            <Pressable onPress={() => { status == "unread" ? markAsReadUnread(user ? user.uid : "", id, status) : null; redirectUser() }} style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%", paddingHorizontal: 5 }}>
+            <Pressable onPress={() => { status === "unread" ? markAsReadUnread(user ? user.uid : "", id, status) : null; redirectUser() }} style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%", paddingHorizontal: 5 }}>
                 <View style={styles.detailsContainer}>
                     <CustomText style={styles.title}>{title}</CustomText>
                     <CustomText style={styles.message}>{message}</CustomText>

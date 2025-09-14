@@ -21,7 +21,7 @@ export default function FriendRequest({ id, createdAt }: Props) {
     const [senderData, setSenderData] = useState<UserData>();
 
     function redirectToProfile() {
-        if (id == (user ? user.uid : "")) {
+        if (id === (user ? user.uid : "")) {
             router.push(`/(tabs)/profile/${id}`)
         } else {
             router.push(`/(modals)/profile/${id}`)

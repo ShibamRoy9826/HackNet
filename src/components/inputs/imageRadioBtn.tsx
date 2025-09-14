@@ -24,7 +24,7 @@ export default function ImageRadioBtn({ images, setImage, currImage }: Props) {
                         onPress={() => { setImage(img); }}>
                         <Image
                             source={img}
-                            style={[currImage == img ? { borderColor: colors.secondary, borderWidth: 1 } : {}, { borderRadius: 5, width: 70, height: 70, margin: 3 }]}
+                            style={[currImage === img ? { borderColor: colors.secondary, borderWidth: 1 } : {}, { borderRadius: 5, width: 70, height: 70, margin: 3 }]}
                         />
                     </Pressable>
                 )

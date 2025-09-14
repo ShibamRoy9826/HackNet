@@ -42,7 +42,7 @@ export default function FollowBox({ avatar, username, bio, user_id }: Props) {
     }, [])
 
     function redirectToProfile() {
-        if (user_id == (user ? user.uid : "")) {
+        if (user_id === (user ? user.uid : "")) {
             router.push(`/(tabs)/profile/${user_id}`)
         } else {
             router.push(`/(modals)/profile/${user_id}`)

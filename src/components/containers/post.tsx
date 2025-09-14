@@ -1,7 +1,7 @@
 //components
 import CommentBox from "@components/inputs/comment/commentBox";
 import LikeButton from "@components/inputs/likeButton";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Image, Pressable, StyleSheet, View } from "react-native";
 import CarouselComponent from "../display/carousel";
 import CustomText from "../display/customText";
 
@@ -19,7 +19,6 @@ import { extractTime } from "@utils/stringTimeUtils";
 import { ImagePickerAsset } from "expo-image-picker";
 import { useRouter } from 'expo-router';
 import { memo, useEffect, useState } from "react";
-import { Image } from "react-native";
 
 //func
 import { useTheme } from "@contexts/themeContext";
@@ -70,7 +69,7 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
     }
 
     function redirectToProfile() {
-        if (uid == user_uid) {
+        if (uid === user_uid) {
             router.push(`/(tabs)/profile/${uid}`);
         } else {
             router.push(`/(modals)/profile/${uid}`);

@@ -34,7 +34,7 @@ export default function LikeButton({ userId, postId }: Prop) {
                 likeRef.current -= 1;
                 AsyncStorage.getItem("dislikeSound").then(
                     (value) => {
-                        if (value == "true") {
+                        if (value === "true") {
                             dislikeSound.seekTo(0);
                             dislikeSound.volume = 0.3;
                             dislikeSound.play();
@@ -52,7 +52,7 @@ export default function LikeButton({ userId, postId }: Prop) {
                 likeRef.current += 1;
                 AsyncStorage.getItem("likeSound").then(
                     (value) => {
-                        if (value == "true") {
+                        if (value === "true") {
                             likeSound.seekTo(0);
                             likeSound.volume = 0.2;
                             likeSound.play();

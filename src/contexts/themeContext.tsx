@@ -19,9 +19,6 @@ type themeContextType = {
     setTheme: (a: "default" | "light" | "catppuccin") => void
 }
 const ThemeContext = createContext<themeContextType | null>(null);
-const themesL = ["default", "light", "catppuccin"] as const;
-
-type themeList = typeof themesL[number];
 
 const themes = {
     "default": defaultTheme.colors,
@@ -34,7 +31,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         AsyncStorage.getItem("theme").then((val) => {
-            if (val == "default" || val == "light" || val == "catppuccin") {
+            if (val === "default" || val === "light" || val === "catppuccin") {
                 setCurrTheme(val);
             }
         })

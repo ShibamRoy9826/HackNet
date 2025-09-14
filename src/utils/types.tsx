@@ -68,12 +68,14 @@ export type chat = {
     id: string,
     uids: string[],
     lastMessage: string,
-    updatedAt: Timestamp
+    updatedAt: Timestamp,
+    lastSender: string
 }
 export type message = {
     id: string,
     text: string,
     sender: string,
     receiver: string,
-    createdAt: Timestamp
+    createdAt: Timestamp,
+    deletedFor: string[]
 }

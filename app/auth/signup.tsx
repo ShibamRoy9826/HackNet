@@ -36,7 +36,7 @@ export default function SignUpScreen() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmpassword, setCpassword] = useState("");
-    const { expoPushToken, notification } = useNotificationContext();
+    const { expoPushToken } = useNotificationContext();
 
     const registerUser = async (email: string, password: string, name: string) => {
         setActivityVisible(true);

@@ -153,7 +153,7 @@ export async function deleteNotifObject(uid: string, id: string, status: "read" 
     await deleteDoc(doc(
         db, "notifications", uid, status, id
     ))
-    if (status == "unread") {
+    if (status === "unread") {
         await runTransaction(db, async (transaction) => {
             const unreadCount = await transaction.get(notif)
             if (unreadCount.exists()) {
@@ -170,7 +170,7 @@ export async function markAsReadUnread(uid: string, id: string, currStatus: "rea
     const notifData = (await notif).data() as notification;
 
     // await setDoc(doc(db, "notifications", uid), { exists: true }, { merge: true });
-    await addDoc(collection(db, "notifications", uid, currStatus == "read" ? "unread" : "read"), {
+    await addDoc(collection(db, "notifications", uid, currStatus === "read" ? "unread" : "read"), {
         uid: uid,
         message: notifData.message,
         title: notifData.title,
@@ -179,7 +179,7 @@ export async function markAsReadUnread(uid: string, id: string, currStatus: "rea
     });
 
     const notifRef = doc(db, "notifications", uid)
-    if (currStatus == "read") {
+    if (currStatus === "read") {
         await runTransaction(db, async (transaction) => {
             const unreadCount = await transaction.get(notifRef)
             if (!unreadCount.exists()) {

@@ -18,7 +18,7 @@ export default function PostThreeDots({ postId, OpId, currentUserId }: Props) {
                 <ShareBtns postId={postId} />
             }
             data={[
-                (OpId == currentUserId) ?
+                (OpId === currentUserId) ?
                     { text: "Delete Post", func: () => { deletePost(postId); closeSheet(); ToastAndroid.show("Successfully deleted post, reopen the app to see changes", 3) }, icon: "delete" } :
                     { text: "Like Post", func: () => { likePost(postId, currentUserId) }, icon: "heart" }
                 ,

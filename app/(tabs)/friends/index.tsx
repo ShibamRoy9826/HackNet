@@ -29,7 +29,8 @@ export default function FriendsScreen() {
     useEffect(() => {
         const chatSub = onSnapshot(query(
             collection(db, "chats"),
-            where("uids", "array-contains", currUser ? currUser.uid : "")), (snap) => {
+            where("uids", "array-contains", currUser ? currUser.uid : ""))
+            , (snap) => {
                 const data: chat[] = snap.docs.map(doc => (
                     {
                         id: doc.id,
@@ -56,7 +57,7 @@ export default function FriendsScreen() {
     function extractSender(uids: string[]) {
         let sender = "";
         for (let i = 0; i < uids.length; ++i) {
-            if (uids[i] != (currUser ? currUser.uid : "")) {
+            if (uids[i] !== (currUser ? currUser.uid : "")) {
                 sender = uids[i];
             }
         }
@@ -85,6 +86,7 @@ export default function FriendsScreen() {
                             uid={extractSender(item.uids)}
                             updatedAt={item.updatedAt}
                             lastMessage={item.lastMessage}
+                            lastSender={item.lastSender}
                         />
                     )
                     }

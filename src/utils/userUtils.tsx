@@ -92,6 +92,7 @@ export async function acceptRequest(sender: string, receiver: string) {
             transaction.set(newChatRef, {
                 uids: [sender, receiver],
                 lastMessage: "Start a new conversation",
+                lastSender: undefined,
                 updatedAt: new Date(),
             })
             transaction.set(receiverRef, { createdAt: new Date() });

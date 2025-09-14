@@ -3,6 +3,7 @@ import CustomText from "@components/display/customText";
 import ThreeDots from "@components/display/threeDots";
 import { useDataContext } from "@contexts/dataContext";
 import { useTheme } from "@contexts/themeContext";
+import { deleteAllMessages } from "@utils/chatUtils";
 import { UserData } from "@utils/types";
 import { unfriend } from "@utils/userUtils";
 import { useRouter } from "expo-router";
@@ -15,9 +16,10 @@ interface Props {
     uid: string,
     updatedAt: Timestamp;
     lastMessage: string;
+    lastSender: string,
 }
 
-export default function FriendBox({ chatId, uid, updatedAt, lastMessage }: Props) {
+export default function FriendBox({ lastSender, chatId, uid, updatedAt, lastMessage }: Props) {
     const router = useRouter();
     const user = auth.currentUser;
     const [senderData, setSenderData] = useState<UserData>();
@@ -25,7 +27,7 @@ export default function FriendBox({ chatId, uid, updatedAt, lastMessage }: Props
     const { setUserProfileData } = useDataContext();
 
     function redirectToProfile() {
-        if (uid == (user ? user.uid : "")) {
+        if (uid === (user ? user.uid : "")) {
             router.push(`/(tabs)/profile/${uid}`)
         } else {
             router.push(`/(modals)/profile/${uid}`)
@@ -86,13 +88,13 @@ export default function FriendBox({ chatId, uid, updatedAt, lastMessage }: Props
                     </Pressable>
                     <Pressable onPress={redirectToChat} style={styles.detailsContainer}>
                         <CustomText style={styles.username}>{senderData ? senderData.displayName : ""}</CustomText>
-                        <CustomText style={styles.lastMessage}>{lastMessage}</CustomText>
+                        <CustomText style={styles.lastMessage}>{(lastSender === user?.uid) ? "You : " : ""}{lastMessage}</CustomText>
                     </Pressable>
                 </View>
                 <View style={{ padding: 12 }}>
                     <ThreeDots
                         data={[
-                            { text: "Clear all chats", icon: "delete", func: () => { } },
+                            { text: "Clear all chats for you", icon: "delete", func: () => { deleteAllMessages(chatId, user ? user.uid : ""); } },
                             { text: "Unfriend", icon: "account-minus", func: () => { unfriend(uid, user ? user.uid : "", chatId) } },
                             { text: "Report", icon: "exclamation", func: () => { } }
                         ]}

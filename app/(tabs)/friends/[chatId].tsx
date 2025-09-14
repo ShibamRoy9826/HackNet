@@ -2,13 +2,13 @@
 //components
 import Message from "@components/display/message";
 import OnlyIconButton from "@components/inputs/onlyIconButton";
-import { useLocalSearchParams } from 'expo-router';
-import { KeyboardAvoidingView, StyleSheet, View } from "react-native";
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { KeyboardAvoidingView, Pressable, StyleSheet, View } from "react-native";
 
 //others
 import { useDataContext } from "@contexts/dataContext";
 import { useTheme } from "@contexts/themeContext";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 //navigation
@@ -21,15 +21,12 @@ import { FlashList, ListRenderItem, ListRenderItemInfo } from "@shopify/flash-li
 import { sendMessage } from "@utils/chatUtils";
 import { message } from "@utils/types";
 import { useAudioPlayer } from "expo-audio";
-import { useRouter } from "expo-router";
 import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
-import { useState } from "react";
-import { Pressable } from "react-native";
 
 
 export default function ChatScreen() {
     const { chatId } = useLocalSearchParams<{ chatId: string }>();
-    const { colors, setTheme } = useTheme();
+    const { colors } = useTheme();
     const router = useRouter();
     const insets = useSafeAreaInsets();
     const user = auth.currentUser;
@@ -38,8 +35,13 @@ export default function ChatScreen() {
 
     const [messages, setMessages] = useState<message[]>([]);
     const [message, setMessage] = useState("")
-    const messageSrc = require("@assets/sounds/message.mp3")
-    const messageSound = useAudioPlayer(messageSrc);
+    const incomingSrc = require("@assets/sounds/message.mp3")
+    const incoming = useAudioPlayer(incomingSrc);
+
+    const sentSrc = require("@assets/sounds/selfMessage.mp3")
+    const sent = useAudioPlayer(sentSrc);
+
+    const [initialLoaded, setInitialLoaded] = useState(false);
 
     const listRef = useRef<FlashList<any>>(null);
 
@@ -64,7 +66,6 @@ export default function ChatScreen() {
     function handleSend() {
         sendMessage(message, chatId, user ? user.uid : "", UserProfileData ? UserProfileData.uid : "");
         setMessage("");
-        listRef.current?.scrollToEnd({ animated: true });
     }
 
     const renderMessage: ListRenderItem<message> = useCallback(({ item }: ListRenderItemInfo<message>) =>
@@ -77,27 +78,43 @@ export default function ChatScreen() {
         const chatSub = onSnapshot(
             query(collection(db, "chats", chatId, "messages"), orderBy("createdAt", "asc")),
             (snap) => {
+
                 const data: message[] = snap.docs.map(doc => (
                     {
                         id: doc.id,
                         ...(doc.data() as Omit<message, 'id'>)
                     }
-                ));
+                )).filter(msg => !(msg.deletedFor?.includes(user ? user.uid : "")));
 
-                if (messages.length !== 0) {
+                if (initialLoaded) {
+                    const lastMsg = data[data.length - 1];
+
                     AsyncStorage.getItem("messageSound").then(
                         (value) => {
-                            if (value == "true") {
-                                messageSound.seekTo(0);
-                                messageSound.volume = 0.3;
-                                messageSound.play();
+                            console.log("This ran:", value)
+                            if (lastMsg.sender === (user?.uid)) {
+                                if (value === "true") {
+                                    sent.seekTo(0);
+                                    sent.play();
+                                }
+                            }
+                            else {
+                                if (value === "true") {
+                                    incoming.seekTo(0);
+                                    incoming.play();
+                                }
+
                             }
                         }
+
                     )
-                    listRef.current?.scrollToEnd({ animated: true })
                 }
 
-
+                if (listRef.current) {
+                    listRef.current?.scrollToIndex({ animated: true, index: data.length - 1 })
+                    // listRef.current?.scrollToEnd();
+                }
+                setInitialLoaded(true);
                 setMessages(data);
             });
     }, [])
@@ -117,7 +134,7 @@ export default function ChatScreen() {
                     renderItem={renderMessage}
                     keyExtractor={item => item.id}
                     ListHeaderComponent={
-                        (messages.length == 0) ?
+                        (messages.length === 0) ?
                             <View style={{ width: "100%", alignItems: "center", justifyContent: "center" }}>
                                 <View style={{ flexDirection: "row", width: "100%", alignItems: "center", justifyContent: "center" }}>
                                     <CustomText style={{ color: colors.muted, backgroundColor: colors.secondaryBackground, borderRadius: 10, padding: 6 }}>
