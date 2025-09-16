@@ -1,10 +1,11 @@
 import { auth } from "@auth/firebase";
+import CustomPressable from "@components/inputs/customPressable";
 import { useDataContext } from "@contexts/dataContext";
 import { useTheme } from "@contexts/themeContext";
 import { extractTime } from "@utils/stringTimeUtils";
 import { message } from "@utils/types";
 import { useEffect, useState } from 'react';
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import CustomText from "./customText";
 
 interface Props {
@@ -60,7 +61,7 @@ export default function Message({ message }: Props) {
             maxWidth: "90%",
 
         },
-        pressable: {
+        CustomPressable: {
             backgroundColor: selected ? colors.darkBackground : colors.background,
             width: "100%"
         },
@@ -101,11 +102,11 @@ export default function Message({ message }: Props) {
     }
 
     return (
-        <Pressable style={styles.pressable} onLongPress={handleLongPress} onPress={handleShortPress}>
+        <CustomPressable style={styles.CustomPressable} onLongPress={handleLongPress} onPress={handleShortPress}>
             <View style={[styles.textContainer, (user?.uid === message.sender) ? styles.selfMessage : styles.otherMessage]}>
                 <CustomText style={styles.text}>{message.text}</CustomText>
                 <CustomText style={styles.timestamp}>{extractTime(message.createdAt, true)}</CustomText>
             </View>
-        </Pressable>
+        </CustomPressable>
     );
 }

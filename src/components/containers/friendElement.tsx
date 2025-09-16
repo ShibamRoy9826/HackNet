@@ -1,7 +1,8 @@
 import CustomText from '@components/display/customText';
+import CustomPressable from '@components/inputs/customPressable';
 import { useTheme } from '@contexts/themeContext';
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 
 interface Props {
     username: string,
@@ -48,9 +49,9 @@ export default function FriendElement({ username, lastMessage }: Props) {
                     <CustomText style={styles.lastMessage}>{lastMessage}</CustomText>
                 </View>
                 <View>
-                    <Pressable style={{ padding: 5, marginLeft: "auto" }}>
+                    <CustomPressable style={{ padding: 5, marginLeft: "auto" }}>
                         <MaterialDesignIcons name="dots-vertical" color={colors.muted} size={25} />
-                    </Pressable>
+                    </CustomPressable>
                 </View>
             </View>
         </View>

@@ -1,10 +1,10 @@
 import CustomText from '@components/display/customText';
+import CustomPressable from '@components/inputs/customPressable';
 import BottomSheet, { BottomSheetBackdrop, BottomSheetView } from '@gorhom/bottom-sheet';
 import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons';
 import { BottomSheetItem } from '@utils/types';
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from "react";
 import { StyleSheet } from 'react-native';
-import { Pressable } from 'react-native-gesture-handler';
 import { useTheme } from './themeContext';
 
 type sheetContextType = {
@@ -103,12 +103,12 @@ export function BottomSheetProvider({ children }: { children: React.ReactNode })
                     }
                     {
                         data.map((item: BottomSheetItem) => (
-                            <Pressable onPress={() => { item.func(); closeSheet() }} key={item.text} style={styles.button}>
+                            <CustomPressable onPress={() => { item.func(); closeSheet() }} key={item.text} style={styles.button}>
                                 <MaterialDesignIcons name={item.icon} color={colors.muted} size={25} />
                                 <CustomText style={{ marginLeft: 10, color: colors.muted }}>
                                     {item.text}
                                 </CustomText>
-                            </Pressable>
+                            </CustomPressable>
                         ))
                     }
                 </BottomSheetView>

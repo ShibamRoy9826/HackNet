@@ -1,6 +1,7 @@
 import { friendRequest, UserData } from "@utils/types";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
+
 type dataContext = {
     UserProfileData: UserData | undefined,
     setUserProfileData: (a: UserData | undefined) => void,

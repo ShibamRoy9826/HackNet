@@ -1,10 +1,11 @@
 import { auth } from '@auth/firebase';
+import CustomPressable from '@components/inputs/customPressable';
 import { useTheme } from '@contexts/themeContext';
 import { deleteNotifObject, markAsReadUnread } from '@utils/notificationUtils';
 import { extractTime } from '@utils/stringTimeUtils';
 import * as Linking from 'expo-linking';
 import { Timestamp } from "firebase/firestore";
-import { Pressable, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import CustomText from "./customText";
 import ThreeDots from './threeDots';
 
@@ -77,12 +78,12 @@ export default function NotificationBox({ id, message, title, data, createdAt, s
             </View>
 
             <CustomText style={styles.time}>{extractTime(createdAt)}</CustomText>
-            <Pressable onPress={() => { status === "unread" ? markAsReadUnread(user ? user.uid : "", id, status) : null; redirectUser() }} style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%", paddingHorizontal: 5 }}>
+            <CustomPressable onPress={() => { status === "unread" ? markAsReadUnread(user ? user.uid : "", id, status) : null; redirectUser() }} style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%", paddingHorizontal: 5 }}>
                 <View style={styles.detailsContainer}>
                     <CustomText style={styles.title}>{title}</CustomText>
                     <CustomText style={styles.message}>{message}</CustomText>
                 </View>
-            </Pressable>
+            </CustomPressable>
         </View>
     );
 }

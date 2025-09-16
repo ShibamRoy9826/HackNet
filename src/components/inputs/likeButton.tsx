@@ -5,7 +5,7 @@ import MaterialDesignIcons from "@react-native-vector-icons/material-design-icon
 import { checkUserLiked, dislikePost, getLikeCount, likePost } from "@utils/postUtils";
 import { useAudioPlayer } from 'expo-audio';
 import { useEffect, useRef } from "react";
-import { Pressable } from 'react-native';
+import CustomPressable from "./customPressable";
 
 interface Prop {
     userId: string;
@@ -78,10 +78,10 @@ export default function LikeButton({ liked, setLiked, userId, postId }: Prop) {
     }
 
     return (
-        <Pressable style={{ padding: 8, flexDirection: "row" }} onPress={handleLike}>
+        <CustomPressable style={{ padding: 8, flexDirection: "row" }} onPress={handleLike}>
             <MaterialDesignIcons name={liked ? "heart" : "heart-outline"} color={liked ? colors.primary : colors.disabled} size={25} />
             <CustomText style={{ color: colors.muted, marginLeft: 5 }}>{likeRef.current}</CustomText>
-        </Pressable>
+        </CustomPressable>
     )
 
 

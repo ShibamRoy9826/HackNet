@@ -151,6 +151,7 @@ export default function CommentsScreen() {
                         message={postData ? postData.post_message : ""}
                         timestamp={postData ? postData.timestamp : Timestamp.now()}
                         comment_count={postData ? postData.num_comments : 0}
+                        comments_enabled={postData ? postData.comments_enabled : true}
                         uid={postData ? postData.uid : ""}
                     />
                 }

@@ -1,6 +1,7 @@
 import CustomText from "@components/display/customText";
 import { useTheme } from "@contexts/themeContext";
-import { Pressable, StyleProp, StyleSheet, ViewStyle } from "react-native";
+import { StyleProp, StyleSheet, ViewStyle } from "react-native";
+import CustomPressable from "./customPressable";
 
 type Props = {
     func: () => void;
@@ -26,9 +27,9 @@ export default function CustomButton({ text, func, style, fontWeight }: Props) {
         },
     })
     return (
-        <Pressable style={[style, styles.button]} onPress={func}>
+        <CustomPressable style={[style, styles.button]} onPress={func}>
             <CustomText style={{ color: colors.text, fontWeight: fontWeight ? fontWeight : "bold" }}>{text}</CustomText>
-        </Pressable>
+        </CustomPressable>
     )
 
 }

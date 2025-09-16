@@ -1,7 +1,8 @@
 import { useTheme } from '@contexts/themeContext';
 import * as ImagePicker from 'expo-image-picker';
 import { Image, ImageSourcePropType } from "react-native";
-import { Pressable, ScrollView } from "react-native-gesture-handler";
+import { ScrollView } from "react-native-gesture-handler";
+import CustomPressable from './customPressable';
 
 interface Props {
     images: ImageSourcePropType[] | ImagePicker.ImagePickerAsset[],
@@ -19,14 +20,14 @@ export default function ImageRadioBtn({ images, setImage, currImage }: Props) {
         >
             {
                 images.map((img, index) => (
-                    <Pressable
+                    <CustomPressable
                         key={index.toString()}
                         onPress={() => { setImage(img); }}>
                         <Image
                             source={img}
                             style={[currImage === img ? { borderColor: colors.secondary, borderWidth: 1 } : {}, { borderRadius: 5, width: 70, height: 70, margin: 3 }]}
                         />
-                    </Pressable>
+                    </CustomPressable>
                 )
                 )
             }

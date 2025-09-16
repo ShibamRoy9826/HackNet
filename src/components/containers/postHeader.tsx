@@ -3,6 +3,7 @@ import OnlyIconButton from "@components/inputs/onlyIconButton";
 import { useTheme } from "@contexts/themeContext";
 import { useRouter } from "expo-router";
 import { Timestamp } from "firebase/firestore";
+import { useEffect } from "react";
 import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Post from "./post";
@@ -16,14 +17,17 @@ interface Props {
     used_media: boolean,
     timestamp: Timestamp,
     comment_count: number,
-    uid: string
-    message: string;
-
+    uid: string,
+    message: string,
+    comments_enabled: boolean
 }
-export default function PostHeader({ isVisible, postId, user_uid, media, used_media, message, timestamp, comment_count, uid }: Props) {
+export default function PostHeader({ comments_enabled, isVisible, postId, user_uid, media, used_media, message, timestamp, comment_count, uid }: Props) {
     const router = useRouter();
     const insets = useSafeAreaInsets();
     const { colors } = useTheme();
+    useEffect(() => {
+        console.log("Post id:", postId)
+    }, [])
     return (
 
         <View style={{ paddingTop: insets.top }}>
@@ -32,7 +36,9 @@ export default function PostHeader({ isVisible, postId, user_uid, media, used_me
             {
                 isVisible ?
                     <Post id={postId} user_uid={user_uid} media={media} used_media={used_media} message={message}
-                        timestamp={timestamp} comment_count={comment_count} uid={uid} />
+                        timestamp={timestamp} comment_count={comment_count} uid={uid}
+                        comments_enabled={comments_enabled}
+                    />
                     : <View></View>
             }
 

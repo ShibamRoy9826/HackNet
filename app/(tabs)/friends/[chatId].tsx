@@ -1,9 +1,10 @@
 
 //components
 import Message from "@components/display/message";
+import CustomPressable from "@components/inputs/customPressable";
 import OnlyIconButton from "@components/inputs/onlyIconButton";
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Alert, KeyboardAvoidingView, Pressable, StyleSheet, View } from "react-native";
+import { Alert, KeyboardAvoidingView, StyleSheet, View } from "react-native";
 
 //others
 import { useDataContext } from "@contexts/dataContext";
@@ -137,12 +138,12 @@ export default function ChatScreen() {
                 <View style={{ flexDirection: "row", position: "absolute", right: 10, top: 10, alignItems: "center" }}>
                     {
                         selectionMode ?
-                            <Pressable onPress={() => {
+                            <CustomPressable onPress={() => {
                                 setSelectionMode(false); setMessageIds([]);
                                 deleteSelectedMessages(chatId, user ? user.uid : "", messageIds, setMessageIds);
                             }} style={{ zIndex: 5, padding: 5, borderRadius: 5, right: 10 }}>
                                 <MaterialDesignIcons name="delete" color={colors.muted} size={25} />
-                            </Pressable>
+                            </CustomPressable>
                             : null
                     }
 
@@ -230,9 +231,9 @@ export default function ChatScreen() {
 
                 <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "center" }}>
                     <InputBox secure={false} value={message} valueFn={setMessage} color={colors.text} icon="message" type="none" placeholder="Send a message" />
-                    <Pressable style={{ padding: 8 }} onPress={handleSend} >
+                    <CustomPressable style={{ padding: 8 }} onPress={handleSend} >
                         <MaterialDesignIcons name="send" color={colors.muted} size={25} />
-                    </Pressable>
+                    </CustomPressable>
                 </View>
             </View>
 

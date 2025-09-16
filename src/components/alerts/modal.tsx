@@ -1,8 +1,9 @@
 import CustomText from "@components/display/customText";
+import CustomPressable from "@components/inputs/customPressable";
 import { useTheme } from "@contexts/themeContext";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { BlurView } from 'expo-blur';
-import { Modal, Pressable, SafeAreaView, StyleSheet, View } from "react-native";
+import { Modal, SafeAreaView, StyleSheet, View } from "react-native";
 
 
 interface Props {
@@ -93,11 +94,11 @@ export default function ModalBox({ animation, isVisible, setIsVisible, onClose, 
           <View style={styles.modalView}>
             <CustomText style={styles.modalText}>{text}</CustomText>
             <CustomText style={styles.modalSubtext}>{subtext}</CustomText>
-            <Pressable
+            <CustomPressable
               style={styles.button}
               onPress={() => { setIsVisible(!isVisible); onClose(); }}>
               <MaterialDesignIcons name="close" size={15} color={"white"} />
-            </Pressable>
+            </CustomPressable>
           </View>
         </BlurView>
       </Modal>

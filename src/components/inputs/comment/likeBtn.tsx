@@ -1,15 +1,15 @@
 import CustomText from "@components/display/customText";
+import CustomPressable from "@components/inputs/customPressable";
 import { useTheme } from "@contexts/themeContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { checkUserLiked, dislikePost, getLikeCount, likePost } from "@utils/postUtils";
 import { useAudioPlayer } from 'expo-audio';
 import { useEffect, useRef, useState } from "react";
-import { Pressable } from 'react-native';
 
 interface Prop {
-    userId: string;
-    postId: string;
+    userId: string,
+    postId: string,
 }
 export default function LikeButton({ userId, postId }: Prop) {
     const { colors } = useTheme();
@@ -77,10 +77,10 @@ export default function LikeButton({ userId, postId }: Prop) {
     }
 
     return (
-        <Pressable style={{ padding: 8, flexDirection: "row" }} onPress={handleLike}>
+        <CustomPressable style={{ padding: 8, flexDirection: "row" }} onPress={handleLike}>
             <MaterialDesignIcons name={liked ? "heart" : "heart-outline"} color={liked ? colors.primary : colors.disabled} size={25} />
             <CustomText style={{ color: colors.muted, marginLeft: 5 }}>{likeRef.current}</CustomText>
-        </Pressable>
+        </CustomPressable>
     )
 
 

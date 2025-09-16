@@ -18,7 +18,7 @@ export function extractUrl(res: string) {
 }
 
 
-export function extractTime(time: Timestamp, short = true) {
+export function extractTime(time: Timestamp, short = false) {
     if (short) {
         const datetime = time.toDate();
         const hr = datetime.getHours();

@@ -1,6 +1,7 @@
 //components
 import CustomText from '@components/display/customText';
-import { Image, Pressable, StyleSheet, ToastAndroid, View } from 'react-native';
+import CustomPressable from '@components/inputs/customPressable';
+import { Image, StyleSheet, ToastAndroid, View } from 'react-native';
 
 //firestore
 import { Timestamp } from 'firebase/firestore';
@@ -84,15 +85,15 @@ export default function Comment({ id, postId, uid, imgSrc, displayName, timestam
         <View style={styles.commentContainer}>
             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%" }}>
                 <View style={{ alignItems: "center", justifyContent: "flex-start", width: "auto", height: "100%", marginTop: 25 }}>
-                    <Pressable onPress={() => { redirectToProfile() }}>
+                    <CustomPressable onPress={() => { redirectToProfile() }}>
                         <Image source={{ uri: imgSrc }} style={{ borderRadius: 50, width: 40, height: 40 }} />
-                    </Pressable>
+                    </CustomPressable>
                 </View>
                 <View style={styles.detailsContainer}>
                     <View style={{ flexDirection: "row", alignContent: "center", position: "static" }}>
-                        <Pressable onPress={() => { redirectToProfile() }}>
+                        <CustomPressable onPress={() => { redirectToProfile() }}>
                             <CustomText style={styles.username}>{displayName}</CustomText>
-                        </Pressable>
+                        </CustomPressable>
                         <CustomText style={[styles.subtxt, { marginLeft: 20 }]}>{calcTime(timestamp)}</CustomText>
                         <View style={{ position: "absolute", right: 10, top: 10 }}>
                             <ThreeDots
@@ -107,17 +108,17 @@ export default function Comment({ id, postId, uid, imgSrc, displayName, timestam
             </View>
 
             <View style={{ flexDirection: "row", gap: 10 }}>
-                {/* <Pressable style={{ padding: 5, flexDirection: "row", alignItems: "center" }} onPress={() => { handleLike }}>
+                {/* <CustomPressable style={{ padding: 5, flexDirection: "row", alignItems: "center" }} onPress={() => { handleLike }}>
                     <MaterialDesignIcons name={liked ? "heart" : "heart-outline"} color={liked ? colors.primary : "#5f6878"} size={25} />
                     <CustomText style={{ color: colors.card, marginLeft: 5 }}>{likeCount}</CustomText>
-                </Pressable>
-                {/* <Pressable style={{ padding: 5, flexDirection: "row", alignItems: "center" }} onPress={() => { setDislike(!dislike); dislike ? removeDislikeFromComment(postId, id, user ? user.uid : "") : dislikeComment(postId, id, user ? user.uid : ""); updateCount(); }} >
+                </CustomPressable>
+                {/* <CustomPressable style={{ padding: 5, flexDirection: "row", alignItems: "center" }} onPress={() => { setDislike(!dislike); dislike ? removeDislikeFromComment(postId, id, user ? user.uid : "") : dislikeComment(postId, id, user ? user.uid : ""); updateCount(); }} >
                     <MaterialDesignIcons name={dislike ? "thumb-down" : "thumb-down-outline"} color={dislike ? "#338eda" : "#5f6878"} size={25} />
                     <CustomText style={{ color: "#8492a6", marginLeft: 5 }}>{dislikeCount}</CustomText>
-                </Pressable> */}
-                {/* <Pressable style={{ padding: 5, flexDirection: "row", alignItems: "center" }}>
+                </CustomPressable> */}
+                {/* <CustomPressable style={{ padding: 5, flexDirection: "row", alignItems: "center" }}>
                     <CustomText style={{ color: colors.card, marginLeft: 5 }}>Reply</CustomText>
-                </Pressable> */}
+                </CustomPressable> */}
             </View>
 
         </View>

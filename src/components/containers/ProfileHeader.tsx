@@ -4,6 +4,7 @@ import CustomText from "../display/customText";
 
 //react
 import { auth, db } from "@auth/firebase";
+import CustomPressable from "@components/inputs/customPressable";
 import ProfileDots from "@components/inputs/profileDots";
 import { useTheme } from "@contexts/themeContext";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
@@ -11,7 +12,6 @@ import { checkFollow, followUser, unfollowUser } from "@utils/userUtils";
 import { useRouter } from "expo-router";
 import { collection, getCountFromServer } from "firebase/firestore";
 import React, { useEffect, useState } from 'react';
-import { Pressable } from "react-native";
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import IconButton from "../inputs/IconButton";
 import OnlyIconButton from "../inputs/onlyIconButton";
@@ -156,15 +156,15 @@ export default function ProfileHeader({ sameUser, user_id, userData, isFollowing
                     {
                         !sameUser ?
                             followed ?
-                                <Pressable style={styles.followActivatedBtn} onPress={followBtnWrapper}>
+                                <CustomPressable style={styles.followActivatedBtn} onPress={followBtnWrapper}>
                                     <CustomText style={{ color: colors.text, fontWeight: "bold" }}>Untrack</CustomText>
                                     <MaterialDesignIcons name="account-minus" color={colors.text} size={18} style={{ marginLeft: 5 }} />
-                                </Pressable>
+                                </CustomPressable>
                                 :
-                                <Pressable style={styles.followBtn} onPress={followBtnWrapper}>
+                                <CustomPressable style={styles.followBtn} onPress={followBtnWrapper}>
                                     <CustomText style={{ color: colors.text, fontWeight: "bold" }}>Track</CustomText>
                                     <MaterialDesignIcons name="plus-box" color={colors.text} size={18} style={{ marginLeft: 5 }} />
-                                </Pressable>
+                                </CustomPressable>
 
                             :
                             <IconButton

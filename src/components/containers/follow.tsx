@@ -1,11 +1,12 @@
 import { auth } from "@auth/firebase";
 import CustomText from "@components/display/customText";
+import CustomPressable from "@components/inputs/customPressable";
 import { useTheme } from "@contexts/themeContext";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { checkFollow, followUser, unfollowUser } from "@utils/userUtils";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 
 interface Props {
     username: string,
@@ -96,27 +97,27 @@ export default function FollowBox({ avatar, username, bio, user_id }: Props) {
     return (
         <View style={styles.friendBox}>
             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%", paddingHorizontal: 10 }}>
-                <Pressable onPress={redirectToProfile}>
+                <CustomPressable onPress={redirectToProfile}>
                     <Image source={{ uri: avatar }} style={{ borderRadius: 50, width: 45, height: 45, margin: "auto" }} />
-                </Pressable>
+                </CustomPressable>
                 <View style={styles.detailsContainer}>
-                    <Pressable onPress={redirectToProfile}>
+                    <CustomPressable onPress={redirectToProfile}>
                         <CustomText style={styles.username}>{username}</CustomText>
                         <CustomText style={styles.lastMessage}>{bio_mod}</CustomText>
-                    </Pressable>
+                    </CustomPressable>
                 </View>
                 <View>
                     {
                         !followed ?
-                            <Pressable style={styles.followBtn} onPress={followBtnWrapper}>
+                            <CustomPressable style={styles.followBtn} onPress={followBtnWrapper}>
                                 <CustomText style={{ color: colors.text, fontWeight: "bold" }}>Track</CustomText>
                                 <MaterialDesignIcons name="plus-box" color={colors.text} size={18} style={{ marginLeft: 10 }} />
-                            </Pressable>
+                            </CustomPressable>
                             :
-                            <Pressable style={styles.followActivatedBtn} onPress={followBtnWrapper}>
+                            <CustomPressable style={styles.followActivatedBtn} onPress={followBtnWrapper}>
                                 <CustomText style={{ color: colors.text, fontWeight: "bold" }}>Untrack</CustomText>
                                 <MaterialDesignIcons name="account-minus" color={colors.text} size={18} style={{ marginLeft: 10 }} />
-                            </Pressable>
+                            </CustomPressable>
 
                     }
                 </View>

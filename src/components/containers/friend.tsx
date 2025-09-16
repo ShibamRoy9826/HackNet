@@ -1,6 +1,7 @@
 import { auth, getUserData } from "@auth/firebase";
 import CustomText from "@components/display/customText";
 import ThreeDots from "@components/display/threeDots";
+import CustomPressable from "@components/inputs/customPressable";
 import { useDataContext } from "@contexts/dataContext";
 import { useTheme } from "@contexts/themeContext";
 import { deleteAllMessages } from "@utils/chatUtils";
@@ -10,7 +11,7 @@ import { unfriend } from "@utils/userUtils";
 import { useRouter } from "expo-router";
 import { Timestamp } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Alert, Image, Pressable, StyleSheet, View } from "react-native";
+import { Alert, Image, StyleSheet, View } from "react-native";
 
 interface Props {
     chatId: string,
@@ -84,13 +85,13 @@ export default function FriendBox({ lastSender, chatId, uid, updatedAt, lastMess
         <View style={styles.friendBox}>
             <View style={{ flexDirection: "row", justifyContent: "space-around", width: "100%", alignItems: "center" }}>
                 <View style={{ flexDirection: "row", justifyContent: "flex-start", alignItems: "center", width: "85%", paddingHorizontal: 10 }}>
-                    <Pressable onPress={redirectToProfile}>
+                    <CustomPressable onPress={redirectToProfile}>
                         <Image source={{ uri: senderData ? senderData.avatar : "" }} style={{ borderRadius: 50, width: 45, height: 45, margin: "auto" }} />
-                    </Pressable>
-                    <Pressable onPress={redirectToChat} style={styles.detailsContainer}>
+                    </CustomPressable>
+                    <CustomPressable onPress={redirectToChat} style={styles.detailsContainer}>
                         <CustomText style={styles.username}>{senderData ? senderData.displayName : ""}</CustomText>
                         <CustomText style={styles.lastMessage}>{(lastSender === user?.uid) ? "You : " : ""}{lastMessage}</CustomText>
-                    </Pressable>
+                    </CustomPressable>
                 </View>
                 <View style={{ padding: 12 }}>
                     <ThreeDots

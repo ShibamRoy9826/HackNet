@@ -163,7 +163,7 @@ export default function NewPostScreen() {
         },
         label: {
             fontSize: 18,
-            color: "white",
+            color: colors.text,
             width: "100%",
             textAlign: "left",
             paddingLeft: 40,

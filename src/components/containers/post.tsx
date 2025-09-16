@@ -1,7 +1,8 @@
 //components
 import CommentBox from "@components/inputs/comment/commentBox";
+import CustomPressable from "@components/inputs/customPressable";
 import LikeButton from "@components/inputs/likeButton";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 import CarouselComponent from "../display/carousel";
 import CustomText from "../display/customText";
 
@@ -33,11 +34,12 @@ interface Prop {
     used_media: boolean,
     media: string[],
     user_uid: string,
-    comment_count: number
+    comment_count: number,
+    comments_enabled: boolean
 }
 
 
-const Post = memo(function Post({ id, user_uid, media, used_media, message, uid, timestamp, comment_count }: Prop) {
+const Post = memo(function Post({ id, user_uid, media, used_media, message, uid, timestamp, comment_count, comments_enabled }: Prop) {
     const router = useRouter();
     const [commentCount, setCommentCount] = useState(comment_count);
     const [liked, setLiked] = useState(false);
@@ -115,14 +117,14 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
         <View style={styles.postBox}>
             {/* OP details */}
             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%", paddingHorizontal: 10 }}>
-                <Pressable style={{ margin: "auto" }} onPress={() => { redirectToProfile() }}>
+                <CustomPressable style={{ margin: "auto" }} onPress={() => { redirectToProfile() }}>
                     <Image source={{ uri: userPfp }} style={{ borderRadius: 50, width: 45, height: 45, margin: "auto" }} />
-                </Pressable>
+                </CustomPressable>
                 <View style={styles.detailsContainer}>
-                    <Pressable onPress={() => { redirectToProfile() }}>
+                    <CustomPressable onPress={() => { redirectToProfile() }}>
                         <CustomText style={styles.username}>{OPName}</CustomText>
                         <CustomText style={styles.timestamp}>{extractTime(timestamp)}</CustomText>
-                    </Pressable>
+                    </CustomPressable>
                 </View>
                 <PostThreeDots
                     postId={id}
@@ -148,16 +150,21 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
             <View style={{ flexDirection: "row", paddingHorizontal: 20, justifyContent: "flex-start", alignItems: "center", width: "auto" }}>
                 <LikeButton userId={user_uid} postId={id} liked={liked} setLiked={setLiked} />
 
-                <Pressable style={{ padding: 8, flexDirection: "row" }} onPress={() => { router.push(`/comments/${id}`) }}>
+                <CustomPressable style={{ padding: 8, flexDirection: "row" }} onPress={() => { router.push(`/comments/${id}`) }}>
                     <MaterialDesignIcons name="comment" color={colors.disabled} size={25} />
                     <CustomText style={{ color: colors.muted, marginLeft: 5 }}>{commentCount}</CustomText>
-                </Pressable>
+                </CustomPressable>
 
-                <Pressable style={{ padding: 8 }} onPress={() => { sharePost(id) }}>
+                <CustomPressable style={{ padding: 8 }} onPress={() => { sharePost(id) }}>
                     <MaterialDesignIcons name="share" color={colors.disabled} size={25} />
-                </Pressable>
+                </CustomPressable>
             </View>
-            <CommentBox userId={user_uid} postId={id} />
+            {
+                comments_enabled ?
+                    <CommentBox userId={user_uid} postId={id} />
+                    : null
+
+            }
         </View>
     );
 })

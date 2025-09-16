@@ -1,5 +1,6 @@
 import { auth, getUserData } from "@auth/firebase";
 import CustomText from "@components/display/customText";
+import CustomPressable from "@components/inputs/customPressable";
 import { useTheme } from "@contexts/themeContext";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { UserData } from "@utils/types";
@@ -7,7 +8,7 @@ import { acceptRequest, rejectRequest } from "@utils/userUtils";
 import { useRouter } from "expo-router";
 import { Timestamp } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 
 interface Props {
     id: string,
@@ -89,24 +90,24 @@ export default function FriendRequest({ id, createdAt }: Props) {
     return (
         <View style={styles.friendBox}>
             <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%", paddingHorizontal: 10 }}>
-                <Pressable onPress={redirectToProfile}>
+                <CustomPressable onPress={redirectToProfile}>
                     <Image source={{ uri: senderData ? senderData.avatar : "" }} style={{ borderRadius: 50, width: 45, height: 45, margin: "auto" }} />
-                </Pressable>
+                </CustomPressable>
                 <View style={styles.detailsContainer}>
-                    <Pressable onPress={redirectToProfile}>
+                    <CustomPressable onPress={redirectToProfile}>
                         <CustomText style={styles.username}>{senderData ? senderData.displayName : ""}</CustomText>
                         <CustomText style={styles.lastMessage}>{senderData ? senderData.displayName : ""}</CustomText>
-                    </Pressable>
+                    </CustomPressable>
                 </View>
                 <View style={{ flexDirection: "row", gap: 10 }}>
-                    <Pressable style={styles.acceptBtn} onPress={() => { acceptRequest(id, user ? user.uid : "") }}>
+                    <CustomPressable style={styles.acceptBtn} onPress={() => { acceptRequest(id, user ? user.uid : "") }}>
                         {/* <CustomText style={{ color: "white", fontWeight: "bold" }}>Track</CustomText> */}
                         <MaterialDesignIcons name="checkbox-marked-circle-outline" color={colors.text} size={20} />
-                    </Pressable>
-                    <Pressable style={styles.rejectBtn} onPress={() => { rejectRequest(id, user ? user.uid : "") }}>
+                    </CustomPressable>
+                    <CustomPressable style={styles.rejectBtn} onPress={() => { rejectRequest(id, user ? user.uid : "") }}>
                         {/* <CustomText style={{ color: "white", fontWeight: "bold" }}>Track</CustomText> */}
                         <MaterialDesignIcons name="close-circle" color={colors.text} size={20} />
-                    </Pressable>
+                    </CustomPressable>
                 </View>
             </View>
         </View>

@@ -1,6 +1,7 @@
 //components
+import CustomPressable from "@components/inputs/customPressable";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { Animated, Image, Pressable, StyleSheet } from "react-native";
+import { Animated, Image, StyleSheet } from "react-native";
 import CustomText from "../display/customText";
 
 //contexts
@@ -63,12 +64,12 @@ export default function HomeHeader({ tY, h, pT }: Props) {
     return (
         // will remove animated view later
         <Animated.View style={[styles.header, { height: h, paddingTop: pT, transform: [{ translateY: tY }] }]}>
-            <Pressable onPress={() => router.navigate('/(tabs)/profile/')}>
+            <CustomPressable onPress={() => router.navigate('/(tabs)/profile/')}>
                 <Image source={userData?.avatar ? { uri: userData.avatar } : require("@assets/images/pfp.jpg")} style={{ borderRadius: 50, width: 30, height: 30, marginHorizontal: 10 }} />
-            </Pressable>
+            </CustomPressable>
 
             <CustomText style={{ fontSize: 18, color: colors.text, marginRight: "auto" }}> Ahoy, Hacker!</CustomText>
-            <Pressable style={[{ position: "relative" }, styles.button]} onPress={() => { router.push('/(tabs)/home/notifications') }}>
+            <CustomPressable style={[{ position: "relative" }, styles.button]} onPress={() => { router.push('/(tabs)/home/notifications') }}>
                 <MaterialDesignIcons name={"bell"} color={colors.text} size={25} />
                 {
                     (unreadCount > 0) ?
@@ -76,10 +77,10 @@ export default function HomeHeader({ tY, h, pT }: Props) {
                         :
                         null
                 }
-            </Pressable>
-            <Pressable style={styles.button} onPress={() => { router.navigate('/(tabs)/home/settings') }}>
+            </CustomPressable>
+            <CustomPressable style={styles.button} onPress={() => { router.navigate('/(tabs)/home/settings') }}>
                 <MaterialDesignIcons name="cog-outline" color={colors.text} size={25} />
-            </Pressable>
+            </CustomPressable>
         </Animated.View>
     );
 }
