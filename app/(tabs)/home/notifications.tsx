@@ -33,7 +33,7 @@ export default function NotificationScreen() {
                         ...(doc.data() as Omit<notification, 'id'>)
                     }
                 ));
-                console.log(data);
+                // console.log(data);
                 setReadNotif(data);
             });
 

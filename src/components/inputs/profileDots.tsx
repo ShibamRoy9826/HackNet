@@ -39,7 +39,7 @@ export default function ProfileDots({ setFollowing, isFollowing, style, user_id 
                 data={[
                     isFollowing ?
                         {
-                            text: "Unfollow", icon: "account-plus", func: () => {
+                            text: "Unfollow", icon: "account-minus", func: () => {
                                 unfollowUser(user_id);
                                 setFollowing && setFollowing(false);
                             }

@@ -71,7 +71,6 @@ export default function CommentsScreen() {
                 ...prev,
                 ...userData
             }
-            console.log(d)
             return d;
         })
 

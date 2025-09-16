@@ -1,7 +1,10 @@
 import { auth, db } from "@auth/firebase";
+
 import {
     addDoc, collection,
-    deleteDoc, doc, getCountFromServer, increment, runTransaction, setDoc, updateDoc
+    deleteDoc, doc, getCountFromServer,
+    getDoc,
+    increment, runTransaction, setDoc, updateDoc
 } from "firebase/firestore";
 export async function addComment(comment: string, post_id: string, fn?: () => void) {
     const uid = auth.currentUser ? auth.currentUser.uid : "";
@@ -47,6 +50,23 @@ export async function deleteComment(postId: string, commentId: string) {
     }
 }
 
+export async function checkUserLikedComment(postId: string, commentId: string, userId: string) {
+    const likeRef = doc(db, "posts", postId, "comments", commentId, "likes", userId);
+    try {
+        const likeSnap = await getDoc(likeRef);
+        const liked = likeSnap.exists();
+        return liked;
+    }
+    catch (e) {
+        console.log(e, " there's an error...");
+        return false;
+    }
+}
+export async function getCommentLikeCount(postId: string, commentId: string) {
+    const col = collection(db, "posts", postId, "comments", commentId, "likes");
+    const likeCount = await getCountFromServer(col);
+    return likeCount.data().count;
+}
 
 export async function likeComment(postId: string, commentId: string, userUid: string) {
     try {
@@ -55,6 +75,7 @@ export async function likeComment(postId: string, commentId: string, userUid: st
                 createdAt: new Date()
             }
         )
+        return await getCommentLikeCount(postId, commentId);
     } catch (e) {
         console.log(e);
         return 0;
@@ -64,42 +85,14 @@ export async function likeComment(postId: string, commentId: string, userUid: st
 export async function removeLikeFromComment(postId: string, commentId: string, userUid: string) {
     try {
         await deleteDoc(doc(db, "posts", postId, "comments", commentId, "likes", userUid));
+        return await getCommentLikeCount(postId, commentId);
     } catch (e) {
         console.log(e);
         return 0;
     }
 }
-
-
-export async function dislikeComment(postId: string, commentId: string, userUid: string) {
-    try {
-        await setDoc(doc(db, "posts", postId, "comments", commentId, "dislikes", userUid),
-            {
-                createdAt: new Date()
-            }
-        )
-    } catch (e) {
-        console.log(e);
-        return 0;
-    }
-}
-
-export async function removeDislikeFromComment(postId: string, commentId: string, userUid: string) {
-    try {
-        await deleteDoc(doc(db, "posts", postId, "comments", commentId, "dislikes", userUid));
-    } catch (e) {
-        console.log(e);
-        return 0;
-    }
-}
-
 
 export async function commentLikeCount(postId: string, commentId: string) {
     const likes = await getCountFromServer(collection(db, "posts", postId, "comments", commentId, "likes"));
     return likes.data().count;
-}
-
-export async function commentDislikeCount(postId: string, commentId: string) {
-    const dislikes = await getCountFromServer(collection(db, "posts", postId, "comments", commentId, "dislikes"));
-    return dislikes.data().count;
 }

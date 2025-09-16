@@ -1,19 +1,21 @@
 import CustomText from "@components/display/customText";
-import CustomPressable from "@components/inputs/customPressable";
 import { useTheme } from "@contexts/themeContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
-import { checkUserLiked, dislikePost, getLikeCount, likePost } from "@utils/postUtils";
+import { checkUserLikedComment, getCommentLikeCount, likeComment, removeLikeFromComment } from "@utils/commentUtils";
 import { useAudioPlayer } from 'expo-audio';
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import CustomPressable from "../customPressable";
 
 interface Prop {
     userId: string,
     postId: string,
+    commentId: string,
+    liked: boolean,
+    setLiked: React.Dispatch<React.SetStateAction<boolean>>,
 }
-export default function LikeButton({ userId, postId }: Prop) {
+export default function LikeButton({ liked, setLiked, userId, postId, commentId }: Prop) {
     const { colors } = useTheme();
-    const [liked, setLiked] = useState(false);
     const likeRef = useRef(0);
     const likeCooldown = useRef(false);
 
@@ -28,7 +30,6 @@ export default function LikeButton({ userId, postId }: Prop) {
     }, [])
 
     function handleLike() {
-        // because liked changes after next render, we gotta use opposite thingy
         if (liked) {
             if (!likeCooldown.current) {
                 likeRef.current -= 1;
@@ -41,7 +42,7 @@ export default function LikeButton({ userId, postId }: Prop) {
                         }
                     }
                 )
-                dislikePost(postId, userId).then(
+                removeLikeFromComment(postId, commentId, userId).then(
                     (val) => {
                         likeRef.current = val;
                     }
@@ -59,7 +60,7 @@ export default function LikeButton({ userId, postId }: Prop) {
                         }
                     }
                 )
-                likePost(postId, userId).then(
+                likeComment(postId, commentId, userId).then(
                     (val) => {
                         likeRef.current = val;
                     }
@@ -71,8 +72,8 @@ export default function LikeButton({ userId, postId }: Prop) {
     }
 
     async function setDefaultLikedState() {
-        const userLiked = await checkUserLiked(postId, userId);
-        likeRef.current = await getLikeCount(postId);
+        const userLiked = await checkUserLikedComment(postId, commentId, userId);
+        likeRef.current = await getCommentLikeCount(postId, commentId);
         setLiked(userLiked);
     }
 
@@ -82,8 +83,5 @@ export default function LikeButton({ userId, postId }: Prop) {
             <CustomText style={{ color: colors.muted, marginLeft: 5 }}>{likeRef.current}</CustomText>
         </CustomPressable>
     )
-
-
-
 
 }

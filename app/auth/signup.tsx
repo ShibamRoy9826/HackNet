@@ -192,7 +192,7 @@ export default function SignUpScreen() {
                 <InputBox secure={false} value={username} valueFn={setUserName} color={colors.muted} icon="account-circle" placeholder="Your Name" type="emailAddress" />
                 <InputBox secure={false} value={email} valueFn={setEmail} color={colors.muted} icon="email" placeholder="Your Email" type="emailAddress" />
                 <InputBox secure={true} value={password} valueFn={setPassword} color={colors.muted} icon="key" placeholder="Your Password" type="password" />
-                <InputBox secure={true} value={confirmpassword} valueFn={setCpassword} color={colors.muted} icon="key" placeholder="Confirm Password" type="password" />
+                <InputBox eye={true} secure={true} value={confirmpassword} valueFn={setCpassword} color={colors.muted} icon="key" placeholder="Confirm Password" type="password" />
             </View>
 
             <CustomButton

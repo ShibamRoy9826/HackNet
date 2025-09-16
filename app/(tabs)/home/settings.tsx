@@ -81,7 +81,6 @@ export default function SettingsScreen() {
     function logout() {
         auth.signOut();
         signOut(auth).then(async () => {
-            await AsyncStorage.clear();
             router.navigate("/auth/login");
         }).catch((e) => {
             console.log("ERROR::: ", e.code, e.message)

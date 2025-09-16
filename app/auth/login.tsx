@@ -135,7 +135,7 @@ export default function LoginScreen() {
 
             <View style={styles.fieldContainer}>
                 <InputBox secure={false} value={email} valueFn={setEmail} color={colors.muted} icon="email" placeholder="Your Email" type="emailAddress" />
-                <InputBox secure={true} value={password} valueFn={setPassword} color={colors.muted} icon="key" placeholder="Your Password" type="password" />
+                <InputBox secure={true} eye={true} value={password} valueFn={setPassword} color={colors.muted} icon="key" placeholder="Your Password" type="password" />
 
             </View>
             <CustomText style={styles.forgotPass} onPress={() => { router.navigate("/auth/forgotPass") }}>Forgot Password?</CustomText>
