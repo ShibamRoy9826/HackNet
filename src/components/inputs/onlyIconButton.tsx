@@ -7,10 +7,11 @@ import { Pressable, StyleProp, StyleSheet, ViewStyle } from "react-native";
 type Props = {
     func: () => void;
     style?: StyleProp<ViewStyle>;
-    icon: "account-plus-outline" | "arrow-left" | "magnify" | "whatsapp" | "facebook" | "reddit" | "link-variant" | "dots-horizontal" | "dots-vertical";
+    icon: "account-plus-outline" | "arrow-left" | "magnify" | "whatsapp" | "facebook" | "reddit" | "link-variant" | "dots-horizontal" | "dots-vertical" | "delete";
+    showBadgeAlert?: boolean;
 }
 
-export default function OnlyIconButton({ func, style, icon }: Props) {
+export default function OnlyIconButton({ func, style, icon, showBadgeAlert }: Props) {
     const { colors } = useTheme();
 
     const styles = StyleSheet.create({
@@ -31,6 +32,12 @@ export default function OnlyIconButton({ func, style, icon }: Props) {
     return (
         <Pressable style={[style, styles.button]} onPress={func}>
             <MaterialDesignIcons name={icon} size={20} color={colors.text} />
+            {
+                showBadgeAlert ?
+                    <MaterialDesignIcons style={{ position: "absolute", top: 4, right: 2, zIndex: 2 }} name={"circle"} color={colors.primary} size={10} />
+                    :
+                    null
+            }
         </Pressable>
     )
 

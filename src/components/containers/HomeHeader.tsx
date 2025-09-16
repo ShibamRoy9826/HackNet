@@ -61,6 +61,7 @@ export default function HomeHeader({ tY, h, pT }: Props) {
     });
 
     return (
+        // will remove animated view later
         <Animated.View style={[styles.header, { height: h, paddingTop: pT, transform: [{ translateY: tY }] }]}>
             <Pressable onPress={() => router.navigate('/(tabs)/profile/')}>
                 <Image source={userData?.avatar ? { uri: userData.avatar } : require("@assets/images/pfp.jpg")} style={{ borderRadius: 50, width: 30, height: 30, marginHorizontal: 10 }} />

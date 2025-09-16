@@ -12,11 +12,11 @@ import { useEffect, useState } from "react";
 //typecasting
 import { auth, db } from "@auth/firebase";
 import NothingHere from "@components/display/nothing";
+import { useDataContext } from "@contexts/dataContext";
 import { useTheme } from "@contexts/themeContext";
-import { chat } from "@utils/types";
+import { chat, friendRequest } from "@utils/types";
 import { useRouter } from "expo-router";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
-
 
 
 export default function FriendsScreen() {
@@ -25,6 +25,9 @@ export default function FriendsScreen() {
     const router = useRouter()
     const currUser = auth.currentUser;
     const [chats, setChats] = useState<chat[]>();
+
+    const [badgeAlert, setBadgeAlert] = useState(false);
+    const { setFriendRequests } = useDataContext();
 
     useEffect(() => {
         const chatSub = onSnapshot(query(
@@ -39,6 +42,19 @@ export default function FriendsScreen() {
                 ));
                 setChats(data);
             });
+
+        const friendRequestSub = onSnapshot(collection(db, "users", currUser ? currUser.uid : "", "friendRequests"), (snap) => {
+            const data: friendRequest[] = snap.docs.map(doc => (
+                {
+                    id: doc.id,
+                    ...(doc.data() as Omit<friendRequest, 'id'>)
+                }
+            ));
+            setFriendRequests(data);
+            setBadgeAlert(data.length > 0);
+
+        });
+
     }, [])
     const { colors } = useTheme();
 
@@ -68,6 +84,7 @@ export default function FriendsScreen() {
             <View style={{ flexDirection: "row", alignItems: "center", width: "100%" }}>
                 <CustomText style={{ color: colors.text, fontSize: 20, textAlign: "center", fontWeight: "bold", marginVertical: 10, marginLeft: "10%" }}>Your Friends</CustomText>
                 <OnlyIconButton
+                    showBadgeAlert={badgeAlert}
                     icon="account-plus-outline"
                     func={() => { router.push("/(tabs)/friends/friendRequests") }}
                     style={{ marginLeft: "auto", marginRight: 30 }}

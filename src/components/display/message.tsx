@@ -1,16 +1,40 @@
 import { auth } from "@auth/firebase";
+import { useDataContext } from "@contexts/dataContext";
 import { useTheme } from "@contexts/themeContext";
 import { extractTime } from "@utils/stringTimeUtils";
 import { message } from "@utils/types";
-import { StyleSheet, View } from "react-native";
+import { useEffect, useState } from 'react';
+import { Pressable, StyleSheet, View } from "react-native";
 import CustomText from "./customText";
 
 interface Props {
-    message: message
+    message: message,
 }
 export default function Message({ message }: Props) {
     const { colors } = useTheme();
+    const [selected, setSelected] = useState(false);
+    const { selectionMode, setSelectionMode, setMessageIds, messageIds } = useDataContext();
+
     const user = auth.currentUser
+
+
+    function addSelectedId(id: string) {
+        setMessageIds(prev => [...prev, id]);
+    }
+
+    function removeSelectedId(id: string) {
+        setMessageIds(prev => prev.filter(m => m !== id));
+    }
+
+
+    useEffect(() => {
+        if (messageIds.includes(message.id)) {
+            setSelected(true);
+        } else {
+            setSelected(false);
+        }
+    }, [messageIds]);
+
     const styles = StyleSheet.create({
         text: {
             color: colors.text,
@@ -36,6 +60,11 @@ export default function Message({ message }: Props) {
             maxWidth: "90%",
 
         },
+        pressable: {
+            backgroundColor: selected ? colors.darkBackground : colors.background,
+            width: "100%"
+        },
+
         selfMessage: {
             right: 10,
             borderTopLeftRadius: 10,
@@ -49,13 +78,34 @@ export default function Message({ message }: Props) {
             borderTopRightRadius: 10,
             borderBottomLeftRadius: 10,
             borderBottomRightRadius: 10,
-        }
+        },
     })
 
+    function handleLongPress() {
+        if (!selected) {
+            setSelectionMode(true);
+            addSelectedId(message.id);
+        }
+        setSelected(!selected);
+    }
+
+    function handleShortPress() {
+        if (selectionMode) {
+            setSelected(!selected);
+            if (!selected) {
+                addSelectedId(message.id);
+            } else {
+                removeSelectedId(message.id);
+            }
+        }
+    }
+
     return (
-        <View style={[styles.textContainer, (user?.uid === message.sender) ? styles.selfMessage : styles.otherMessage]}>
-            <CustomText style={styles.text}>{message.text}</CustomText>
-            <CustomText style={styles.timestamp}>{extractTime(message.createdAt, true)}</CustomText>
-        </View>
+        <Pressable style={styles.pressable} onLongPress={handleLongPress} onPress={handleShortPress}>
+            <View style={[styles.textContainer, (user?.uid === message.sender) ? styles.selfMessage : styles.otherMessage]}>
+                <CustomText style={styles.text}>{message.text}</CustomText>
+                <CustomText style={styles.timestamp}>{extractTime(message.createdAt, true)}</CustomText>
+            </View>
+        </Pressable>
     );
 }

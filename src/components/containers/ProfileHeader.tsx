@@ -20,15 +20,17 @@ interface Props {
     userData: any;
     user_id?: string;
     sameUser?: boolean;
+    isFollowing?: boolean;
 }
 
-export default function ProfileHeader({ sameUser, user_id, userData }: Props) {
+export default function ProfileHeader({ sameUser, user_id, userData, isFollowing }: Props) {
     const { colors } = useTheme();
     const router = useRouter();
     const insets = useSafeAreaInsets();
     const [num_trackers, setNumTrackers] = useState(0);
     const user = auth.currentUser;
-    const [followed, setFollow] = useState(false);
+
+    const [followed, setFollow] = useState(isFollowing);
 
     async function followBtnWrapper() {
         if (followed) {
@@ -43,8 +45,12 @@ export default function ProfileHeader({ sameUser, user_id, userData }: Props) {
         const col = collection(db, "users", user_id ? user_id : user ? user.uid : "", "trackers");
         const trackers = await getCountFromServer(col);
         setNumTrackers(trackers.data().count);
-        const isTracking = await checkFollow(user_id ? user_id : user ? user.uid : "");
-        setFollow(isTracking);
+
+        if (isFollowing === undefined) {
+            const isTracking = await checkFollow(user_id ? user_id : user ? user.uid : "");
+            setFollow(isTracking);
+        }
+
     }
 
     function returnBanner(bannerPath: string) {
@@ -119,6 +125,8 @@ export default function ProfileHeader({ sameUser, user_id, userData }: Props) {
                         <ProfileDots
                             user_id={user_id ? user_id : ""}
                             style={{ position: "absolute", zIndex: 3, elevation: 20, top: 10, right: 10 }}
+                            isFollowing={followed}
+                            setFollowing={setFollow}
                         />
                     </View>
 

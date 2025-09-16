@@ -47,12 +47,14 @@ export async function followUser(userId: string) {
 export async function unfollowUser(userId: string) {
     const currUser = auth.currentUser;
     const follow = doc(db, "users", userId, "trackers", currUser ? currUser.uid : "")
+    const currUserProfile = doc(db, "users", currUser ? currUser.uid : "")
     try {
-        await deleteDoc(follow);
-        await updateDoc(doc(db, "users", currUser ? currUser.uid : ""),
-            {
+        await runTransaction(db, async (transaction) => {
+            transaction.delete(follow);
+            transaction.update(currUserProfile, {
                 num_tracking: increment(-1)
             })
+        });
     } catch (e) {
         console.log(e);
     }
@@ -62,17 +64,22 @@ export async function unfollowUser(userId: string) {
 export async function sendFriendRequest(sender: string, receiver: string) {
     const requestRef = doc(db, "users", receiver, "friendRequests", sender)
     try {
-        const req = await getDoc(requestRef);
-        if (req.exists()) {
-            ToastAndroid.show("You already sent a friend request to them", 3)
-        } else {
-            await setDoc(
-                requestRef,
-                {
-                    createdAt: new Date()
-                }
-            )
-        }
+        await runTransaction(db, async (transaction) => {
+            const req = transaction.get(requestRef)
+            if ((await req).exists()) {
+                ToastAndroid.show("You already sent a friend request to them", 3)
+            } else {
+                transaction.set(
+                    requestRef,
+                    {
+                        createdAt: new Date()
+                    }
+                )
+
+                ToastAndroid.show("Sent friend request, hope they accept you soon!", 3)
+
+            }
+        });
     } catch (e) {
         console.log("Couldn't send friend request", e)
     }
@@ -85,14 +92,13 @@ export async function acceptRequest(sender: string, receiver: string) {
 
     const chatRef = collection(db, "chats");
 
-    console.log(sender, receiver);
     try {
         await runTransaction(db, async (transaction) => {
             const newChatRef = doc(chatRef);
             transaction.set(newChatRef, {
                 uids: [sender, receiver],
                 lastMessage: "Start a new conversation",
-                lastSender: undefined,
+                lastSender: "",
                 updatedAt: new Date(),
             })
             transaction.set(receiverRef, { createdAt: new Date() });
@@ -121,12 +127,12 @@ export async function rejectRequest(sender: string, receiver: string) {
 
 export async function unfriend(sender: string, receiver: string, chatId: string) {
     try {
-        await deleteDoc(
-            doc(db, "users", receiver, "friends", sender)
-        )
-        await deleteDoc(
-            doc(db, "chats", chatId)
-        )
+
+        await runTransaction(db, async (transaction) => {
+            transaction.delete(doc(db, "users", receiver, "friends", sender));
+            transaction.delete(doc(db, "users", sender, "friends", receiver));
+            transaction.delete(doc(db, "chats", chatId));
+        })
         ToastAndroid.show("Unfriended successfully", 3)
     } catch (e) {
         console.log("Couldn't remove friend", e)

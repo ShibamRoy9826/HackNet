@@ -1,36 +1,21 @@
-import { auth, db } from "@auth/firebase";
 import FriendRequest from "@components/containers/friendRequest";
 import CustomText from "@components/display/customText";
 import NothingHere from "@components/display/nothing";
 import OnlyIconButton from "@components/inputs/onlyIconButton";
+import { useDataContext } from "@contexts/dataContext";
 import { useTheme } from "@contexts/themeContext";
 import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
 import { friendRequest } from "@utils/types";
 import { useRouter } from "expo-router";
-import { collection, onSnapshot } from "firebase/firestore";
-import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function FriendRequests() {
     const router = useRouter();
     const insets = useSafeAreaInsets();
-    const currUser = auth.currentUser;
-    const [requests, setRequests] = useState<friendRequest[]>([]);
+    const { friendRequests } = useDataContext();
 
     const { colors } = useTheme();
-    useEffect(() => {
-        const friendRequestSub = onSnapshot(collection(db, "users", currUser ? currUser.uid : "", "friendRequests"), (snap) => {
-            const data: friendRequest[] = snap.docs.map(doc => (
-                {
-                    id: doc.id,
-                    ...(doc.data() as Omit<friendRequest, 'id'>)
-                }
-            ));
-            setRequests(data);
-
-        });
-    }, [])
 
     const styles = StyleSheet.create({
         listContainer: {
@@ -77,7 +62,7 @@ export default function FriendRequests() {
             </View>
             <View style={styles.listContainer}>
                 <FlashList
-                    data={requests}
+                    data={friendRequests}
                     keyExtractor={item => item.id}
                     ListEmptyComponent={<NothingHere />}
                     renderItem={({ item }: ListRenderItemInfo<friendRequest>) => (

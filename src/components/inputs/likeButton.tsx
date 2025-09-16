@@ -4,16 +4,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import MaterialDesignIcons from "@react-native-vector-icons/material-design-icons";
 import { checkUserLiked, dislikePost, getLikeCount, likePost } from "@utils/postUtils";
 import { useAudioPlayer } from 'expo-audio';
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { Pressable } from 'react-native';
 
 interface Prop {
     userId: string;
     postId: string;
+    liked: boolean;
+    setLiked: React.Dispatch<React.SetStateAction<boolean>>;
 }
-export default function LikeButton({ userId, postId }: Prop) {
+export default function LikeButton({ liked, setLiked, userId, postId }: Prop) {
     const { colors } = useTheme();
-    const [liked, setLiked] = useState(false);
     const likeRef = useRef(0);
     const likeCooldown = useRef(false);
 

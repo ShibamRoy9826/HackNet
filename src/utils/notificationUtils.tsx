@@ -9,7 +9,8 @@ export async function sendNotifToUser(
     title: string,
     msg: string,
     url: string,
-    uid: string
+    uid: string,
+    noObject?: boolean
 ) {
 
     const userToFollow = doc(db, "users", uid)
@@ -32,21 +33,26 @@ export async function sendNotifToUser(
         data: { url: url }
     };
 
-    try {
-        createNotifObject(uid, msg, title, url)
+    if (expoPushToken !== "") {
+        try {
+            if (!noObject) {
+                createNotifObject(uid, msg, title, url)
+            }
 
-        await fetch('https://exp.host/--/api/v2/push/send', {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Accept-encoding': 'gzip, deflate',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(message),
-        });
+            await fetch('https://exp.host/--/api/v2/push/send', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Accept-encoding': 'gzip, deflate',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(message),
+            });
 
-    } catch (e: unknown) {
-        console.log("noooooo !! errrrrr occured... :", e)
+        } catch (e: unknown) {
+            console.log("noooooo !! errrrrr occured... :", e)
+        }
+
     }
 
 }

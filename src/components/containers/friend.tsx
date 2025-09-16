@@ -4,12 +4,13 @@ import ThreeDots from "@components/display/threeDots";
 import { useDataContext } from "@contexts/dataContext";
 import { useTheme } from "@contexts/themeContext";
 import { deleteAllMessages } from "@utils/chatUtils";
+import { report } from "@utils/otherUtils";
 import { UserData } from "@utils/types";
 import { unfriend } from "@utils/userUtils";
 import { useRouter } from "expo-router";
 import { Timestamp } from "firebase/firestore";
 import { useEffect, useState } from "react";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Alert, Image, Pressable, StyleSheet, View } from "react-native";
 
 interface Props {
     chatId: string,
@@ -94,9 +95,26 @@ export default function FriendBox({ lastSender, chatId, uid, updatedAt, lastMess
                 <View style={{ padding: 12 }}>
                     <ThreeDots
                         data={[
-                            { text: "Clear all chats for you", icon: "delete", func: () => { deleteAllMessages(chatId, user ? user.uid : ""); } },
-                            { text: "Unfriend", icon: "account-minus", func: () => { unfriend(uid, user ? user.uid : "", chatId) } },
-                            { text: "Report", icon: "exclamation", func: () => { } }
+                            { text: "Clear all chats", icon: "shredder", func: () => { deleteAllMessages(chatId, user ? user.uid : ""); } },
+                            { text: "Unfriend", icon: "heart-broken", func: () => { unfriend(uid, user ? user.uid : "", chatId) } },
+                            {
+                                text: "Report", icon: "exclamation", func: () => {
+                                    Alert.alert("Are you sure?", "Please don't make false reports, be sure before doing a report",
+                                        [
+                                            {
+                                                text: "Yes",
+                                                onPress: () => {
+                                                    report("account", user ? user.uid : "", uid, user ? user.uid : "")
+                                                }
+                                            },
+                                            {
+                                                text: "No",
+                                                style: "cancel"
+                                            }
+                                        ]
+                                    )
+                                }
+                            }
                         ]}
                     />
 

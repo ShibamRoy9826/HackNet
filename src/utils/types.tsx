@@ -38,7 +38,8 @@ export type UserData = {
 export type BottomSheetItem = {
     text: string;
     func: () => void;
-    icon: "delete" | "share-variant" | "account-plus" | "heart" | "exclamation" | "account-group" | "sticker-check-outline" | "account-minus"
+    icon: "shredder" | "delete" | "share-variant" | "account-plus" | "heart" | "exclamation" | "account-group" | "sticker-check-outline" | "account-minus" | "checkbox-blank-outline" | "heart-outline" | "checkbox-marked" | "heart-broken";
+
 };
 
 export type BottomSheetData = {

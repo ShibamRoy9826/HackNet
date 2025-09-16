@@ -40,6 +40,7 @@ interface Prop {
 const Post = memo(function Post({ id, user_uid, media, used_media, message, uid, timestamp, comment_count }: Prop) {
     const router = useRouter();
     const [commentCount, setCommentCount] = useState(comment_count);
+    const [liked, setLiked] = useState(false);
 
     const [userPfp, setUserPfp] = useState("https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg");
     const [OPName, setOPName] = useState("Your Name");
@@ -125,8 +126,10 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
                 </View>
                 <PostThreeDots
                     postId={id}
-                    OpId={user_uid}
-                    currentUserId={uid}
+                    OpId={uid}
+                    currentUserId={user_uid}
+                    liked={liked}
+                    setLiked={setLiked}
                 />
             </View>
             <View style={{ paddingVertical: 10, borderColor: colors.border, borderTopWidth: StyleSheet.hairlineWidth, height: "auto" }}>
@@ -143,7 +146,7 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
 
             {/* Buttons */}
             <View style={{ flexDirection: "row", paddingHorizontal: 20, justifyContent: "flex-start", alignItems: "center", width: "auto" }}>
-                <LikeButton userId={user_uid} postId={id} />
+                <LikeButton userId={user_uid} postId={id} liked={liked} setLiked={setLiked} />
 
                 <Pressable style={{ padding: 8, flexDirection: "row" }} onPress={() => { router.push(`/comments/${id}`) }}>
                     <MaterialDesignIcons name="comment" color={colors.disabled} size={25} />

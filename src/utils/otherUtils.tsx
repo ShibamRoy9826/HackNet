@@ -1,3 +1,6 @@
+import { db } from "@auth/firebase";
+import { addDoc, collection } from "firebase/firestore";
+import { ToastAndroid } from "react-native";
 import { extractUrl } from "./stringTimeUtils";
 
 export async function uploadToHc(urls: string[]) {
@@ -54,4 +57,21 @@ export const uploadFileTemp = async (file: any): Promise<string> => {
 
 export function handleSlackLogin() {
     console.log("Tried slack login");
+}
+
+export async function report(type: string, objectId: string | string[], reportedBy: string, accused: string) {
+    try {
+        await addDoc(collection(db, "reports"), {
+            type: type,
+            objectId: objectId,
+            reportedBy: reportedBy,
+            accused: accused,
+            reportedAt: new Date()
+        });
+        console.log("reported ", accused, " by ", reportedBy)
+        ToastAndroid.show("Reported successfully, thanks for reporting!", 3);
+
+    } catch (e) {
+        console.log(`Couldn't report ${type}: `, objectId, e);
+    }
 }

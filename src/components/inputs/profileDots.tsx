@@ -1,15 +1,18 @@
 import { auth } from "@auth/firebase";
 import ThreeDots from "@components/display/threeDots";
 import { useTheme } from "@contexts/themeContext";
-import { sendFriendRequest } from "@utils/userUtils";
+import { report } from "@utils/otherUtils";
+import { followUser, sendFriendRequest, unfollowUser } from "@utils/userUtils";
 import { StyleSheet, View, ViewStyle } from "react-native";
 
 interface Props {
     user_id: string;
-    style: ViewStyle
+    style: ViewStyle;
+    isFollowing?: boolean;
+    setFollowing?: React.Dispatch<React.SetStateAction<boolean | undefined>>;
 }
 
-export default function ProfileDots({ style, user_id }: Props) {
+export default function ProfileDots({ setFollowing, isFollowing, style, user_id }: Props) {
     const user = auth.currentUser;
     const { colors } = useTheme();
 
@@ -34,9 +37,26 @@ export default function ProfileDots({ style, user_id }: Props) {
         <View style={[style, styles.button]} >
             <ThreeDots
                 data={[
-                    { text: "Follow", icon: "account-plus", func: () => { } },
+                    isFollowing ?
+                        {
+                            text: "Unfollow", icon: "account-plus", func: () => {
+                                unfollowUser(user_id);
+                                setFollowing && setFollowing(false);
+                            }
+                        } :
+                        {
+                            text: "Follow", icon: "account-plus", func: () => {
+                                followUser(user_id);
+                                setFollowing && setFollowing(true);
+                            }
+                        }
+                    ,
                     { text: "Send Friend Request", icon: "account-group", func: () => { sendFriendRequest(user ? user.uid : "", user_id); } },
-                    { text: "Report", icon: "exclamation", func: () => { } }
+                    {
+                        text: "Report", icon: "exclamation", func: () => {
+                            report("account", user_id, user ? user.uid : "", user_id)
+                        }
+                    }
                 ]}
                 color="white"
 
