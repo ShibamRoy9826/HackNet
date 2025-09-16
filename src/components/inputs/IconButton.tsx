@@ -6,7 +6,7 @@ import { Pressable, StyleProp, StyleSheet, ViewStyle } from "react-native";
 type Props = {
     func: () => void;
     style?: StyleProp<ViewStyle>;
-    icon: "pencil-box-multiple" | "slack" | "note-text" | "close" | "plus-box";
+    icon: "pencil-box-multiple" | "slack" | "note-text" | "close" | "plus-box" | "arrow-left";
     text: string;
     disabled?: boolean;
 }
