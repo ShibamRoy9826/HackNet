@@ -70,7 +70,11 @@ I wanted to click them with default, but realised after taking all screenshots, 
   <img src="images/screenshots/13.jpeg" width="200"/>
 </div>
 
+## Known issues
 
+- You need to close and reopen the app each time user logs in/logs off (Ik the cause, its because of a last minute change, will fix in next release)
+- In new log page, the text beside the comment toggling button says the exact opposite of what is going to happen. I don't know how it went unnoticed, but I will fix that too in the next release.
+  
 ## FAQ
 ### Why should I use this app? and not slack?
 Short answer, vibes, I totally agree with the fact that slack is probably better than HackNet(as of now) if you want to chat or do anything for that matter. But that probably won't give you the vibes similar to reddit, instagram or other apps, I wanted to make something that gives similar vibes to them. For now it doesn't have too many features but that never means that it won't have more features/equivalent features to slack in the future. UI can be another factor, and for messaging I often find slack is too sluggish(Not like my app is too fast, but at least it feels less sluggish, likely cause it doesn't have anywhere near the amount of data most likely). To be honest, the best I can explain is that "I made it", and that's a reason why I want you to use it!
