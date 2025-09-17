@@ -32,13 +32,13 @@ export default function NotFound() {
                 />
 
                 <CustomText style={{ color: colors.text, fontSize: 20, fontWeight: 700, textAlign: "center", marginBottom: 10 }}>
-                    Orpheus couldn't find this page :(
+                    Orpheus couldn&apos;t find this page :(
                 </CustomText>
                 <CustomText style={{ color: colors.muted, fontSize: 15, textAlign: "center" }}>
                     Maybe you came to a page
                 </CustomText>
                 <CustomText style={{ color: colors.muted, fontSize: 15, textAlign: "center", marginBottom: 10 }}>
-                    which does't exist anymore...
+                    which does&apos;t exist anymore...
                 </CustomText>
 
                 <View style={{ flexDirection: "row", gap: 10 }}>

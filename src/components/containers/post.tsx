@@ -161,7 +161,7 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
             </View>
             {
                 comments_enabled ?
-                    <CommentBox userId={user_uid} postId={id} />
+                    <CommentBox postId={id} />
                     : null
 
             }

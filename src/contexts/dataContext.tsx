@@ -23,7 +23,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     const [friendRequests, setFriendRequests] = useState<friendRequest[]>([]);
 
     useEffect(() => {
-        if (messageIds.length == 0) {
+        if (messageIds.length === 0) {
             setSelectionMode(false);
         }
     }, [messageIds])

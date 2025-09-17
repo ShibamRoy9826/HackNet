@@ -29,7 +29,7 @@ export function UserDataProvider({ children }: { children: React.ReactNode }) {
     );
 
     return () => unsub();
-  }, [auth.currentUser]);
+  }, []);
   return (
     <UserContext.Provider value={{ userData }}>
       {children}

@@ -52,7 +52,8 @@ export default function OtherProfileModal() {
             timestamp={item.timestamp}
             message={item.post_message}
             used_media={item.used_media}
-            media={item.media} />
+            media={item.media}
+            comments_enabled={item.comments_enabled} />
 
     ), [currentUser])
 

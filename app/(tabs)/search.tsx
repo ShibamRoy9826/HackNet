@@ -222,7 +222,7 @@ export default function SearchScreen() {
                         }
                         keyExtractor={item => item.id}
                         renderItem={({ item }) => (
-                            <Post comment_count={item.num_comments} user_uid={user ? user.uid : ""} id={item.id} uid={item.uid} timestamp={item.timestamp} message={item.post_message} used_media={item.used_media} media={item.media} />
+                            <Post comment_count={item.num_comments} user_uid={user ? user.uid : ""} id={item.id} uid={item.uid} timestamp={item.timestamp} message={item.post_message} used_media={item.used_media} media={item.media} comments_enabled={item.comments_enabled} />
                         )}
                         removeClippedSubviews={true}
                     />
