@@ -49,7 +49,7 @@ export default function InputBox({ eye, maxLen, secure, value, valueFn, color, i
             {
                 eye ?
                     <CustomPressable style={{ padding: 5 }} onPress={() => { setShowPassword(!showPassword) }}>
-                        <MaterialDesignIcons name={showPassword ? "eye-closed" : "eye-off"} size={20} color={color} />
+                        <MaterialDesignIcons name={showPassword ? "eye-closed" : "eye"} size={20} color={color} />
                     </CustomPressable>
                     : null
             }

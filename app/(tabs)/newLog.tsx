@@ -246,7 +246,7 @@ export default function NewPostScreen() {
                         onValueChange={() => { setComments(!comments_enabled); }}
                         value={comments_enabled}
                     />
-                    <CustomText style={styles.subtxt}>{(comments_enabled ? "No one can comment on your post" : "Others can comment on your post")}</CustomText>
+                    <CustomText style={styles.subtxt}>{(!comments_enabled ? "No one can comment on your post" : "Others can comment on your post")}</CustomText>
                 </View>
             </View>
 
