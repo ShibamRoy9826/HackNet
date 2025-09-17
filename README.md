@@ -12,10 +12,14 @@ Steps are simple, but **Please make sure to them them on an Android device ONLY!
 1. Click on [this link](https://github.com/ShibamRoy9826/HackNet/releases/)
 
 2. Find the latest release, and click on this:
-![Latest release apk download link](images/guide/1.jpeg)
+
+<img src="images/guide/1.jpeg" width="200" />
+
 
 3. It will start downloading, once finished downloading, click on it:
-![Install after download](images/guide/2.jpeg)
+
+<img src="images/guide/2.jpeg" width="200" />
+
 
 4. If it's your first time installing an external apk, it will ask for permissions to allow from installing from a different source, Please turn that option on inorder to install HackNet.
 
@@ -50,19 +54,22 @@ Steps are simple, but **Please make sure to them them on an Android device ONLY!
 Most of the images are taken with the *Catppuccin Mocha* theme, however one image each for other themes has also been attached
 I wanted to click them with default, but realised after taking all screenshots, maybe I will update later on...
 
-![first](images/screenshots/1.jpeg)
-![second](images/screenshots/2.jpeg)
-![third](images/screenshots/3.jpeg)
-![fourth](images/screenshots/4.jpeg)
-![fifth](images/screenshots/5.jpeg)
-![sixth](images/screenshots/6.jpeg)
-![seventh](images/screenshots/7.jpeg)
-![eigth](images/screenshots/8.jpeg)
-![ninth](images/screenshots/9.jpeg)
-![tenth](images/screenshots/10.jpeg)
-![eleventh](images/screenshots/11.jpeg)
-![twelveth](images/screenshots/12.jpeg)
-![thirteenth](images/screenshots/13.jpeg)
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+  <img src="images/screenshots/1.jpeg" width="200"/>
+  <img src="images/screenshots/2.jpeg" width="200"/>
+  <img src="images/screenshots/3.jpeg" width="200"/>
+  <img src="images/screenshots/4.jpeg" width="200"/>
+  <img src="images/screenshots/5.jpeg" width="200"/>
+  <img src="images/screenshots/6.jpeg" width="200"/>
+  <img src="images/screenshots/7.jpeg" width="200"/>
+  <img src="images/screenshots/8.jpeg" width="200"/>
+  <img src="images/screenshots/9.jpeg" width="200"/>
+  <img src="images/screenshots/10.jpeg" width="200"/>
+  <img src="images/screenshots/11.jpeg" width="200"/>
+  <img src="images/screenshots/12.jpeg" width="200"/>
+  <img src="images/screenshots/13.jpeg" width="200"/>
+</div>
+
 
 ## FAQ
 ### Why should I use this app? and not slack?
