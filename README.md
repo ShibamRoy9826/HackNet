@@ -72,8 +72,10 @@ I wanted to click them with default, but realised after taking all screenshots, 
 
 ## Known issues
 
-- You need to close and reopen the app each time user logs in/logs off (Ik the cause, its because of a last minute change, will fix in next release)
-- In new log page, the text beside the comment toggling button says the exact opposite of what is going to happen. I don't know how it went unnoticed, but I will fix that too in the next release.
+- ~You need to close and reopen the app each time user logs in/logs off (Ik the cause, its because of a last minute change, will fix in next release)~ fixed
+- ~In new log page, the text beside the comment toggling button says the exact opposite of what is going to happen. I don't know how it went unnoticed, but I will fix that too in the next release~ fixed
+
+- comment counts don't update (ik and that's how its supposed to be for now, kinda intentional, will fix later)
   
 ## FAQ
 ### Why should I use this app? and not slack?

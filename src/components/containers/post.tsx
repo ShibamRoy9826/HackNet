@@ -44,7 +44,7 @@ const Post = memo(function Post({ id, user_uid, media, used_media, message, uid,
     const [commentCount, setCommentCount] = useState(comment_count);
     const [liked, setLiked] = useState(false);
 
-    const [userPfp, setUserPfp] = useState("https://i.pinimg.com/736x/15/0f/a8/150fa8800b0a0d5633abc1d1c4db3d87.jpg");
+    const [userPfp, setUserPfp] = useState("https://hc-cdn.hel1.your-objectstorage.com/s/v3/9af4d652de03ce5d50a06e96a8a276fb8f937043_pfp.jpeg");
     const [OPName, setOPName] = useState("Your Name");
 
 

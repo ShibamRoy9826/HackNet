@@ -15,19 +15,24 @@ export function UserDataProvider({ children }: { children: React.ReactNode }) {
 
 
   useEffect(() => {
-    if (!auth.currentUser) {
-      setUserData(null);
-      return;
-    };
+    try {
+      if (!auth.currentUser) {
+        setUserData(null);
+        return;
+      };
 
-    const unsub = onSnapshot(
-      doc(db, "users", auth.currentUser ? auth.currentUser.uid : ""),
-      (docSnap) => {
-        if (docSnap.exists()) {
-          setUserData(docSnap.data() as UserData);
+      const unsub = onSnapshot(
+        doc(db, "users", auth.currentUser ? auth.currentUser.uid : ""),
+        (docSnap) => {
+          if (docSnap.exists()) {
+            setUserData(docSnap.data() as UserData);
+          }
         }
-      }
-    );
+      );
+
+    } catch (e) {
+      console.log("An error occured it seems", e)
+    }
 
   }, [auth.currentUser]);
   return (
