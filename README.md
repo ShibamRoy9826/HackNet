@@ -1,8 +1,42 @@
-# HackNet
+<div align="center">
+
+<h1 align="center">
+  <a href="https://github.com/ShibamRoy9826/HackNet/releases/tag/v1.0.0">
+    <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/ac72891dcff2c5112f0f6ca1a3fe77d13903832c_foreground.png" alt="HackNet" width="256" height="256" />
+    <br>
+    HackNet
+  </a>
+</h1>
+
+<p>
+  <a href="./LICENSE"><img alt="LICENSE" src="https://img.shields.io/github/license/ShibamRoy9826/HackNet?style=for-the-badge"></a>
+  <a href="#"><img alt="Stars" src="https://img.shields.io/github/stars/ShibamRoy9826/HackNet?style=for-the-badge"></a>
+</p>
+
+<p><b>Social media for hackclubbers</b></p>
+
+<p align="center">
+  <a href="#overview">Overview</a> •
+  <a href="#installation">Installation</a> •
+  <a href="#features">Features</a> •
+  <a href="#tech-stack-used">Tech Stack</a> •
+  <a href="#screenshots">Screenshots</a> •
+  <a href="#faq">FAQ</a>
+</p>
+
+<hr />
+
+</div>
+
 ## Overview
 
 A Social media app made for Hackclubbers, with ❤️ by a Hackclubber.
 Use it just like any other social media application and share your progress on different projects with others, make friends, chat with them, and most importantly ENJOY:)
+
+## Video Demo
+If the URL given below doesn't work, try [this](https://hc-cdn.hel1.your-objectstorage.com/s/v3/06218d408f645bc043eb8a445c999f2c8f5b52d0_hacknetdemo.mp4)
+
+[![hacknet banner](https://hc-cdn.hel1.your-objectstorage.com/s/v3/c45f3944ce09cef1ac13ff210d9d9f69ebbe83e5_banner.jpeg)](https://hc-cdn.hel1.your-objectstorage.com/s/v3/06218d408f645bc043eb8a445c999f2c8f5b52d0_hacknetdemo.mp4)
 
 ## Installation
 You can download the latest apk from the [GitHub releases page](https://github.com/ShibamRoy9826/HackNet/releases/)
