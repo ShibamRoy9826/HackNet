@@ -4,7 +4,7 @@ import CustomButton from "@components/inputs/customButton";
 import IconButton from "@components/inputs/IconButton";
 import ImageRadioBtn from "@components/inputs/imageRadioBtn";
 import OnlyIconButton from "@components/inputs/onlyIconButton";
-import { Image, ImageSourcePropType, ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { Image, ImageSourcePropType, KeyboardAvoidingView, ScrollView, StyleSheet, TextInput, View } from "react-native";
 
 //contexts
 import { useModalContext } from "@contexts/modalContext";
@@ -259,58 +259,60 @@ export default function EditProfileScreen() {
     })
 
     return (
-        <ScrollView contentContainerStyle={styles.fieldContainer} style={[styles.container, { paddingTop: insets.top }]}>
-            <View style={{ flexDirection: "row", alignItems: "center", width: "100%", marginBottom: 40 }}>
-                <OnlyIconButton icon="arrow-left" func={() => { router.back() }} style={{ top: 0, left: 20, zIndex: 5 }} />
-                <CustomText style={{ color: colors.text, left: 50, fontSize: 18, top: 0, fontWeight: 700 }}>Edit Profile</CustomText>
-            </View>
-            <CustomText style={styles.label}>Avatar:</CustomText>
-            <Image source={(imgData) ? { uri: imgData.uri } : { uri: avatar }} style={{ borderRadius: 50, width: 60, height: 60, marginHorizontal: 10 }} />
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior="height">
+            <ScrollView contentContainerStyle={styles.fieldContainer} style={[styles.container, { paddingTop: insets.top }]}>
+                <View style={{ flexDirection: "row", alignItems: "center", width: "100%", marginBottom: 40 }}>
+                    <OnlyIconButton icon="arrow-left" func={() => { router.back() }} style={{ top: 0, left: 20, zIndex: 5 }} />
+                    <CustomText style={{ color: colors.text, left: 50, fontSize: 18, top: 0, fontWeight: 700 }}>Edit Profile</CustomText>
+                </View>
+                <CustomText style={styles.label}>Avatar:</CustomText>
+                <Image source={(imgData) ? { uri: imgData.uri } : { uri: avatar }} style={{ borderRadius: 50, width: 60, height: 60, marginHorizontal: 10 }} />
 
-            <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
-                <IconButton
-                    func={pickImage}
-                    style={{ flexDirection: "row", marginRight: 40, marginTop: 20 }}
-                    text={"Edit Avatar"}
-                    icon={"pencil-box-multiple"}
+                <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
+                    <IconButton
+                        func={pickImage}
+                        style={{ flexDirection: "row", marginRight: 40, marginTop: 20 }}
+                        text={"Edit Avatar"}
+                        icon={"pencil-box-multiple"}
+                    />
+                </View>
+                <CustomText style={styles.label}>Default Banners:</CustomText>
+                <ImageRadioBtn images={bannerList} setImage={setBannerData} currImage={bannerData ? bannerData : bannerList[3]} />
+
+                <CustomText style={styles.label}>Banner Preview:</CustomText>
+
+                <Image source={(bannerData) ?
+                    handleBanner(bannerData, true) :
+                    userData
+                        ? handleBanner(userData.banner) :
+                        require("@assets/images/banners/banner03.png")}
+                    style={{ marginVertical: 20, width: "100%", height: 100 }} />
+
+                <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
+                    <IconButton
+                        func={pickBanner}
+                        style={{ flexDirection: "row", marginRight: 40, marginTop: 20 }}
+                        text={"Custom Banner"}
+                        icon={"pencil-box-multiple"}
+                    />
+                </View>
+
+                <CustomText style={styles.label}>Email:</CustomText>
+                <TextInput style={styles.inputBoxDisabled} value={email} onChangeText={setEmail} editable={false}></TextInput>
+
+                <CustomText style={styles.label}>Display Name:</CustomText>
+                <TextInput style={styles.inputBox} value={username} onChangeText={setUserName}></TextInput>
+
+                <CustomText style={styles.label}>Bio:</CustomText>
+                <TextInput style={[styles.inputBox, { height: 200 }]} value={bio} onChangeText={setBio} textAlignVertical="top" multiline={true}></TextInput>
+                <CustomButton
+                    func={updateProfile}
+                    text={"Save"}
+                    style={{ marginBottom: 200 }}
                 />
-            </View>
-            <CustomText style={styles.label}>Default Banners:</CustomText>
-            <ImageRadioBtn images={bannerList} setImage={setBannerData} currImage={bannerData ? bannerData : bannerList[3]} />
 
-            <CustomText style={styles.label}>Banner Preview:</CustomText>
-
-            <Image source={(bannerData) ?
-                handleBanner(bannerData, true) :
-                userData
-                    ? handleBanner(userData.banner) :
-                    require("@assets/images/banners/banner03.png")}
-                style={{ marginVertical: 20, width: "100%", height: 100 }} />
-
-            <View style={{ alignItems: "center", justifyContent: "center", width: "100%" }}>
-                <IconButton
-                    func={pickBanner}
-                    style={{ flexDirection: "row", marginRight: 40, marginTop: 20 }}
-                    text={"Custom Banner"}
-                    icon={"pencil-box-multiple"}
-                />
-            </View>
-
-            <CustomText style={styles.label}>Email:</CustomText>
-            <TextInput style={styles.inputBoxDisabled} value={email} onChangeText={setEmail} editable={false}></TextInput>
-
-            <CustomText style={styles.label}>Display Name:</CustomText>
-            <TextInput style={styles.inputBox} value={username} onChangeText={setUserName}></TextInput>
-
-            <CustomText style={styles.label}>Bio:</CustomText>
-            <TextInput style={[styles.inputBox, { height: 200 }]} value={bio} onChangeText={setBio} textAlignVertical="top" multiline={true}></TextInput>
-            <CustomButton
-                func={updateProfile}
-                text={"Save"}
-                style={{ marginBottom: 200 }}
-            />
-
-        </ScrollView>
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 }
 

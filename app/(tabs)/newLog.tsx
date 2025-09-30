@@ -44,14 +44,16 @@ export default function NewPostScreen() {
     setActivityText("Posting");
 
 
-    const uploadMedia = async (rs: any[]) => {
+    const uploadMedia = async (rs: ImagePickerAsset[]) => {
         try {
             let tempUrls: string[] = [];
             for (let i = 0; i < rs.length; ++i) {
                 const url = await uploadFileTemp(rs[i]);
                 tempUrls.push(url);
             }
+            console.log("The temp urls:", tempUrls);
             const deployedUrls = await uploadToHc(tempUrls);
+            console.log("Deployed urls: ", deployedUrls);
 
             if (deployedUrls.length === 0) {
                 throw new Error("Couldn't deploy to hackclub cdn");
@@ -116,7 +118,7 @@ export default function NewPostScreen() {
                             alert("Success", "Your log has been posted successfully!")
                         }).catch((e) => { alert("Error", `${e.code} ${e.message}. An error occured while posting :( `) })
                     }
-                )
+                ).catch((e) => console.log("Error occured while posting, ", e));
             } else {
                 updateActivity(0.6, "Uploading info");
                 setDoc(doc(collection(db, "posts")), {
