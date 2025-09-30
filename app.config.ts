@@ -12,19 +12,22 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   "newArchEnabled": true,
   "ios": {
     "supportsTablet": true,
-    "bundleIdentifier": "com.shibamroy.hacknet"
+    "bundleIdentifier": "com.shibamroy.hacknet",
+    "buildNumber": "2",
   },
   "android": {
     "adaptiveIcon": {
       "foregroundImage": "./assets/images/adaptive-icon/foreground.png",
       "backgroundColor": "#17171d"
     },
+    "versionCode": 2,
     "edgeToEdgeEnabled": true,
     "googleServicesFile": process.env.GOOGLE_SERVICES_JSON ?? "./google-services.json",
     "permissions": [
       "android.permission.RECORD_AUDIO"
     ],
     "package": "com.shibamroy.hacknet"
+
   },
   "notification": {
     "icon": "./assets/images/notification-icon.png",
