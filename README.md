@@ -16,7 +16,7 @@
 <p><b>Social media for hackclubbers</b></p>
 
 <p align="center">
-  <a href="#overview">Overview</a> •
+  <a href="#intro">Introduction</a> •
   <a href="#installation">Installation</a> •
   <a href="#features">Features</a> •
   <a href="#tech-stack-used">Tech Stack</a> •
@@ -28,17 +28,23 @@
 
 </div>
 
-## Overview
+<h2 align="center" id="intro">🧩 Introduction</h2>
 
 A Social media app made for Hackclubbers, with ❤️ by a Hackclubber.
 Use it just like any other social media application and share your progress on different projects with others, make friends, chat with them, and most importantly ENJOY:)
 
-## Video Demo
-If the URL given below doesn't work, try [this](https://hc-cdn.hel1.your-objectstorage.com/s/v3/06218d408f645bc043eb8a445c999f2c8f5b52d0_hacknetdemo.mp4)
+<h2 align="center" id="video-demo">🎥 Video Demo</h2>
+<p align="center">
+If the URL given below doesn't work, try <a href="https://hc-cdn.hel1.your-objectstorage.com/s/v3/06218d408f645bc043eb8a445c999f2c8f5b52d0_hacknetdemo.mp4">this</a>
+</p>
 
-[![hacknet banner](https://hc-cdn.hel1.your-objectstorage.com/s/v3/c45f3944ce09cef1ac13ff210d9d9f69ebbe83e5_banner.jpeg)](https://hc-cdn.hel1.your-objectstorage.com/s/v3/06218d408f645bc043eb8a445c999f2c8f5b52d0_hacknetdemo.mp4)
+<p align="center">
+  <a href="https://hc-cdn.hel1.your-objectstorage.com/s/v3/06218d408f645bc043eb8a445c999f2c8f5b52d0_hacknetdemo.mp4">
+    <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/c45f3944ce09cef1ac13ff210d9d9f69ebbe83e5_banner.jpeg" alt="hacknet banner" width="500">
+  </a>
+</p>
 
-## Installation
+<h2 align="center" id="installation">💻 Installation</h2>
 You can download the latest apk from the [GitHub releases page](https://github.com/ShibamRoy9826/HackNet/releases/)
 
 Steps are simple, but **Please make sure to install it on an Android device ONLY!** , it will not work elsewhere:
@@ -59,7 +65,8 @@ Steps are simple, but **Please make sure to install it on an Android device ONLY
 
 5. Open your app, sign up and enjoy!
 
-## Features
+<h2 align="center" id="features">✨ Features</h2>
+
 - Simple Sign up with email verification
 - Straightforward UI with 3 different themes: Default(Hackclub colors), Catppuccin(Mocha), and a Light Theme.
 - Obviously you can make posts, containing any video/images, or only-text posts
@@ -76,14 +83,14 @@ Steps are simple, but **Please make sure to install it on an Android device ONLY
 - You can report other users, posts, or comments if you find anything sussy
 
 
-## Tech Stack used
+<h2 align="center" id="tech-stack-used">🛠️ Tech Stack Used</h2>
 
 - Firebase(For both auth and data storage)
 - Expo
 - React Native
 - TypeScript
   
-## Screenshots
+<h2 align="center" id="screenshots">📷 Screenshots</h2>
 
 Most of the images are taken with the *Catppuccin Mocha* theme, however one image each for other themes has also been attached
 I wanted to click them with default, but realised after taking all screenshots, maybe I will update later on...
@@ -104,29 +111,40 @@ I wanted to click them with default, but realised after taking all screenshots, 
   <img src="images/screenshots/13.jpeg" width="200"/>
 </div>
 
-## Known issues
+<h2 align="center" id="known-issues">🐛 Known Issues</h2>
 
 - ~You need to close and reopen the app each time user logs in/logs off (I know the cause, its because of a last minute change, will fix in next release)~ fixed
 - ~In new log page, the text beside the comment toggling button says the exact opposite of what is going to happen. I don't know how it went unnoticed, but I will fix that too in the next release~ fixed
 
 - comment counts don't update (I know and that's how its supposed to be for now, kinda intentional, will fix later)
   
-## FAQ
-### Why should I use this app? and not Slack?
+<h2 align="center" id="faq">❓ FAQ</h2>
+
+### 1. Why should I use this app? and not Slack?
 Short answer, vibes, I totally agree with the fact that Slack is probably better than HackNet(as of now) if you want to chat or do anything for that matter. But that probably won't give you the vibes similar to reddit, instagram or other apps, I wanted to make something that gives similar vibes to them. 
 
 For now it doesn't have too many features but that never means that it won't have more features/equivalent features to Slack in the future. UI can be another factor, and for messaging I often find Slack is too sluggish(My app isn't extremely fast either, but at least it feels less sluggish, likely cause it doesn't have anywhere near the amount of data most likely). To be honest, the best I can explain is that "I made it", and that's a reason why I want you to use it!
 
-### New features when?
+### 2. New features when?
 After a break, I can't give any estimate, whenever I have free time, OR you can make them too! I would love it if you could contribute to this app:)
 
-### What features will be added in the future?
+### 3. What features will be added in the future?
 - E2E encrypted chats, Yes I know that's a very big drawback as of now, chats are NOT end to end encrypted, But I assure y'all that I will fix that soon.
 - Replies to comments
 - Dislike buttons -> Should be easy but I am not making it now, cause it looks messy, I want to keep it minimal for now
 - Any feature that you all demand, all I need is free time, you can open an issue to request a new feature. 
 
-## Contribution
+<h2 align="center">🌟 Stargazers</h2>
+
+<a href="https://github.com/BlueprintFramework/framework/stargazers/">
+  <picture>
+    <source media="(prefers-color-scheme: light)" srcset="http://reporoster.com/stars/ShibamRoy9826/HackNet">
+    <img alt="stargazer-widget" src="http://reporoster.com/stars/dark/ShibamRoy9826/HackNet">
+  </picture>
+</a>
+
+<h2 align="center" id="contribution">🤝 Contribution</h2>
+
 You can contribute by raising an issue or making a pull request, I will happily review them and merge them as soon as possible:)
 
 >If you like this app, please star this repo, that will motivate me to develop it further! ✨
