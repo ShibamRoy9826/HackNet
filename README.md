@@ -1,8 +1,8 @@
 <div align="center">
 
 <h1 align="center">
-  <a href="https://github.com/ShibamRoy9826/HackNet/releases/tag/v1.0.0">
-    <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/ac72891dcff2c5112f0f6ca1a3fe77d13903832c_foreground.png" alt="HackNet" width="256" height="256" />
+  <a href="https://github.com/ShibamRoy9826/HackNet/releases/">
+    <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/f45ab83b8594bc456ea938994c09f577d4acf993_logo-removebg-preview.png" alt="HackNet" width="256" height="256" />
     <br>
     HackNet
   </a>
@@ -33,6 +33,10 @@
 A Social media app made for Hackclubbers, with ❤️ by a Hackclubber.
 Use it just like any other social media application and share your progress on different projects with others, make friends, chat with them, and most importantly ENJOY:)
 
+> [!NOTE]
+> It's still under development, so if you face any problems while using it, please raise an issue!
+> I would appreciate any feedback too, raise an issue for that as well:)
+
 <h2 align="center" id="video-demo">🎥 Video Demo</h2>
 <p align="center">
 If the URL given below doesn't work, try <a href="https://hc-cdn.hel1.your-objectstorage.com/s/v3/06218d408f645bc043eb8a445c999f2c8f5b52d0_hacknetdemo.mp4">this</a>
@@ -40,7 +44,7 @@ If the URL given below doesn't work, try <a href="https://hc-cdn.hel1.your-objec
 
 <p align="center">
   <a href="https://hc-cdn.hel1.your-objectstorage.com/s/v3/06218d408f645bc043eb8a445c999f2c8f5b52d0_hacknetdemo.mp4">
-    <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/c45f3944ce09cef1ac13ff210d9d9f69ebbe83e5_banner.jpeg" alt="hacknet banner" width="500">
+    <img src="https://hc-cdn.hel1.your-objectstorage.com/s/v3/91a8bb69083d6e455fbf78deeb72a440fafba23f_banner.jpeg" alt="hacknet banner" width="500">
   </a>
 </p>
 
