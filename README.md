@@ -96,24 +96,57 @@ Steps are simple, but **Please make sure to install it on an Android device ONLY
   
 <h2 align="center" id="screenshots">📷 Screenshots</h2>
 
-Most of the images are taken with the *Catppuccin Mocha* theme, however one image each for other themes has also been attached
-I wanted to click them with default, but realised after taking all screenshots, maybe I will update later on...
+### Default theme
 
 <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-  <img src="images/screenshots/1.jpeg" width="200"/>
-  <img src="images/screenshots/2.jpeg" width="200"/>
-  <img src="images/screenshots/3.jpeg" width="200"/>
-  <img src="images/screenshots/4.jpeg" width="200"/>
-  <img src="images/screenshots/5.jpeg" width="200"/>
-  <img src="images/screenshots/6.jpeg" width="200"/>
-  <img src="images/screenshots/7.jpeg" width="200"/>
-  <img src="images/screenshots/8.jpeg" width="200"/>
-  <img src="images/screenshots/9.jpeg" width="200"/>
-  <img src="images/screenshots/10.jpeg" width="200"/>
-  <img src="images/screenshots/11.jpeg" width="200"/>
-  <img src="images/screenshots/12.jpeg" width="200"/>
-  <img src="images/screenshots/13.jpeg" width="200"/>
+  <img src="images/screenshots/default/1.jpg" width="200"/>
+  <img src="images/screenshots/default/2.jpg" width="200"/>
+  <img src="images/screenshots/default/3.jpg" width="200"/>
+  <img src="images/screenshots/default/4.jpg" width="200"/>
+  <img src="images/screenshots/default/5.jpg" width="200"/>
+  <img src="images/screenshots/default/chat.jpg" width="200"/>
+  <img src="images/screenshots/default/dots.jpg" width="200"/>
+  <img src="images/screenshots/default/edit.jpg" width="200"/>
+  <img src="images/screenshots/default/friendReq.jpg" width="200"/>
+  <img src="images/screenshots/default/notif.jpg" width="200"/>
+  <img src="images/screenshots/default/settings.jpg" width="200"/>
 </div>
+
+## Catppuccin theme
+
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+  <img src="images/screenshots/catpuccin/1.jpg" width="200"/>
+  <img src="images/screenshots/catppucin/2.jpg" width="200"/>
+  <img src="images/screenshots/catppuccin/3.jpg" width="200"/>
+  <img src="images/screenshots/catppuccin/4.jpg" width="200"/>
+  <img src="images/screenshots/catppuccin/5.jpg" width="200"/>
+  <img src="images/screenshots/catppuccin/chat.jpg" width="200"/>
+  <img src="images/screenshots/catppuccin/dots.jpg" width="200"/>
+  <img src="images/screenshots/catppuccin/edit.jpg" width="200"/>
+  <img src="images/screenshots/catppuccin/friendReq.jpg" width="200"/>
+  <img src="images/screenshots/catppuccin/notif.jpg" width="200"/>
+  <img src="images/screenshots/catppuccin/settings.jpg" width="200"/>
+</div>
+
+## Light theme
+
+> [!NOTE]
+> This theme is a bit buggy, as you can see the some text still remains white in the edit page. I recently noticed that, and will fix it in the next release for sure!
+
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+  <img src="images/screenshots/light/1.jpg" width="200"/>
+  <img src="images/screenshots/light/2.jpg" width="200"/>
+  <img src="images/screenshots/light/3.jpg" width="200"/>
+  <img src="images/screenshots/light/4.jpg" width="200"/>
+  <img src="images/screenshots/light/5.jpg" width="200"/>
+  <img src="images/screenshots/light/chat.jpg" width="200"/>
+  <img src="images/screenshots/light/dots.jpg" width="200"/>
+  <img src="images/screenshots/light/edit.jpg" width="200"/>
+  <img src="images/screenshots/light/friendReq.jpg" width="200"/>
+  <img src="images/screenshots/light/notif.jpg" width="200"/>
+  <img src="images/screenshots/light/settings.jpg" width="200"/>
+</div>
+
 
 <h2 align="center" id="known-issues">🐛 Known Issues</h2>
 
