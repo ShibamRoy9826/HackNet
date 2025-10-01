@@ -141,7 +141,7 @@ Steps are simple, but **Please make sure to install it on an Android device ONLY
   <img src="images/screenshots/light/4.jpg" width="200"/>
   <img src="images/screenshots/light/5.jpg" width="200"/>
   <img src="images/screenshots/light/chat.jpg" width="200"/>
-  <img src="images/screenshots/light/dots.jpg" width="200"/>
+  <img src="images/screenshots/light/dots.jpeg" width="200"/>
   <img src="images/screenshots/light/edit.jpg" width="200"/>
   <img src="images/screenshots/light/friendReq.jpg" width="200"/>
   <img src="images/screenshots/light/notif.jpg" width="200"/>
