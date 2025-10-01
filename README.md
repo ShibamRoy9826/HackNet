@@ -49,6 +49,7 @@ If the URL given below doesn't work, try <a href="https://hc-cdn.hel1.your-objec
 </p>
 
 <h2 align="center" id="installation">💻 Installation</h2>
+
 You can download the latest apk from the [GitHub releases page](https://github.com/ShibamRoy9826/HackNet/releases/)
 
 Steps are simple, but **Please make sure to install it on an Android device ONLY!** , it will not work elsewhere:
@@ -112,11 +113,11 @@ Steps are simple, but **Please make sure to install it on an Android device ONLY
   <img src="images/screenshots/default/settings.jpg" width="200"/>
 </div>
 
-## Catppuccin theme
+### Catppuccin theme
 
 <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-  <img src="images/screenshots/catpuccin/1.jpg" width="200"/>
-  <img src="images/screenshots/catppucin/2.jpg" width="200"/>
+  <img src="images/screenshots/catppuccin/1.jpg" width="200"/>
+  <img src="images/screenshots/catppuccin/2.jpg" width="200"/>
   <img src="images/screenshots/catppuccin/3.jpg" width="200"/>
   <img src="images/screenshots/catppuccin/4.jpg" width="200"/>
   <img src="images/screenshots/catppuccin/5.jpg" width="200"/>
@@ -128,7 +129,7 @@ Steps are simple, but **Please make sure to install it on an Android device ONLY
   <img src="images/screenshots/catppuccin/settings.jpg" width="200"/>
 </div>
 
-## Light theme
+### Light theme
 
 > [!NOTE]
 > This theme is a bit buggy, as you can see the some text still remains white in the edit page. I recently noticed that, and will fix it in the next release for sure!
@@ -154,6 +155,10 @@ Steps are simple, but **Please make sure to install it on an Android device ONLY
 - ~In new log page, the text beside the comment toggling button says the exact opposite of what is going to happen. I don't know how it went unnoticed, but I will fix that too in the next release~ fixed
 
 - comment counts don't update (I know and that's how its supposed to be for now, kinda intentional, will fix later)
+
+- Light theme is a bit buggy
+- Reload icon isn't visible in homepage
+- Ripples are too big
   
 <h2 align="center" id="faq">❓ FAQ</h2>
 
